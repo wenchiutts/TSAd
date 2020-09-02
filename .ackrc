@@ -1,0 +1,7 @@
+--ignore-dir=build
+--ignore-dir=dist
+--ignore-file=match:/tags/
+--ignore-dir=web-build
+--ignore-dir=.expo
+--ignore-dir=android
+--ignore-dir=ios

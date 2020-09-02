@@ -1,0 +1,18 @@
+{
+  "extends": ["universe/native", "react-native"],
+  "settings": {
+    "import/resolver": {
+      "babel-module": {}
+    }
+  },
+  "plugins": ["react", "react-native"],
+  "rules": {
+    "react/display-name": "off",
+    "react-native/no-inline-styles": "off",
+    "import/order": "off",
+    "import/named": "off",
+    "react-native/no-color-literals": "off",
+    "no-use-before-define": "off",
+    "import/no-namespace": "off"
+  }
+}

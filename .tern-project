@@ -1,0 +1,15 @@
+{
+    "libs": [
+        "browser",
+        "underscore",
+        "react",
+        "ramda"
+    ],
+    "plugins": {
+        "node": {},
+        "es_module": {},
+        "webpack": {
+          "configPath": "./config/webpack.config.dev.js"
+        }
+    }
+}
