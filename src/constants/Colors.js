@@ -11,6 +11,7 @@ export default {
   warningText: '#666804',
   noticeBackground: tintColor,
   noticeText: '#fff',
+  screenBackground: '#0C0A2E',
   primary: {
     purple: '#7A8BFF',
     gray: '#9B9B9B',
