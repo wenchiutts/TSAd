@@ -13,6 +13,7 @@ import PurchaseModal from 'components/PurchaseModal';
 import SearchModal from 'components/SearchModal';
 import Colors from 'constants/Colors';
 import configureStore from 'store/configureStore';
+import { getAuthStateAction } from 'modules/auth/authActions';
 
 enableScreens();
 const Stack = createStackNavigator();
@@ -20,6 +21,10 @@ const Stack = createStackNavigator();
 const { store } = configureStore();
 
 export default function App() {
+  React.useEffect(() => {
+    store.dispatch(getAuthStateAction());
+  }, []);
+
   return (
     <Provider store={store}>
       <ThemeProvider theme={Colors}>
