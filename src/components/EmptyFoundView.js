@@ -5,10 +5,10 @@ import styled from 'styled-components/native';
 
 const EmptyFoundView = ({ text }) => {
   return (
-    <View style={{ width: 300 }}>
+    <StyledView>
       <Image source={require('assets/images/notfound.png')} style={{ height: 120 }} />
       <StyledText>Nothing found</StyledText>
-    </View>
+    </StyledView>
   );
 };
 
@@ -19,4 +19,10 @@ const StyledText = styled(Text)`
   font-size: 16;
   font-weight: 500;
   text-align: center;
+`;
+
+const StyledView = styled(View)`
+  width: 300;
+  justify-content: center;
+  flex: 1;
 `;
