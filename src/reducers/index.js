@@ -1,6 +1,6 @@
 // @format
 import { combineReducers } from 'redux';
-import timeReducers from './timeReducers';
+import timeReducers from 'reducers/timeReducers';
 
 const rootReducer = combineReducers({
   time: timeReducers,

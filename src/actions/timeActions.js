@@ -1,6 +1,6 @@
 // @format
 import { Platform } from 'react-native';
-import makeActionCreator from './makeActionCreator';
+import makeActionCreator from 'actions/makeActionCreator';
 export const REQUEST_TIME = 'REQUEST_TIME';
 export const RECEIVE_TIME = 'RECEIVE_TIME';
 
