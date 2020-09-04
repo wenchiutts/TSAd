@@ -2,6 +2,9 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 import styled from 'styled-components/native';
 
+import EmptyStatusView from 'components/EmptyStatusView';
+import EmptyFoundView from 'components/EmptyFoundView';
+
 const StyledView = styled(View)`
   flex: 1;
   justify-content: center;
@@ -10,7 +13,8 @@ const StyledView = styled(View)`
 
 const SearchBlockerScreen = () => (
   <StyledView>
-    <Text>Search Block</Text>
+    <EmptyStatusView text="followers" />
+    {/* <EmptyFoundView /> */}
   </StyledView>
 );
 
