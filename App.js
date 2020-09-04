@@ -21,7 +21,25 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar style="auto" />
         <NavigationContainer>
-          <Stack.Navigator mode="modal">
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {
+                borderBottomWidth: 0,
+                shadowRadius: 0,
+                shadowOffset: {
+                  height: 0,
+                },
+              },
+              headerTransparent: true,
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+                fontSize: 20,
+              },
+              headerTitleAlign: 'center',
+              headerHideShadow: true,
+            }}
+            mode="modal">
             <Stack.Screen name="Root" component={BottomTabNavigator} />
             <Stack.Screen name="story" component={StoryModal} />
             <Stack.Screen name="purchase" component={PurchaseModal} />
