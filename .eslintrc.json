@@ -13,6 +13,8 @@
     "import/named": "off",
     "react-native/no-color-literals": "off",
     "no-use-before-define": "off",
-    "import/no-namespace": "off"
+    "import/no-namespace": "off",
+    "import/prefer-default-export": "off",
+    "no-prototype-builtins": "off"
   }
 }
