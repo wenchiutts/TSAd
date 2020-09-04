@@ -1,7 +1,7 @@
 // @format
 import * as React from 'react';
-import { path, transduce } from 'ramda';
-import { View, Text, TextInput, Dimensions, Image } from 'react-native';
+import { path } from 'ramda';
+import { View, TextInput, Dimensions, Image } from 'react-native';
 import styled from 'styled-components/native';
 
 import Colors from 'constants/Colors';
