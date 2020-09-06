@@ -12,6 +12,7 @@ export default {
   noticeBackground: tintColor,
   noticeText: '#fff',
   screenBackground: '#0C0A2E',
+  listItemBg: '#2A2A5B',
   primary: {
     purple: '#7A8BFF',
     gray: '#9B9B9B',
