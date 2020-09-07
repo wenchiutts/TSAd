@@ -15,9 +15,29 @@ const HomeStack = () => (
       cardStyle: {
         backgroundColor: Colors.screenBackground,
       },
+      headerTitle: 'Ins Reports',
+      headerTitleAlign: 'center',
+      headerHideShadow: true,
+      headerStyle: {
+        borderBottomWidth: 0,
+        shadowRadius: 0,
+        shadowOffset: {
+          height: 0,
+        },
+      },
+      headerTransparent: true,
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        fontSize: 20,
+      },
     }}>
     <Stack.Screen name="Home" component={HomeScreen} />
-    <Stack.Screen name="SearchBlocker" component={SearchBlockerScreen} />
+    <Stack.Screen
+      name="SearchBlocker"
+      component={SearchBlockerScreen}
+      options={{ headerTitle: 'Search Blockers' }}
+    />
   </Stack.Navigator>
 );
 

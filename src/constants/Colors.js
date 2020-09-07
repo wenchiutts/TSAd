@@ -25,5 +25,6 @@ export default {
     dark: '#030303',
     flatBlue: '#191b26',
     lightFlatBlue: '#31354A',
+    lightPurple: '#2A2A5B',
   },
 };

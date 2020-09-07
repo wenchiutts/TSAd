@@ -44,14 +44,31 @@ export default function BottomTabNavigator({ navigation, route }) {
       <Tab.Screen
         name="Home"
         component={HomeStack}
-        options={{
-          tabBarIcon: props => (
-            <TabBarIcon
-              {...props}
-              activeImg={require('assets/icons/tabbar_home_S.png')}
-              inActiveImg={require('assets/icons/tabbar_home_N.png')}
-            />
-          ),
+        options={({ route }) => {
+          const routeName =
+            route.state?.routes[route.state.index]?.name || route.state?.routes[0]?.name || 'Home';
+          if (routeName === 'SearchBlocker') {
+            return {
+              tabBarVisible: false,
+              tabBarIcon: props => (
+                <TabBarIcon
+                  {...props}
+                  activeImg={require('assets/icons/tabbar_home_S.png')}
+                  inActiveImg={require('assets/icons/tabbar_home_N.png')}
+                />
+              ),
+            };
+          }
+          return {
+            tabBarVisible: true,
+            tabBarIcon: props => (
+              <TabBarIcon
+                {...props}
+                activeImg={require('assets/icons/tabbar_home_S.png')}
+                inActiveImg={require('assets/icons/tabbar_home_N.png')}
+              />
+            ),
+          };
         }}
       />
       <Tab.Screen
