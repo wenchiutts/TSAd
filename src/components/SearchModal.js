@@ -27,7 +27,7 @@ const StyledInput = styled(View)`
   justify-content: flex-start;
   align-items: center;
   padding-left: 16;
-  margin-vertical: 15;
+  margin-vertical: 30;
 `;
 
 const StyledTextInput = styled(TextInput)`
