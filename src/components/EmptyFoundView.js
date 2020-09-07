@@ -6,7 +6,10 @@ import styled from 'styled-components/native';
 const EmptyFoundView = ({ text }) => {
   return (
     <StyledView>
-      <Image source={require('assets/images/notfound.png')} style={{ height: 120 }} />
+      <Image
+        source={require('assets/images/notfound.png')}
+        style={{ height: 120, resizeMode: 'contain' }}
+      />
       <StyledText>Nothing found</StyledText>
     </StyledView>
   );
@@ -24,5 +27,6 @@ const StyledText = styled(Text)`
 const StyledView = styled(View)`
   width: 300;
   justify-content: center;
+  align-items: center;
   flex: 1;
 `;

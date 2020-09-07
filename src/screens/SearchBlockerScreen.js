@@ -32,7 +32,6 @@ const StyledTextInput = styled(TextInput)`
   margin-left: 8;
   font-size: 14;
   color: ${path(['theme', 'noticeText'])};
-  outline-width: 0;
   font-weight: 500;
 `;
 
