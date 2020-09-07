@@ -50,7 +50,7 @@ const ButtonText = styled(Text)`
 
 const StyledText = styled(Text)`
   font-size: 20;
-  color: ${path(['theme', 'primary', 'babyBlue'])};
+  color: ${path(['theme', 'primary', 'lightBlue'])};
 `;
 
 const StyledStrongText = styled(StyledText)`

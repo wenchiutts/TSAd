@@ -23,9 +23,8 @@ export default {
     blue: '#82ACFF',
     darkBlue: '#05112a',
     dark: '#030303',
-    flatBlue: '#191b26',
+    flatBlue: '#0C0A2E',
     lightFlatBlue: '#31354A',
     lightPurple: '#2A2A5B',
-    babyBlue: '#F5F8FE',
   },
 };
