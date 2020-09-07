@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { Text, View, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { path } from 'ramda';
 import * as MailComposer from 'expo-mail-composer';
@@ -8,12 +8,16 @@ import Constants from 'expo-constants';
 
 import IconListItem from 'components/IconListItem';
 
+import PromotionCard from 'components/PromotionCard.js';
+
+const { width: screenWidth } = Dimensions.get('window');
+
 const StyledView = styled(View)`
   flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: ${path(['theme', 'screenBackground'])};
+  justify-content: flex-start;
   padding-horizontal: 20;
+  padding-top: 25%;
+  background-color: ${path(['theme', 'screenBackground'])};
 `;
 
 const IconListWithMargin = styled(IconListItem)`
@@ -22,6 +26,7 @@ const IconListWithMargin = styled(IconListItem)`
 
 const SettingsScreen = () => (
   <StyledView>
+    <PromotionCard />
     <IconListItem
       iconSource={require('assets/icons/settings_contactus.png')}
       description="Contact Us"
