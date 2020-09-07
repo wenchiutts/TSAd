@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Text, View, Dimensions } from 'react-native';
+import { View } from 'react-native';
 import styled from 'styled-components/native';
-import { path } from 'ramda';
+import { path, pathOr } from 'ramda';
 import * as MailComposer from 'expo-mail-composer';
 import dedent from 'dedent';
 import Constants from 'expo-constants';
@@ -9,8 +9,6 @@ import Constants from 'expo-constants';
 import IconListItem from 'components/IconListItem';
 
 import PromotionCard from 'components/PromotionCard.js';
-
-const { width: screenWidth } = Dimensions.get('window');
 
 const StyledView = styled(View)`
   flex: 1;
@@ -21,13 +19,14 @@ const StyledView = styled(View)`
 `;
 
 const IconListWithMargin = styled(IconListItem)`
-  margin-top: 12;
+  margin-top: ${pathOr(12, ['margin'])};
 `;
 
 const SettingsScreen = () => (
   <StyledView>
     <PromotionCard />
-    <IconListItem
+    <IconListWithMargin
+      margin={24}
       iconSource={require('assets/icons/settings_contactus.png')}
       description="Contact Us"
       onPress={() => {
