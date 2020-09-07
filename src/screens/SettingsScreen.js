@@ -9,22 +9,15 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const StyledView = styled(View)`
   flex: 1;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  padding-horizontal: 20;
+  padding-top: 25%;
   background-color: ${path(['theme', 'screenBackground'])};
-`;
-
-const Wrapper = styled(View)`
-  width: ${screenWidth - 40};
-  flex: 1;
-  margin-top: 25%;
 `;
 
 const SettingsScreen = () => (
   <StyledView>
-    <Wrapper>
-      <PromotionCard></PromotionCard>
-    </Wrapper>
+    <PromotionCard />
   </StyledView>
 );
 

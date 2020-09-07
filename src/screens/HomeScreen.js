@@ -9,14 +9,10 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const StyledView = styled(View)`
   flex: 1;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-`;
-
-const Wrapper = styled(View)`
-  width: ${screenWidth - 40};
-  flex: 1;
-  margin-top: 25%;
+  padding-horizontal: 20;
+  padding-top: 25%;
 `;
 
 const userData = {
@@ -27,13 +23,11 @@ const userData = {
 
 const HomeScreen = ({ navigation }) => (
   <StyledView>
-    <Wrapper>
-      <ProfileCard userData={userData} />
-      <Button onPress={() => navigation.navigate('story')} title="Open story Modal" />
-      <Button onPress={() => navigation.navigate('SearchBlocker')} title="Open search blocker" />
-      <Button onPress={() => navigation.navigate('purchase')} title="Open purchase Modal" />
-      <Button onPress={() => navigation.navigate('search')} title="Open search Modal" />
-    </Wrapper>
+    <ProfileCard userData={userData} />
+    <Button onPress={() => navigation.navigate('story')} title="Open story Modal" />
+    <Button onPress={() => navigation.navigate('SearchBlocker')} title="Open search blocker" />
+    <Button onPress={() => navigation.navigate('purchase')} title="Open purchase Modal" />
+    <Button onPress={() => navigation.navigate('search')} title="Open search Modal" />
   </StyledView>
 );
 
