@@ -12,10 +12,10 @@ import PromotionCard from 'components/PromotionCard.js';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
-    flex: 1,
     paddingHorizontal: 20,
     paddingTop: '25%',
     backgroundColor: props.theme.screenBackground,
+    paddingBottom: 90,
   },
 }))`
   flex: 1;
