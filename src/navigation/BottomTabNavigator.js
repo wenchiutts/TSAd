@@ -47,9 +47,9 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={({ route }) => {
           const routeName =
             route.state?.routes[route.state.index]?.name || route.state?.routes[0]?.name || 'Home';
-          if (routeName === 'SearchBlocker') {
+          if (routeName === 'Home') {
             return {
-              tabBarVisible: false,
+              tabBarVisible: true,
               tabBarIcon: props => (
                 <TabBarIcon
                   {...props}
@@ -60,7 +60,7 @@ export default function BottomTabNavigator({ navigation, route }) {
             };
           }
           return {
-            tabBarVisible: true,
+            tabBarVisible: false,
             tabBarIcon: props => (
               <TabBarIcon
                 {...props}
