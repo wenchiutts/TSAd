@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
 import * as MailComposer from 'expo-mail-composer';
@@ -10,11 +10,15 @@ import IconListItem from 'components/IconListItem';
 
 import PromotionCard from 'components/PromotionCard.js';
 
-const StyledView = styled(View)`
+const StyledView = styled(ScrollView).attrs(props => ({
+  contentContainerStyle: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: '25%',
+    backgroundColor: props.theme.screenBackground,
+  },
+}))`
   flex: 1;
-  justify-content: flex-start;
-  padding-horizontal: 20;
-  padding-top: 25%;
   background-color: ${path(['theme', 'screenBackground'])};
 `;
 
