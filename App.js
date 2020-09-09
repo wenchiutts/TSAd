@@ -24,7 +24,6 @@ const { store } = configureStore();
 
 export default function App() {
   React.useEffect(() => {
-    console.log('CHUCK', store.getState().instagram);
     store.dispatch(getAuthStateAction());
   }, []);
   const { igUserNameContext, igUserNameState } = useCheckUserLoginIg(store);
