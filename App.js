@@ -14,6 +14,8 @@ import SearchModal from 'components/SearchModal';
 import Colors from 'constants/Colors';
 import configureStore from 'store/configureStore';
 import { getAuthStateAction } from 'modules/auth/authActions';
+import LoginScreen from 'screens/LoginScreen';
+import { IgUserNameContext, useCheckUserLoginIg } from 'modules/instagram/useCheckUserLoginIg';
 
 enableScreens();
 const Stack = createStackNavigator();
@@ -22,41 +24,51 @@ const { store } = configureStore();
 
 export default function App() {
   React.useEffect(() => {
+    console.log('CHUCK', store.getState().instagram);
     store.dispatch(getAuthStateAction());
   }, []);
+  const { igUserNameContext, igUserNameState } = useCheckUserLoginIg(store);
 
   return (
     <Provider store={store}>
       <ThemeProvider theme={Colors}>
-        <View style={styles.container}>
-          <StatusBar style="auto" />
-          <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerStyle: {
-                  borderBottomWidth: 0,
-                  shadowRadius: 0,
-                  shadowOffset: {
-                    height: 0,
+        <IgUserNameContext.Provider value={igUserNameContext}>
+          <View style={styles.container}>
+            <StatusBar style="auto" />
+            <NavigationContainer>
+              <Stack.Navigator
+                screenOptions={{
+                  headerStyle: {
+                    borderBottomWidth: 0,
+                    shadowRadius: 0,
+                    shadowOffset: {
+                      height: 0,
+                    },
                   },
-                },
-                headerTransparent: true,
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 20,
-                },
-                headerTitleAlign: 'center',
-                headerHideShadow: true,
-              }}
-              mode="modal">
-              <Stack.Screen name="Root" component={BottomTabNavigator} />
-              <Stack.Screen name="story" component={StoryModal} />
-              <Stack.Screen name="purchase" component={PurchaseModal} />
-              <Stack.Screen name="search" component={SearchModal} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </View>
+                  headerTransparent: true,
+                  headerTintColor: '#fff',
+                  headerTitleStyle: {
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                  },
+                  headerTitleAlign: 'center',
+                  headerHideShadow: true,
+                }}
+                mode="modal">
+                {igUserNameState?.username !== undefined ? (
+                  <>
+                    <Stack.Screen name="Root" component={BottomTabNavigator} />
+                    <Stack.Screen name="story" component={StoryModal} />
+                    <Stack.Screen name="purchase" component={PurchaseModal} />
+                    <Stack.Screen name="search" component={SearchModal} />
+                  </>
+                ) : (
+                  <Stack.Screen name="Login" component={LoginScreen} />
+                )}
+              </Stack.Navigator>
+            </NavigationContainer>
+          </View>
+        </IgUserNameContext.Provider>
       </ThemeProvider>
     </Provider>
   );
