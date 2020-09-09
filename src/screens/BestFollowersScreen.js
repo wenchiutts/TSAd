@@ -4,8 +4,7 @@ import styled from 'styled-components/native';
 import { path } from 'ramda';
 
 import UserListItem from 'components/UserListItem';
-
-const { width: screenWidth } = Dimensions.get('window');
+import CategoryButton from 'components/CategoryButton';
 
 const BestFollowersScreen = () => {
   const [activeIndex, setActiveIndex] = React.useState(0);
@@ -69,21 +68,6 @@ const BestFollowersScreen = () => {
     }
   };
 
-  const CategoryButton = ({ text, active }) => (
-    <StyledButton
-      active={active}
-      onPress={() => {
-        if (text === 'Like') {
-          setActiveIndex(0);
-        }
-        if (text === 'Comment') {
-          setActiveIndex(1);
-        }
-      }}>
-      <StyledText>{text}</StyledText>
-    </StyledButton>
-  );
-
   const LocalUserListItem = ({ username, isFollower, isFollowing, likes, comments }) => (
     <UserListItem
       username={username}
@@ -97,8 +81,18 @@ const BestFollowersScreen = () => {
   return (
     <StyledView>
       <ButtonWrapper>
-        <CategoryButton text="Like" active={activeIndex === 0 && true} />
-        <CategoryButton text="Comment" active={activeIndex === 1 && true} />
+        <CategoryButton
+          text="Like"
+          index={0}
+          active={activeIndex === 0 && true}
+          setActiveIndex={setActiveIndex}
+        />
+        <CategoryButton
+          text="Comment"
+          index={1}
+          active={activeIndex === 1 && true}
+          setActiveIndex={setActiveIndex}
+        />
       </ButtonWrapper>
       <ListWrapper>
         {sortedUsers(users, activeIndex).map((user, index) => (
@@ -124,21 +118,6 @@ const ButtonWrapper = styled(View)`
   flex-direction: row;
   justify-content: space-between;
   margin-vertical: 3%;
-`;
-
-const StyledButton = styled(TouchableHighlight)`
-  background-color: ${props =>
-    props.active ? path(['theme', 'buttonActiveBackground']) : path(['theme', 'listItemBg'])};
-  height: 28;
-  border-radius: 14;
-  width: ${(screenWidth - 50) / 2};
-`;
-
-const StyledText = styled(Text)`
-  color: ${path(['theme', 'noticeText'])};
-  font-size: 16;
-  line-height: 28;
-  text-align: center;
 `;
 
 const ListWrapper = styled(ScrollView)`
