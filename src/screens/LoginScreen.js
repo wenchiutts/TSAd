@@ -79,9 +79,8 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <Container>
-      <BackgroundImage source={require('assets/images/signuploginbg.png')} />
-      <GradientLayer />
-      <LoginLogo source={require('assets/images/signup_pic.png')} />
+      <BackgroundImage source={require('assets/images/splash.png')} />
+      {/* <GradientLayer /> */}
       <LoginButton onPress={onPressLogin} />
       <Modalize ref={modalizeRef} onLayout={handleLayout} modalTopOffset={35}>
         {isLoading && <StyledActivityIndicator size="large" color="black" />}
@@ -149,7 +148,8 @@ const LoginButtonWrapper = styled(TouchableOpacity)`
   height: 60;
   border-radius: 12;
   background-color: #8f71ff;
-  margin-top: 65;
+  margin-top: auto;
+  margin-bottom: 207.5;
 `;
 
 const LoginButton = ({ onPress }) => (

@@ -16,6 +16,7 @@ import configureStore from 'store/configureStore';
 import { getAuthStateAction } from 'modules/auth/authActions';
 import LoginScreen from 'screens/LoginScreen';
 import { IgUserNameContext, useCheckUserLoginIg } from 'modules/instagram/useCheckUserLoginIg';
+import Splash from 'components/Splash';
 
 enableScreens();
 const Stack = createStackNavigator();
@@ -27,6 +28,10 @@ export default function App() {
     store.dispatch(getAuthStateAction());
   }, []);
   const { igUserNameContext, igUserNameState } = useCheckUserLoginIg(store);
+
+  if (igUserNameState.isLoading) {
+    return <Splash />;
+  }
 
   return (
     <Provider store={store}>
@@ -54,7 +59,7 @@ export default function App() {
                   headerHideShadow: true,
                 }}
                 mode="modal">
-                {igUserNameState?.username !== undefined ? (
+                {igUserNameState?.isLogin ? (
                   <>
                     <Stack.Screen name="Root" component={BottomTabNavigator} />
                     <Stack.Screen name="story" component={StoryModal} />
