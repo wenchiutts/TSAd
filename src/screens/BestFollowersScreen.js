@@ -107,12 +107,12 @@ const BestFollowersScreen = () => {
       <ButtonWrapper>
         <ActiveStateButton
           text="Like"
-          isActive={activeIndex === 0 && true}
+          isActive={activeIndex === 0}
           onPress={() => setActiveIndex(0)}
         />
         <ActiveStateButton
           text="Comment"
-          isActive={activeIndex === 1 && true}
+          isActive={activeIndex === 1}
           onPress={() => setActiveIndex(1)}
         />
       </ButtonWrapper>

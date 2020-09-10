@@ -76,12 +76,12 @@ const GhostFollowersScreen = () => {
       <ButtonWrapper>
         <ActiveStateButton
           text="No Like"
-          isActive={activeIndex === 0 && true}
+          isActive={activeIndex === 0}
           onPress={() => setActiveIndex(0)}
         />
         <ActiveStateButton
           text="No Comment"
-          isActive={activeIndex === 1 && true}
+          isActive={activeIndex === 1}
           onPress={() => setActiveIndex(1)}
         />
       </ButtonWrapper>
