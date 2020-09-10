@@ -1,32 +1,31 @@
 import * as React from 'react';
 import { path } from 'ramda';
-import { View, Dimensions, TextInput } from 'react-native';
+import { View, TextInput, ScrollView, Text } from 'react-native';
 import styled from 'styled-components/native';
 
 import Colors from 'constants/Colors';
-import BackButton from 'components/header/BackButton';
 import SearchButton from 'components/SearchButton';
 import EmptyFoundView from 'components/EmptyFoundView';
-
-const { width: screenWidth } = Dimensions.get('window');
+import UserListItem from 'components/UserListItem';
 
 const StyledView = styled(View)`
   flex: 1;
   justify-content: flex-start;
   align-items: center;
   padding-top: 70;
+  padding-horizontal: 20;
 `;
 
 const StyledInput = styled(View)`
   height: 48;
-  width: ${screenWidth - 40};
+  width: 100%;
   border-radius: 8;
   background-color: ${path(['theme', 'primary', 'lightPurple'])};
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
   padding-left: 16;
-  margin-vertical: 30;
+  margin-top: 10%;
 `;
 
 const StyledTextInput = styled(TextInput)`
@@ -36,19 +35,70 @@ const StyledTextInput = styled(TextInput)`
   font-weight: 500;
 `;
 
-const SearchBlockerScreen = ({ navigation }) => {
+const ListWrapper = styled(ScrollView)`
+  width: 100%;
+  margin-top: 5%;
+`;
+
+const Description = styled(Text)`
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  font-size: 14;
+`;
+
+const LocalUserListItem = ({ username, time }) => (
+  <UserListItem
+    username={username}
+    buttonHide
+    descriptionElement={<Description>Blocked you: {time}</Description>}
+  />
+);
+
+const SearchBlockerScreen = () => {
   const [isEmpty, setIsEmpty] = React.useState(false);
-  navigation.setOptions({
-    cardStyle: {
-      backgroundColor: Colors.screenBackground,
-    },
-    title: 'Search Blockers',
-    headerLeft: () => <BackButton />,
-  });
 
   const onPress = () => {
     setIsEmpty(true);
   };
+
+  const users = [
+    {
+      username: 'gordon',
+      isFollower: true,
+      isFollowing: true,
+      time: 'Today',
+    },
+    {
+      username: 'gordon',
+      isFollower: true,
+      isFollowing: false,
+      time: 'Today',
+    },
+    {
+      username: 'gordon',
+      isFollower: false,
+      isFollowing: true,
+      time: '07-23-2020',
+    },
+    {
+      username: 'gordon',
+      isFollower: false,
+      isFollowing: false,
+      time: '07-23-2020',
+    },
+    {
+      username: 'gordon',
+      isFollower: false,
+      isFollowing: true,
+      time: '07-23-2020',
+    },
+    {
+      username: 'gordon',
+      isFollower: false,
+      isFollowing: false,
+      time: '07-23-2020',
+    },
+  ];
+
   return (
     <StyledView>
       <StyledInput>
@@ -58,7 +108,15 @@ const SearchBlockerScreen = ({ navigation }) => {
           placeholderTextColor={Colors.primary.lightBlue}
         />
       </StyledInput>
-      {isEmpty ? <EmptyFoundView /> : <View></View>}
+      {isEmpty ? (
+        <EmptyFoundView />
+      ) : (
+        <ListWrapper>
+          {users.map((user, index) => (
+            <LocalUserListItem {...user} key={index} />
+          ))}
+        </ListWrapper>
+      )}
     </StyledView>
   );
 };
