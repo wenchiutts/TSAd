@@ -17,4 +17,6 @@ export const insFollowingCountSelector = createSelector(
 
 export const insFollowerCountSelector = createSelector(insProfileSelector, path(['followerCount']));
 
+export const insPostCountSelector = createSelector(insProfileSelector, path(['postCount']));
+
 export const insProfilePictureSelector = createSelector(insProfileSelector, path(['profilePicHd']));

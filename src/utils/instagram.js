@@ -9,6 +9,7 @@ export const normalizeInsProfileData = data => ({
   fullName: data?.full_name,
   followerCount: data?.edge_followed_by?.count ?? 0,
   followingCount: data?.edge_follow?.count ?? 0,
+  postCount: data?.edge_owner_to_timeline_media?.count ?? 0,
   biography: data?.biography,
   phoneNumber: data?.phone_number,
   email: data?.email,

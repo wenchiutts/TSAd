@@ -4,10 +4,13 @@ import { View, Button } from 'react-native';
 import { useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
-import { always } from 'ramda';
 
 import ProfileCard from 'components/ProfileCard.js';
-import { insFollowerCountSelector, insFollowingCountSelector } from '../modules/instagram/selector';
+import {
+  insFollowerCountSelector,
+  insFollowingCountSelector,
+  insPostCountSelector,
+} from 'modules/instagram/selector';
 
 const StyledView = styled(View)`
   flex: 1;
@@ -26,7 +29,7 @@ const StyledView = styled(View)`
 const userDataSelector = createStructuredSelector({
   followers: insFollowerCountSelector,
   following: insFollowingCountSelector,
-  posts: always(666666),
+  posts: insPostCountSelector,
 });
 
 const HomeScreen = ({ navigation }) => {
