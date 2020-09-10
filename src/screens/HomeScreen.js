@@ -12,6 +12,7 @@ import {
   insFollowerCountSelector,
   insFollowingCountSelector,
   insPostCountSelector,
+  insProfilePictureSelector,
 } from 'modules/instagram/selector';
 
 const StyledView = styled(ScrollView).attrs(props => ({
@@ -31,6 +32,7 @@ const userDataSelector = createStructuredSelector({
   followers: insFollowerCountSelector,
   following: insFollowingCountSelector,
   posts: insPostCountSelector,
+  profilePicture: insProfilePictureSelector,
   viewMyProfile: always(20),
   newFollowers: always(55),
   unfollowers: always(567),
@@ -47,6 +49,7 @@ const HomeScreen = ({ navigation }) => {
     posts,
     followers,
     following,
+    profilePicture,
     viewMyProfile,
     newFollowers,
     unfollowers,
@@ -60,11 +63,10 @@ const HomeScreen = ({ navigation }) => {
   return (
     <StyledView>
       <ProfileCard
-        userData={{
-          posts,
-          followers,
-          following,
-        }}
+        posts={posts}
+        followers={followers}
+        following={following}
+        profilePicture={profilePicture}
       />
       <ListWrapper>
         <Title>Follower Status</Title>
