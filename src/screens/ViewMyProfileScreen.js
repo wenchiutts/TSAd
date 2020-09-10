@@ -1,8 +1,23 @@
 import * as React from 'react';
-import { ScrollView } from 'react-native';
+import { path } from 'ramda';
+import { ScrollView, Text } from 'react-native';
 import styled from 'styled-components/native';
 
 import UserListItem from 'components/UserListItem';
+
+const Description = styled(Text)`
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  font-size: 14;
+`;
+
+const LocalUserListItem = ({ username, isFollower, isFollowing, time }) => (
+  <UserListItem
+    username={username}
+    isFollower={isFollower}
+    isFollowing={isFollowing}
+    descriptionElement={<Description>Viewed: {time}</Description>}
+  />
+);
 
 const ViewMyProfileScreen = () => {
   const users = [
@@ -32,15 +47,6 @@ const ViewMyProfileScreen = () => {
     },
   ];
 
-  const LocalUserListItem = ({ username, isFollower, isFollowing, time }) => (
-    <UserListItem
-      username={username}
-      isFollower={isFollower}
-      isFollowing={isFollowing}
-      time={time}
-      descriptionText="Viewed"
-    />
-  );
   return (
     <StyledView>
       {users.map((user, index) => {

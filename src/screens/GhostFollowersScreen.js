@@ -1,9 +1,13 @@
 import * as React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 
 import UserListItem from 'components/UserListItem';
-import CategoryButton from 'components/CategoryButton';
+import ActiveStateButton from 'components/ActiveStateButton';
+
+const LocalUserListItem = ({ username, isFollower, isFollowing }) => (
+  <UserListItem username={username} isFollower={isFollower} isFollowing={isFollowing} />
+);
 
 const GhostFollowersScreen = () => {
   const [activeIndex, setActiveIndex] = React.useState(0);
@@ -67,29 +71,18 @@ const GhostFollowersScreen = () => {
     }
   };
 
-  const LocalUserListItem = ({ username, isFollower, isFollowing }) => (
-    <UserListItem
-      username={username}
-      isFollower={isFollower}
-      isFollowing={isFollowing}
-      descriptionHide
-    />
-  );
-
   return (
     <StyledView>
       <ButtonWrapper>
-        <CategoryButton
+        <ActiveStateButton
           text="No Like"
-          index={0}
-          active={activeIndex === 0 && true}
-          setActiveIndex={setActiveIndex}
+          isActive={activeIndex === 0 && true}
+          onPress={() => setActiveIndex(0)}
         />
-        <CategoryButton
+        <ActiveStateButton
           text="No Comment"
-          index={1}
-          active={activeIndex === 1 && true}
-          setActiveIndex={setActiveIndex}
+          isActive={activeIndex === 1 && true}
+          onPress={() => setActiveIndex(1)}
         />
       </ButtonWrapper>
       <ListWrapper>

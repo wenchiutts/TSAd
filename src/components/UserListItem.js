@@ -1,53 +1,20 @@
 import * as React from 'react';
-import { Text, View, TouchableOpacity, Button, Image } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { path } from 'ramda';
 
 import { Avatar } from 'components/AvatarImage';
 
-const UserListItem = ({
-  username,
-  isFollower,
-  isFollowing,
-  time,
-  descriptionHide,
-  descriptionText,
-  buttonHide,
-  iconType,
-  value,
-}) => {
-  const FollowButton = ({ isFollowing }) => (
-    <ButtonWrapper isFollowing={isFollowing}>
-      <ButtonText>{isFollowing ? 'Unfollow' : 'Follow'}</ButtonText>
-    </ButtonWrapper>
-  );
-
-  const DescriptionElement = ({ iconType, value }) => {
-    if (!descriptionHide) {
-      if (buttonHide) {
-        return <DescriptionWrapper iconType={iconType} value={value} />;
-      }
-      return (
-        <Description>
-          {descriptionText}: {time}
-        </Description>
-      );
-    } else {
-      return <Description></Description>;
-    }
-  };
-
-  return (
-    <Wrapper>
-      <Avatar isFollower={isFollower} isFollowing={isFollowing} />
-      <TextWrapper>
-        <Username>@{username}</Username>
-        <DescriptionElement iconType={iconType} value={value} />
-      </TextWrapper>
-      {!buttonHide ? <FollowButton isFollowing={isFollowing} /> : <></>}
-    </Wrapper>
-  );
-};
+const UserListItem = ({ username, isFollower, isFollowing, buttonHide, descriptionElement }) => (
+  <Wrapper>
+    <Avatar isFollower={isFollower} isFollowing={isFollowing} />
+    <TextWrapper>
+      <Username>@{username}</Username>
+      {descriptionElement}
+    </TextWrapper>
+    {!buttonHide ? <FollowButton isFollowing={isFollowing} /> : <></>}
+  </Wrapper>
+);
 
 export default UserListItem;
 
@@ -70,23 +37,10 @@ const Username = styled(Text)`
   margin-bottom: 8;
 `;
 
-const Description = styled(Text)`
-  color: ${path(['theme', 'primary', 'lightBlue'])};
-  font-size: 14;
-`;
-
-const StyledImage = styled(Image)`
-  width: 20;
-  height: 20;
-  margin-right: 8;
-`;
-
-const DescriptionWrapper = ({ iconType, value }) => (
-  <View style={{ height: 18, flexDirection: 'row' }}>
-    {iconType === 'like' && <StyledImage source={require('assets/icons/like_small.png')} />}
-    {iconType === 'comment' && <StyledImage source={require('assets/icons/comment_small.png')} />}
-    <Description>{value}</Description>
-  </View>
+const FollowButton = ({ isFollowing }) => (
+  <ButtonWrapper isFollowing={isFollowing}>
+    <ButtonText>{isFollowing ? 'Unfollow' : 'Follow'}</ButtonText>
+  </ButtonWrapper>
 );
 
 const ButtonWrapper = styled(TouchableOpacity)`

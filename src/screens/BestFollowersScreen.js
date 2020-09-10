@@ -1,10 +1,44 @@
 import * as React from 'react';
-import { View, Text, ScrollView, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import styled from 'styled-components/native';
 import { path } from 'ramda';
 
 import UserListItem from 'components/UserListItem';
-import CategoryButton from 'components/CategoryButton';
+import ActiveStateButton from 'components/ActiveStateButton';
+
+const LocalUserListItem = ({ username, isFollower, isFollowing, likes, comments, activeIndex }) => (
+  <UserListItem
+    username={username}
+    isFollower={isFollower}
+    isFollowing={isFollowing}
+    buttonHide
+    descriptionElement={
+      <DescriptionWrapper
+        iconType={activeIndex === 0 ? 'like' : 'comment'}
+        value={activeIndex === 0 ? likes : comments}
+      />
+    }
+  />
+);
+
+const DescriptionWrapper = ({ iconType, value }) => (
+  <View style={{ height: 18, flexDirection: 'row' }}>
+    {iconType === 'like' && <StyledImage source={require('assets/icons/like_small.png')} />}
+    {iconType === 'comment' && <StyledImage source={require('assets/icons/comment_small.png')} />}
+    <Description>{value}</Description>
+  </View>
+);
+
+const StyledImage = styled(Image)`
+  width: 20;
+  height: 20;
+  margin-right: 8;
+`;
+
+const Description = styled(Text)`
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  font-size: 14;
+`;
 
 const BestFollowersScreen = () => {
   const [activeIndex, setActiveIndex] = React.useState(0);
@@ -68,35 +102,23 @@ const BestFollowersScreen = () => {
     }
   };
 
-  const LocalUserListItem = ({ username, isFollower, isFollowing, likes, comments }) => (
-    <UserListItem
-      username={username}
-      isFollower={isFollower}
-      isFollowing={isFollowing}
-      buttonHide
-      iconType={activeIndex === 0 ? 'like' : 'comment'}
-      value={activeIndex === 0 ? likes : comments}
-    />
-  );
   return (
     <StyledView>
       <ButtonWrapper>
-        <CategoryButton
+        <ActiveStateButton
           text="Like"
-          index={0}
-          active={activeIndex === 0 && true}
-          setActiveIndex={setActiveIndex}
+          isActive={activeIndex === 0 && true}
+          onPress={() => setActiveIndex(0)}
         />
-        <CategoryButton
+        <ActiveStateButton
           text="Comment"
-          index={1}
-          active={activeIndex === 1 && true}
-          setActiveIndex={setActiveIndex}
+          isActive={activeIndex === 1 && true}
+          onPress={() => setActiveIndex(1)}
         />
       </ButtonWrapper>
       <ListWrapper>
         {sortedUsers(users, activeIndex).map((user, index) => (
-          <LocalUserListItem {...user} key={index} />
+          <LocalUserListItem {...user} key={index} activeIndex={activeIndex} />
         ))}
       </ListWrapper>
     </StyledView>

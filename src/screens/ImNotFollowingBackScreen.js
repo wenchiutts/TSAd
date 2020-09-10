@@ -4,6 +4,10 @@ import styled from 'styled-components/native';
 
 import UserListItem from 'components/UserListItem';
 
+const LocalUserListItem = ({ username }) => (
+  <UserListItem username={username} isFollower isFollowing={false} />
+);
+
 const ImNotFollowingBackScreen = () => {
   const users = [
     {
@@ -32,9 +36,6 @@ const ImNotFollowingBackScreen = () => {
     },
   ];
 
-  const LocalUserListItem = ({ username, time }) => (
-    <UserListItem username={username} isFollower isFollowing={false} time={time} descriptionHide />
-  );
   return (
     <StyledView>
       {users.map((user, index) => {
