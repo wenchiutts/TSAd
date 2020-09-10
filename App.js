@@ -50,7 +50,20 @@ export default function App() {
                 headerHideShadow: true,
               }}
               mode="modal">
-              <Stack.Screen name="Root" component={BottomTabNavigator} />
+              <Stack.Screen
+                name="Root"
+                component={BottomTabNavigator}
+                options={({ route }) => {
+                  const routeName =
+                    route.state?.routes[route.state.index]?.name ||
+                    route.state?.routes[0]?.name ||
+                    'Home';
+                  if (routeName === 'Home') {
+                    return { headerShown: false };
+                  }
+                  return { headerShown: true };
+                }}
+              />
               <Stack.Screen name="story" component={StoryModal} />
               <Stack.Screen name="purchase" component={PurchaseModal} />
               <Stack.Screen name="search" component={SearchModal} />

@@ -13,8 +13,9 @@ export default {
   noticeText: '#fff',
   screenBackground: '#0C0A2E',
   listItemBg: '#2A2A5B',
+  buttonActiveBackground: '#6A2AC4',
   primary: {
-    purple: '#7A8BFF',
+    purple: '#6236FF',
     gray: '#9B9B9B',
     lightGray: '#4A4A4A',
     lightBlue: '#EDF0F9',
