@@ -14,6 +14,9 @@ import SearchModal from 'components/SearchModal';
 import Colors from 'constants/Colors';
 import configureStore from 'store/configureStore';
 import { getAuthStateAction } from 'modules/auth/authActions';
+import LoginScreen from 'screens/LoginScreen';
+import { IgUserNameContext, useCheckUserLoginIg } from 'modules/instagram/useCheckUserLoginIg';
+import Splash from 'components/Splash';
 
 enableScreens();
 const Stack = createStackNavigator();
@@ -24,52 +27,65 @@ export default function App() {
   React.useEffect(() => {
     store.dispatch(getAuthStateAction());
   }, []);
+  const { igUserNameContext, igUserNameState } = useCheckUserLoginIg(store);
+
+  if (igUserNameState.isLoading) {
+    return <Splash />;
+  }
 
   return (
     <Provider store={store}>
       <ThemeProvider theme={Colors}>
-        <View style={styles.container}>
-          <StatusBar style="auto" />
-          <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerStyle: {
-                  borderBottomWidth: 0,
-                  shadowRadius: 0,
-                  shadowOffset: {
-                    height: 0,
+        <IgUserNameContext.Provider value={igUserNameContext}>
+          <View style={styles.container}>
+            <StatusBar style="auto" />
+            <NavigationContainer>
+              <Stack.Navigator
+                screenOptions={{
+                  headerStyle: {
+                    borderBottomWidth: 0,
+                    shadowRadius: 0,
+                    shadowOffset: {
+                      height: 0,
+                    },
                   },
-                },
-                headerTransparent: true,
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 20,
-                },
-                headerTitleAlign: 'center',
-                headerHideShadow: true,
-              }}
-              mode="modal">
-              <Stack.Screen
-                name="Root"
-                component={BottomTabNavigator}
-                options={({ route }) => {
-                  const routeName =
-                    route.state?.routes[route.state.index]?.name ||
-                    route.state?.routes[0]?.name ||
-                    'Home';
-                  if (routeName === 'Home') {
-                    return { headerShown: false };
-                  }
-                  return { headerShown: true };
+                  headerTransparent: true,
+                  headerTintColor: '#fff',
+                  headerTitleStyle: {
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                  },
+                  headerTitleAlign: 'center',
+                  headerHideShadow: true,
                 }}
-              />
-              <Stack.Screen name="story" component={StoryModal} />
-              <Stack.Screen name="purchase" component={PurchaseModal} />
-              <Stack.Screen name="search" component={SearchModal} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </View>
+                mode="modal">
+                {igUserNameState?.isLogin ? (
+                  <>
+                    <Stack.Screen
+                      name="Root"
+                      component={BottomTabNavigator}
+                      options={({ route }) => {
+                        const routeName =
+                          route.state?.routes[route.state.index]?.name ||
+                          route.state?.routes[0]?.name ||
+                          'Home';
+                        if (routeName === 'Home') {
+                          return { headerShown: false };
+                        }
+                        return { headerShown: true };
+                      }}
+                    />
+                    <Stack.Screen name="story" component={StoryModal} />
+                    <Stack.Screen name="purchase" component={PurchaseModal} />
+                    <Stack.Screen name="search" component={SearchModal} />
+                  </>
+                ) : (
+                  <Stack.Screen name="Login" component={LoginScreen} />
+                )}
+              </Stack.Navigator>
+            </NavigationContainer>
+          </View>
+        </IgUserNameContext.Provider>
       </ThemeProvider>
     </Provider>
   );
