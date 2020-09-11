@@ -1,32 +1,39 @@
+// @format
 import * as React from 'react';
-import { Text, View, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import PropTypes from 'prop-types';
+import { Text, View, ImageBackground } from 'react-native';
 import styled from 'styled-components/native';
 import { path } from 'ramda';
 
 import { Avatar } from 'components/AvatarImage';
 
-const ProfileCard = ({ userData: { posts, followers, following } }) => {
-  return (
-    <View>
-      <StyledImageBackground>
-        <Avatar />
-        <ContentWrapper>
-          <View>
-            <Value>{posts}</Value>
-            <StyledText>posts</StyledText>
-          </View>
-          <View>
-            <Value>{followers}</Value>
-            <StyledText>followers</StyledText>
-          </View>
-          <View>
-            <Value>{following}</Value>
-            <StyledText>following</StyledText>
-          </View>
-        </ContentWrapper>
-      </StyledImageBackground>
-    </View>
-  );
+const ProfileCard = ({ posts, followers, following, profilePicture }) => (
+  <View>
+    <StyledImageBackground>
+      <Avatar source={{ uri: profilePicture }} />
+      <ContentWrapper>
+        <View>
+          <Value>{posts}</Value>
+          <StyledText>posts</StyledText>
+        </View>
+        <View>
+          <Value>{followers}</Value>
+          <StyledText>followers</StyledText>
+        </View>
+        <View>
+          <Value>{following}</Value>
+          <StyledText>following</StyledText>
+        </View>
+      </ContentWrapper>
+    </StyledImageBackground>
+  </View>
+);
+
+ProfileCard.propTypes = {
+  posts: PropTypes.number,
+  followers: PropTypes.number,
+  following: PropTypes.number,
+  profilePicture: PropTypes.string,
 };
 
 export default ProfileCard;
