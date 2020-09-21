@@ -45,8 +45,12 @@ export const insFollowingsSelector = createSelector(instagramSelector, path(['fo
 export const insFollowersSelector = createSelector(instagramSelector, path(['followers']));
 
 const dataSelector = path(['data']);
+const dataWithDefaultEmptyObjectSelector = compose(defaultTo({}), dataSelector);
 
-const followersDataSelector = createSelector(insFollowersSelector, dataSelector);
+const followersDataSelector = createSelector(
+  insFollowersSelector,
+  dataWithDefaultEmptyObjectSelector,
+);
 
 export const imNotFollowingBackSelector = createSelector(
   followersDataSelector,
@@ -64,15 +68,12 @@ export const imNotFollowingBackCountSelector = createSelector(
 export const notFollowingMeBackSelector = createSelector(
   followersDataSelector,
   insFollowingsSelector,
-  compose(
-    values,
-    useWith((ids, list) => omit(ids, list), [keys, dataSelector]),
-  ),
+  compose(values, useWith(omit, [keys, dataWithDefaultEmptyObjectSelector])),
 );
 
 export const insFollowingsCountSelector = createSelector(
   insFollowingsSelector,
-  compose(length, keys, dataSelector),
+  compose(length, keys, dataWithDefaultEmptyObjectSelector),
 );
 
 export const insFollowersCountSelector = createSelector(
@@ -88,10 +89,7 @@ export const notFollowingMeBackCountSelector = createSelector(
 export const mutualFollowingSelector = createSelector(
   followersDataSelector,
   insFollowingsSelector,
-  compose(
-    values,
-    useWith((ids, list) => pick(ids, list), [keys, dataSelector]),
-  ),
+  compose(values, useWith(pick, [keys, dataWithDefaultEmptyObjectSelector])),
 );
 
 export const mutualFollowingCountSelector = createSelector(
@@ -101,7 +99,10 @@ export const mutualFollowingCountSelector = createSelector(
 
 export const unFollowersSelector = createSelector(instagramSelector, path(['unFollowers']));
 
-const unFollowersDataSelector = createSelector(unFollowersSelector, dataSelector);
+const unFollowersDataSelector = createSelector(
+  unFollowersSelector,
+  dataWithDefaultEmptyObjectSelector,
+);
 
 export const newFollowersSelector = createSelector(
   followersDataSelector,
