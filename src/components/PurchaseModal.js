@@ -84,7 +84,7 @@ const PurchaseModal = ({ navigation }) => {
       backgroundColor: Colors.screenBackground,
     },
     title: '',
-    headerLeft: () => <CancelButton />,
+    headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
   });
   return (
     <StyledView>

@@ -75,7 +75,16 @@ export default function App() {
                         return { headerShown: true };
                       }}
                     />
-                    <Stack.Screen name="story" component={StoryModal} />
+                    <Stack.Screen
+                      name="story"
+                      component={StoryModal}
+                      options={{
+                        headerShown: false,
+                        cardStyle: {
+                          backgroundColor: Colors.screenBackground,
+                        },
+                      }}
+                    />
                     <Stack.Screen name="purchase" component={PurchaseModal} />
                     <Stack.Screen name="search" component={SearchModal} />
                   </>
