@@ -1,48 +1,32 @@
 import * as React from 'react';
+import { createStructuredSelector } from 'reselect';
+import { useSelector } from 'react-redux';
 import { ScrollView } from 'react-native';
 import styled from 'styled-components/native';
+import { map } from 'ramda';
 
 import UserListItem from 'components/UserListItem';
+import { notFollowingMeBackSelector } from 'modules/instagram/selector';
 
-const LocalUserListItem = ({ username }) => (
-  <UserListItem username={username} isFollower={false} isFollowing />
-);
+const LocalUserListItem = props => <UserListItem {...props} isFollower={false} isFollowing />;
+
+const selector = createStructuredSelector({
+  users: notFollowingMeBackSelector,
+});
 
 const NotFollowingMeBackScreen = () => {
-  const users = [
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: true,
-      time: 'Today',
-    },
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: false,
-      time: '07-23-2020',
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: true,
-      time: 'Today',
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: false,
-      time: '07-23-2020',
-    },
-  ];
+  const { users } = useSelector(selector);
 
   return (
     <StyledView>
-      {users.map((user, index) => {
-        if (user.isFollowing && !user.isFollower) {
-          return <LocalUserListItem {...user} key={index} />;
-        }
-      })}
+      {map(user => (
+        <LocalUserListItem
+          username={user.username}
+          key={user.id}
+          userId={user.id}
+          profilePicture={user.profile_pic_url}
+        />
+      ))(users)}
     </StyledView>
   );
 };

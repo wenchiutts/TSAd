@@ -1,4 +1,5 @@
 // @format
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   complement,
   anyPass,
@@ -22,9 +23,13 @@ import {
   is,
   nth,
   apply,
+  curry,
+  chain,
+  zipObj,
 } from 'ramda';
 
-export const isExist = complement(anyPass([isNil, isEmpty]));
+export const isNilOrEmpty = anyPass([isNil, isEmpty]);
+export const isExist = complement(isNilOrEmpty);
 export const notEq = complement(equals);
 export const mapIndexed = addIndex(map);
 export const half = divide(__, 2);
@@ -38,19 +43,12 @@ export const toggle = compose(
 );
 
 const _mayInvoke = ifElse(
-  compose(
-    is(Function),
-    nth(0),
-  ),
-  compose(
-    apply(__, undefined),
-    nth(0),
-  ),
-  compose(
-    apply(__, undefined),
-    nth(1),
-  ),
+  compose(is(Function), nth(0)),
+  compose(apply(__, undefined), nth(0)),
+  compose(apply(__, undefined), nth(1)),
 );
 
 // mayInvoke :: (fn, defaultFn) -> fn() || defaultFn()
 export const mayInvoke = unapply(_mayInvoke);
+
+export const objFromListWith = curry((fn, list) => chain(zipObj, map(fn))(list));
