@@ -26,11 +26,16 @@ const StyledView = styled(View)`
   margin-top: 20;
 `;
 
+const useIsMount = () => {
+  const isMountRef = useRef(false);
+  useEffect(() => {
+    isMountRef.current = true;
+  }, []);
+  return isMountRef.current;
+};
+
 const StoryModal = ({ route }) => {
   const { deckIndex } = route.params;
-  const indicatorAnimInit = useRef(new Animated.Value(0)).current;
-  const horizontalSwipeInit = useRef(new Animated.Value(0)).current;
-  const verticalSwipeInit = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const offset = { top: 30, left: 30 };
@@ -44,14 +49,15 @@ const StoryModal = ({ route }) => {
     deckIdx: deckIndex,
     paused: false,
     backOpacity: 0,
-    indicatorAnim: indicatorAnimInit,
-    horizontalSwipe: horizontalSwipeInit,
-    verticalSwipe: verticalSwipeInit,
+    indicatorAnim: useRef(new Animated.Value(0)).current,
+    horizontalSwipe: useRef(new Animated.Value(0)).current,
+    verticalSwipe: useRef(new Animated.Value(0)).current,
     swipedHorizontally: true,
     panResponder: null,
   };
 
   const [storyState, setStoryState] = useState(initialState);
+  const isMount = useIsMount();
 
   const {
     stories,
@@ -170,7 +176,7 @@ const StoryModal = ({ route }) => {
       resetVerticalSwipe();
     }
     dismissCarousel();
-    navigation.goBack();
+    // navigation.goBack();
   };
 
   // Setter
@@ -210,7 +216,7 @@ const StoryModal = ({ route }) => {
       setStoryState(prev => {
         return { ...prev, paused: false };
       });
-      animateIndicator(false);
+      // animateIndicator(false);
     }
   };
 
@@ -225,7 +231,6 @@ const StoryModal = ({ route }) => {
     requestAnimationFrame(() => {
       Animated.timing(indicatorAnim, {
         toValue: 1,
-        // duration: 5000,
         duration: 5000 * (1 - indicatorAnim._value),
         useNativeDriver: true,
       }).start(({ finished }) => {
@@ -240,24 +245,9 @@ const StoryModal = ({ route }) => {
 
   // Navigate Story Items
   const onNextItem = () => {
-    console.log('onNextItem');
-
-    play();
     // if (paused) return play();
     const story = stories[deckIdx];
-
     if (story.idx >= story.items.length - 1) return onNextDeck();
-
-    console.log(
-      'onNextItem',
-      ' story.idx:',
-      story.idx,
-      'story.items.length',
-      story.items.length,
-      'deckIdx',
-      deckIdx,
-    );
-    animateIndicator();
     setStoryIdx(story.idx + 1);
   };
 
@@ -268,23 +258,21 @@ const StoryModal = ({ route }) => {
       });
     const story = stories[deckIdx];
     if (story.idx == 0) return onPrevDeck();
-    animateIndicator();
     setStoryIdx(story.idx - 1);
   };
 
   // Navigate Deck Items
   const onNextDeck = () => {
     if (deckIdx >= stories.length - 1) return leaveStories();
-    animateDeck((deckIdx + 1) * width, true);
+    setDeckIdx(deckIdx + 1);
   };
   const onPrevDeck = () => {
     if (deckIdx == 0) return leaveStories();
-    animateDeck((deckIdx - 1) * width, true);
+    setDeckIdx(deckIdx - 1);
   };
 
   const animateDeck = (toValue, reset = false) => {
     if (reset) {
-      setDeckIdx(parseInt(toValue / width));
       animateIndicator();
       console.log('animateDeck Reset', '#toValue:', toValue);
     }
@@ -295,7 +283,16 @@ const StoryModal = ({ route }) => {
     }).start();
   };
 
-  /////////////////////////////////////////////////////
+  useEffect(() => {
+    if (isMount) {
+      if (paused) animateIndicator(false);
+      animateDeck(deckIdx * width, true);
+    }
+  }, [deckIdx]);
+
+  useEffect(() => {
+    animateIndicator();
+  }, [stories[deckIdx].idx]);
 
   const functions = {
     openCarousel,

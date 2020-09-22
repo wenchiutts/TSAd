@@ -41,7 +41,10 @@ const Story = ({ story, currentDeck, storyState, setStoryState, functions }) => 
   };
 
   return (
-    <TouchableWithoutFeedback onPress={onNextItem} delayPressIn={200} onPressIn={pause}>
+    <TouchableWithoutFeedback
+      onPress={onNextItem}
+      delayPressIn={200} //onPressIn={pause}
+    >
       <View>
         <CancelButton
           onPress={onPress}
