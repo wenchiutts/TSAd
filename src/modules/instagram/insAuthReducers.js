@@ -105,7 +105,7 @@ export default createReducers(initialState, {
           path(['followersTimeStamp']),
         ]),
         unFollowersTimeStamp: converge(mergeLeft, [
-          compose(map(mergeLeft({ updateTimeStamp: currentTime })), path(['unFollowersTimeStamp'])),
+          compose(map(mergeLeft({ updatedAt: currentTime })), path(['unFollowersTimeStamp'])),
           path(['ogUnFollowersTimeStamp']),
         ]),
       }),
@@ -115,11 +115,11 @@ export default createReducers(initialState, {
             followersTimeStamp: ifElse(
               has(c.id),
               mergeDeepLeft({
-                [c.id]: { updateTimeStamp: currentTime, profile: c },
+                [c.id]: { updatedAt: currentTime, profile: c },
               }),
               assoc(c.id, {
-                createTimeStamp: currentTime,
-                updateTimeStamp: currentTime,
+                createdAt: currentTime,
+                updatedAt: currentTime,
                 profile: c,
               }),
             ),

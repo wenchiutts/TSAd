@@ -42,7 +42,7 @@ const NewFollowersScreen = () => {
           profilePicture={user?.profile?.profile_pic_url}
           username={user?.profile?.username}
           isFollowing={user?.profile?.followed_by_viewer}
-          timestamp={user?.createTimeStamp}
+          timestamp={user?.createdAt}
           userId={user?.profile?.id}
           key={user?.profile?.id}
         />

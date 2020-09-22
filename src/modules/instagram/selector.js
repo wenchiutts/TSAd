@@ -106,7 +106,7 @@ const unFollowersDataSelector = createSelector(
 
 export const newFollowersSelector = createSelector(
   followersDataSelector,
-  filter(compose(gt(__, new Date().setHours(0, 0, 0, 0)), path(['createTimeStamp']))),
+  filter(compose(gt(__, new Date().setHours(0, 0, 0, 0)), path(['createdAt']))),
 );
 
 export const newFollowersCountSelector = createSelector(
@@ -118,7 +118,7 @@ export const newFollowersWithProfileSelector = createSelector(newFollowersSelect
 
 export const newUnFollowersSelector = createSelector(
   unFollowersDataSelector,
-  filter(compose(gt(__, new Date().setHours(0, 0, 0, 0)), path(['updateTimeStamp']))),
+  filter(compose(gt(__, new Date().setHours(0, 0, 0, 0)), path(['updatedAt']))),
 );
 
 export const unFollowersCountSelector = createSelector(

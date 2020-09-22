@@ -40,7 +40,7 @@ const UnfollowersScreen = () => {
       {users.map(user => (
         <LocalUserListItem
           profilePicture={user?.profile?.profile_pic_url}
-          timestamp={user?.updateTimeStamp}
+          timestamp={user?.updatedAt}
           username={user?.profile?.username}
           isFollowing={user?.profile?.followed_by_viewer}
           userId={user?.profile?.id}
