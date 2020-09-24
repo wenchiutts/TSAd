@@ -19,19 +19,9 @@ import CancelButton from 'components/header/CancelButton';
 
 const { width, height } = Dimensions.get('window');
 
-const Story = ({ story, currentDeck, storyState, setStoryState, functions }) => {
+const Story = ({ story, currentDeck, storyState, setStoryState, functions, indicatorAnim }) => {
   const navigation = useNavigation();
-  const {
-    stories,
-    indicatorAnim,
-    carouselOpen,
-    deckIdx,
-    paused,
-    backOpacity,
-    horizontalSwipe,
-    verticalSwipe,
-    swipedHorizontally,
-  } = storyState;
+  const { stories, carouselOpen, paused, backOpacity } = storyState;
 
   const { onNextItem, onPrevItem, pause, dismissCarousel, setBackOpacity } = functions;
 
@@ -51,6 +41,7 @@ const Story = ({ story, currentDeck, storyState, setStoryState, functions }) => 
           style={{ marginTop: 5, marginBottom: 12 }}
           setStoryState={setStoryState}
         />
+
         <StyledImage source={{ uri: story.items[story.idx].src }}>
           <StoryIndicator story={story} currentDeck={currentDeck} indicatorAnim={indicatorAnim} />
           <BackButton

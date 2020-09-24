@@ -15,20 +15,19 @@ import Story from 'components/story/Story';
 
 const { width, height } = Dimensions.get('window');
 
-const Stories = ({ storyState, setStoryState, functions, panResponder }) => {
+const Stories = ({
+  storyState,
+  setStoryState,
+  functions,
+  panResponder,
+  indicatorAnim,
+  horizontalSwipe,
+  verticalSwipe,
+  swipedHorizontally,
+}) => {
   const navigation = useNavigation();
 
-  const {
-    stories,
-    indicatorAnim,
-    carouselOpen,
-    deckIdx,
-    paused,
-    backOpacity,
-    horizontalSwipe,
-    verticalSwipe,
-    swipedHorizontally,
-  } = storyState;
+  const { stories, carouselOpen, paused, backOpacity, deckIdx } = storyState;
 
   const {
     openCarousel,
@@ -97,6 +96,7 @@ const Stories = ({ storyState, setStoryState, functions, panResponder }) => {
               storyState={storyState}
               setStoryState={setStoryState}
               functions={functions}
+              indicatorAnim={indicatorAnim}
             />
           </Animated.View>
         );
