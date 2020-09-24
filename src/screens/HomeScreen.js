@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, ScrollView } from 'react-native';
-import { useSelector } from 'react-redux';
+import { Text, View, ScrollView, RefreshControl } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
 import { path, pathOr, always } from 'ramda';
@@ -9,11 +9,21 @@ import { path, pathOr, always } from 'ramda';
 import IconListItem from 'components/IconListItem';
 import ProfileCard from 'components/ProfileCard.js';
 import {
-  insFollowerCountSelector,
-  insFollowingCountSelector,
+  insFollowersCountSelector,
+  insFollowingsCountSelector,
   insPostCountSelector,
   insProfilePictureSelector,
+  imNotFollowingBackCountSelector,
+  notFollowingMeBackCountSelector,
+  mutualFollowingCountSelector,
+  newFollowersCountSelector,
+  unFollowersCountSelector,
 } from 'modules/instagram/selector';
+import {
+  fetchInsUserFollowing,
+  fetchInsUserFollower,
+  fetchInsUserProfileAction,
+} from 'modules/instagram/insAuthActions';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -29,19 +39,19 @@ const IconListWithMargin = styled(IconListItem)`
 `;
 
 const userDataSelector = createStructuredSelector({
-  followers: insFollowerCountSelector,
-  following: insFollowingCountSelector,
+  followers: insFollowersCountSelector,
+  following: insFollowingsCountSelector,
   posts: insPostCountSelector,
   profilePicture: insProfilePictureSelector,
-  viewMyProfile: always(20),
-  newFollowers: always(55),
-  unfollowers: always(567),
-  blockers: always(44),
-  notFollowingMeBack: always(3),
-  imNotFollowingBack: always(6),
-  mutualFollowing: always(324),
-  bestFollowers: always(55),
-  ghostFollowers: always(456),
+  viewMyProfile: always(0),
+  newFollowers: newFollowersCountSelector,
+  unfollowers: unFollowersCountSelector,
+  blockers: always(0),
+  notFollowingMeBack: notFollowingMeBackCountSelector,
+  imNotFollowingBack: imNotFollowingBackCountSelector,
+  mutualFollowing: mutualFollowingCountSelector,
+  bestFollowers: always(0),
+  ghostFollowers: always(0),
 });
 
 const HomeScreen = ({ navigation }) => {
@@ -60,8 +70,26 @@ const HomeScreen = ({ navigation }) => {
     bestFollowers,
     ghostFollowers,
   } = useSelector(userDataSelector);
+
+  const dispatch = useDispatch();
+  const effectAction = async () => {
+    await dispatch(fetchInsUserProfileAction());
+    await dispatch(fetchInsUserFollowing());
+    await dispatch(fetchInsUserFollower());
+  };
+  React.useEffect(() => {
+    effectAction();
+  }, []);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    effectAction().then(() => setRefreshing(false));
+  }, []);
+
   return (
-    <StyledView>
+    <StyledView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <ProfileCard
         posts={posts}
         followers={followers}
@@ -70,6 +98,7 @@ const HomeScreen = ({ navigation }) => {
       />
       <ListWrapper>
         <Title>Follower Status</Title>
+        {/*
         <IconListWithMargin
           margin={18}
           iconSource={require('assets/icons/followstatus_visit_small.png')}
@@ -77,6 +106,7 @@ const HomeScreen = ({ navigation }) => {
           value={viewMyProfile}
           onPress={() => navigation.navigate('ViewMyProfile')}
         />
+        */}
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_newfollow.png')}
           description="New followers"
@@ -92,7 +122,6 @@ const HomeScreen = ({ navigation }) => {
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_block.png')}
           description="Who blocking me"
-          value={blockers}
           onPress={() => navigation.navigate('SearchBlocker')}
         />
         <IconListWithMargin
