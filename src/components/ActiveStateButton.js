@@ -5,8 +5,8 @@ import { path } from 'ramda';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const ActiveStateButton = ({ text, isActive, onPress }) => (
-  <StyledButton isActive={isActive} onPress={onPress}>
+const ActiveStateButton = ({ style, text, isActive, onPress }) => (
+  <StyledButton style={style} isActive={isActive} onPress={onPress}>
     <StyledText isActive={isActive}>{text}</StyledText>
   </StyledButton>
 );

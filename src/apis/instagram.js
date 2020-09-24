@@ -64,6 +64,40 @@ export const getUserByUsername = async ({ username }) => {
   }
 };
 
+export const checkBlockedById = async userId => {
+  try {
+    const res = await axios.get(`/api/v1/users/${userId}/info`, {
+      baseURL: 'https://i.instagram.com',
+      headers: {
+        'User-Agent': 'Instagram 60.0.0.12.96 ',
+      },
+    });
+    return res?.data?.user;
+  } catch (e) {
+    if (__DEV__) {
+      console.log('checkBlockedById error: ', e);
+    }
+    throw e;
+  }
+};
+
+export const search = async ({ query, context = 'blended' }) => {
+  try {
+    const res = await axios.get('/web/search/topsearch/', {
+      withCredentials: false,
+      params: {
+        query,
+        context,
+      },
+    });
+    return res.data;
+  } catch (e) {
+    if (__DEV__) {
+      console.log('search error: ', e);
+    }
+  }
+};
+
 const getFollowData = ({ fieldName, queryHash, variables }) =>
   axios
     .get('/graphql/query/', {

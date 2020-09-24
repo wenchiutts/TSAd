@@ -1,15 +1,28 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { path } from 'ramda';
 import { Text, View, Image } from 'react-native';
 import styled from 'styled-components/native';
 
-const EmptyStatusView = ({ text }) => {
-  return (
-    <View style={{ width: 300 }}>
-      <Image source={require('assets/images/emptydata.png')} style={{ height: 120 }} />
-      <StyledText>There is no {text} on your instagram</StyledText>
-    </View>
-  );
+const StyledView = styled(View)`
+  width: 300;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+`;
+
+const EmptyStatusView = ({ text }) => (
+  <StyledView>
+    <Image
+      source={require('assets/images/emptydata.png')}
+      style={{ height: 120, resizeMode: 'contain' }}
+    />
+    <StyledText>There is no {text} on your instagram</StyledText>
+  </StyledView>
+);
+
+EmptyStatusView.propTypes = {
+  text: PropTypes.string,
 };
 
 export default EmptyStatusView;
