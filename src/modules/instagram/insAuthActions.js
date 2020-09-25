@@ -17,6 +17,8 @@ export const REQUEST_FOLLOW_USER = 'REQUEST_FOLLOW_USER';
 export const END_FOLLOW_USER = 'END_FOLLOW_USER';
 export const REQUEST_UNFOLLOW_USER = 'REQUEST_UNFOLLOW_USER';
 export const END_UNFOLLOW_USER = 'END_UNFOLLOW_USER';
+export const REQUEST_CHECK_BLOCKER = 'REQUEST_CHECK_BLOCKER';
+export const RECEIVE_CHECK_BLOCKER = 'RECEIVE_CHECK_BLOCKER';
 
 export const receiveInsCookies = makeActionCreator(RECEIVE_INS_COOKIES, 'cookies');
 export const requestInsCookies = makeActionCreator(REQUEST_INS_COOKIES);
@@ -30,6 +32,8 @@ export const requestFollowUser = makeActionCreator(REQUEST_FOLLOW_USER, 'userId'
 export const endFollowUser = makeActionCreator(END_FOLLOW_USER, 'userId');
 export const requestUnFollowUSer = makeActionCreator(REQUEST_UNFOLLOW_USER, 'userId');
 export const endUnFollowUser = makeActionCreator(END_UNFOLLOW_USER, 'userId');
+export const requestCheckBlocker = makeActionCreator(REQUEST_CHECK_BLOCKER);
+export const receiveCheckBlocker = makeActionCreator(RECEIVE_CHECK_BLOCKER, 'isBlocker', 'user');
 
 export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis }) => {
   try {
@@ -100,7 +104,33 @@ export const unfollowUserAction = userId => async (dispatch, getState, { apis })
     return result;
   } catch (e) {
     if (__DEV__) {
-      console.log('follow user', userId, e, e.response);
+      console.log('unfollow user', userId, e, e.response);
+    }
+  }
+};
+
+export const checkBlockerAction = user => async (dispatch, getState, { apis }) => {
+  try {
+    dispatch(requestCheckBlocker());
+    await apis.instagram.checkBlockedById(user?.pk);
+    dispatch(receiveCheckBlocker(false, user));
+    return false;
+  } catch (e) {
+    dispatch(receiveCheckBlocker(true, user));
+    if (__DEV__) {
+      console.log('check blocker', user.pk, e);
+    }
+    return true;
+  }
+};
+
+export const searchUserAction = username => async (dispatch, getState, { apis }) => {
+  try {
+    const result = await apis.instagram.search({ query: username });
+    return result?.users || [];
+  } catch (e) {
+    if (__DEV__) {
+      console.log('check user', username, e, e.response);
     }
   }
 };

@@ -16,13 +16,20 @@ const UserListItem = ({
   descriptionElement,
   profilePicture,
   userId,
+  roundedWidth,
+  style,
 }) => {
   const dispatch = useDispatch();
   const follow = () => dispatch(followUserAction(userId));
   const unfollow = () => dispatch(unfollowUserAction(userId));
   return (
-    <Wrapper>
-      <Avatar source={{ uri: profilePicture }} isFollower={isFollower} isFollowing={isFollowing} />
+    <Wrapper style={style}>
+      <Avatar
+        source={{ uri: profilePicture }}
+        isFollower={isFollower}
+        isFollowing={isFollowing}
+        roundedWidth={roundedWidth}
+      />
       <TextWrapper>
         <Username>@{username}</Username>
         {descriptionElement}
@@ -47,6 +54,8 @@ UserListItem.propTypes = {
   ]),
   profilePicture: PropTypes.string,
   userId: PropTypes.string,
+  roundedWidth: PropTypes.number,
+  style: PropTypes.array,
 };
 
 export default UserListItem;

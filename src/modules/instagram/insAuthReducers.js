@@ -39,6 +39,8 @@ import {
   END_FOLLOW_USER,
   REQUEST_UNFOLLOW_USER,
   END_UNFOLLOW_USER,
+  REQUEST_CHECK_BLOCKER,
+  RECEIVE_CHECK_BLOCKER,
 } from 'modules/instagram/insAuthActions';
 import { objFromListWith } from 'utils/ramdaUtils';
 
@@ -48,11 +50,13 @@ const initialState = {
   followings: undefined,
   followers: undefined,
   unFollowers: undefined,
+  blockers: undefined,
   isFetching: false,
   isFetchingFollowers: false,
   isFetchingFollowings: false,
   isPostingFollowUser: false,
   isPostingUnFollowUser: false,
+  isCheckingBlocker: false,
   followersTimeStamp: {},
   unFollowersTimeStamp: {},
 };
@@ -215,6 +219,42 @@ export default createReducers(initialState, {
       ...state,
       ...result,
       isPostingUnFollowUser: false,
+    };
+  },
+  [REQUEST_CHECK_BLOCKER]: (state, actions) => ({
+    ...state,
+    isCheckingBlocker: true,
+  }),
+  [RECEIVE_CHECK_BLOCKER]: (state, actions) => {
+    const current = Date.now();
+    const lensBlocker = lensPath(['blockers']);
+    const user = {
+      ...actions.user,
+      id: actions.user.pk,
+    };
+    const result = over(
+      lensBlocker,
+      ifElse(
+        always(actions.isBlocker),
+        ifElse(
+          has(user.id),
+          mergeDeepLeft({
+            [user.id]: { updatedAt: current, profile: user },
+          }),
+          assoc(user.id, {
+            createdAt: current,
+            updatedAt: current,
+            profile: user,
+          }),
+        ),
+        omit([user.id]),
+      ),
+      state,
+    );
+
+    return {
+      ...result,
+      isCheckingBlocker: false,
     };
   },
 });

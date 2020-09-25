@@ -66,9 +66,9 @@ const AvatarWrapper = styled(View)`
   position: relative;
 `;
 
-const Avatar = ({ source, isFollower, isFollowing, isExistStory }) => (
-  <AvatarWrapper roundedWidth={66} isExistStory={isExistStory}>
-    <AvatarImage source={source} roundedWidth={60} />
+const Avatar = ({ source, isFollower, isFollowing, isExistStory, roundedWidth = 60 }) => (
+  <AvatarWrapper roundedWidth={roundedWidth} isExistStory={isExistStory}>
+    <AvatarImage source={source} roundedWidth={roundedWidth} />
     <FollowingStatusImage isFollower={isFollower} isFollowing={isFollowing} />
   </AvatarWrapper>
 );
@@ -78,6 +78,7 @@ Avatar.propTypes = {
   isFollower: PropTypes.bool,
   isFollowing: PropTypes.bool,
   isExistStory: PropTypes.bool,
+  roundedWidth: PropTypes.number,
 };
 
 export { Avatar, AvatarImage };

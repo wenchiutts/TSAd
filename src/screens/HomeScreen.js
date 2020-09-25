@@ -18,6 +18,7 @@ import {
   mutualFollowingCountSelector,
   newFollowersCountSelector,
   unFollowersCountSelector,
+  blockerCountSelector,
 } from 'modules/instagram/selector';
 import {
   fetchInsUserFollowing,
@@ -46,7 +47,7 @@ const userDataSelector = createStructuredSelector({
   viewMyProfile: always(0),
   newFollowers: newFollowersCountSelector,
   unfollowers: unFollowersCountSelector,
-  blockers: always(0),
+  blockers: blockerCountSelector,
   notFollowingMeBack: notFollowingMeBackCountSelector,
   imNotFollowingBack: imNotFollowingBackCountSelector,
   mutualFollowing: mutualFollowingCountSelector,
@@ -122,6 +123,7 @@ const HomeScreen = ({ navigation }) => {
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_block.png')}
           description="Who blocking me"
+          value={blockers}
           onPress={() => navigation.navigate('SearchBlocker')}
         />
         <IconListWithMargin

@@ -44,6 +44,8 @@ export const insFollowingsSelector = createSelector(instagramSelector, path(['fo
 
 export const insFollowersSelector = createSelector(instagramSelector, path(['followers']));
 
+export const blockersSelector = createSelector(instagramSelector, path(['blockers']));
+
 const dataSelector = path(['data']);
 const dataWithDefaultEmptyObjectSelector = compose(defaultTo({}), dataSelector);
 
@@ -127,3 +129,7 @@ export const unFollowersCountSelector = createSelector(
 );
 
 export const unFollowersWithProfileSelector = createSelector(newUnFollowersSelector, values);
+
+export const blockerDataSelector = createSelector(blockersSelector, values);
+
+export const blockerCountSelector = createSelector(blockerDataSelector, length);
