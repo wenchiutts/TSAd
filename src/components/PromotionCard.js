@@ -3,9 +3,16 @@ import { Text, View, TouchableOpacity, Image, ImageBackground } from 'react-nati
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { path } from 'ramda';
+import { useSelector } from 'react-redux';
 
 const PromotionCard = () => {
+  const premium = useSelector(state => state?.user?.premium);
   const navigation = useNavigation();
+
+  const onPress = () => {
+    // premium.status === 'active' && navigation.navigate('purchase');
+    navigation.navigate('purchase');
+  };
 
   return (
     <View>
@@ -16,7 +23,7 @@ const PromotionCard = () => {
         <ContentWrapper>
           <StyledText>Upgrade to</StyledText>
           <StyledStrongText>PRO account!</StyledStrongText>
-          <TryButton title="Try it now" onPress={() => navigation.navigate('purchase')}>
+          <TryButton title="Try it now" onPress={onPress}>
             <ButtonText>Try it now</ButtonText>
           </TryButton>
         </ContentWrapper>
