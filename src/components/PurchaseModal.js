@@ -124,7 +124,15 @@ const PurchaseModal = ({ navigation }) => {
         // const listContentsWithPrice = results.sort(
         //   (a, b) => a?.priceAmountMicros - b?.priceAmountMicros,
         // );
-
+        const {
+          responseCode: historyResponseCode,
+          results: historyResult,
+        } = await InAppPurchases.getPurchaseHistoryAsync(false);
+        // if (historyResponseCode === InAppPurchases.IAPResponseCode.OK) {
+        console.log(premium);
+        console.log('historyResult', historyResult);
+        //   return;
+        // }
         // Add Purchase Listener
         InAppPurchases.setPurchaseListener(async ({ responseCode, results, errorCode }) => {
           if (responseCode === InAppPurchases.IAPResponseCode.OK) {
