@@ -44,7 +44,7 @@ const SearchModal = ({ navigation }) => {
       backgroundColor: Colors.screenBackground,
     },
     title: 'Search Users',
-    headerLeft: () => <CancelButton />,
+    headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
   });
 
   const onPress = () => {
