@@ -161,7 +161,7 @@ export default createReducers(initialState, {
     ...state,
     isFetchingFollowings: false,
     followings: evolve({
-      data: compose(mergeRight(state.followings.data), objFromListWith(path(['id']))),
+      data: compose(mergeRight(state?.followings?.data || {}), objFromListWith(path(['id']))),
     })(actions.followings),
   }),
   [REQUEST_FOLLOW_USER]: (state, actions) => ({
