@@ -239,7 +239,12 @@ const SearchBlockerScreen = () => {
         [
           allPass([compose(not, path(['isFocus'])), compose(not, path(['isEmpty']))]),
           always(
-            <BlockerList data={blockers} initialNumToRender={10} renderItem={BlockerListItem} />,
+            <BlockerList
+              data={blockers}
+              initialNumToRender={10}
+              renderItem={BlockerListItem}
+              keyExtractor={path(['id'])}
+            />,
           ),
         ],
       ])({
