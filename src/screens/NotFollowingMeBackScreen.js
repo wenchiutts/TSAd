@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
-import { ScrollView } from 'react-native';
+import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
-import { map } from 'ramda';
 
 import UserListItem from 'components/UserListItem';
 import { notFollowingMeBackSelector } from 'modules/instagram/selector';
@@ -14,26 +13,24 @@ const selector = createStructuredSelector({
   users: notFollowingMeBackSelector,
 });
 
+const ListItem = ({ item }) => (
+  <LocalUserListItem
+    username={item.username}
+    key={item.id}
+    userId={item.id}
+    profilePicture={item.profile_pic_url}
+  />
+);
+
 const NotFollowingMeBackScreen = () => {
   const { users } = useSelector(selector);
 
-  return (
-    <StyledView>
-      {map(user => (
-        <LocalUserListItem
-          username={user.username}
-          key={user.id}
-          userId={user.id}
-          profilePicture={user.profile_pic_url}
-        />
-      ))(users)}
-    </StyledView>
-  );
+  return <StyledView data={users} initialNumToRender={10} renderItem={ListItem} />;
 };
 
 export default NotFollowingMeBackScreen;
 
-const StyledView = styled(ScrollView).attrs({
+const StyledView = styled(FlatList).attrs({
   contentContainerStyle: {
     justifyContent: 'flex-start',
     alignItems: 'center',

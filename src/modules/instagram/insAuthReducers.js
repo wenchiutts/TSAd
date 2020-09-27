@@ -23,6 +23,7 @@ import {
   length,
   or,
   objOf,
+  mergeRight,
   __,
 } from 'ramda';
 
@@ -160,7 +161,7 @@ export default createReducers(initialState, {
     ...state,
     isFetchingFollowings: false,
     followings: evolve({
-      data: objFromListWith(path(['id'])),
+      data: compose(mergeRight(state.followings.data), objFromListWith(path(['id']))),
     })(actions.followings),
   }),
   [REQUEST_FOLLOW_USER]: (state, actions) => ({

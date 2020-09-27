@@ -21,9 +21,9 @@ import {
   blockerCountSelector,
 } from 'modules/instagram/selector';
 import {
-  fetchInsUserFollowing,
-  fetchInsUserFollower,
+  fetchInsUserAllFollowing,
   fetchInsUserProfileAction,
+  fetchInsUserAllFollower,
 } from 'modules/instagram/insAuthActions';
 
 const StyledView = styled(ScrollView).attrs(props => ({
@@ -75,8 +75,8 @@ const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const effectAction = async () => {
     await dispatch(fetchInsUserProfileAction());
-    await dispatch(fetchInsUserFollowing());
-    await dispatch(fetchInsUserFollower());
+    await dispatch(fetchInsUserAllFollowing());
+    await dispatch(fetchInsUserAllFollower());
   };
   React.useEffect(() => {
     effectAction();
@@ -86,7 +86,10 @@ const HomeScreen = ({ navigation }) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    effectAction().then(() => setRefreshing(false));
+    effectAction();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
   }, []);
 
   return (

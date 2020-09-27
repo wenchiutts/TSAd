@@ -1,6 +1,6 @@
 // @format
 
-import { compose } from 'ramda';
+import { compose, when, path, concat } from 'ramda';
 
 import makeActionCreator from 'actions/makeActionCreator';
 import { insProfileIdSelector } from 'modules/instagram//selector';
@@ -55,11 +55,11 @@ export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis
   }
 };
 
-export const fetchInsUserFollowing = () => async (dispatch, getState, { apis }) => {
+export const fetchInsUserFollowing = (after = '') => async (dispatch, getState, { apis }) => {
   try {
     const userIgId = compose(insProfileIdSelector, getState)();
     dispatch(requestInsUserFollowing());
-    const result = await apis.instagram.getFollowings({ userId: userIgId });
+    const result = await apis.instagram.getFollowings({ userId: userIgId, after });
     dispatch(receiveInsUserFollowing(result));
     return result;
   } catch (e) {
@@ -69,18 +69,52 @@ export const fetchInsUserFollowing = () => async (dispatch, getState, { apis }) 
   }
 };
 
-export const fetchInsUserFollower = () => async (dispatch, getState, { apis }) => {
+export const fetchInsUserAllFollowing = (after = '') => async dispatch => {
+  const result = await dispatch(fetchInsUserFollowing(after));
+  when(
+    path(['page_info', 'has_next_page']),
+    compose(
+      endCursor => dispatch(fetchInsUserAllFollowing(endCursor)),
+      path(['page_info', 'end_cursor']),
+    ),
+  )(result);
+
+  return result.count;
+};
+
+export const fetchInsUserFollower = (after = '') => async (dispatch, getState, { apis }) => {
   try {
     const userIgId = compose(insProfileIdSelector, getState)();
-    dispatch(requestInsUserFollower());
-    const result = await apis.instagram.getFollowers({ userId: userIgId });
-    dispatch(receiveInsUserFollower(result));
+    const result = await apis.instagram.getFollowers({ userId: userIgId, after });
+    // dispatch(receiveInsUserFollower(result));
     return result;
   } catch (e) {
     if (__DEV__) {
       console.log('fetchInsUserFollower  error', e, e.response);
     }
   }
+};
+
+export const recursiveFetchUserFollowers = (after = '') => async dispatch => {
+  const result = await dispatch(fetchInsUserFollower(after));
+  if (result?.page_info?.has_next_page) {
+    const anotherResult = await dispatch(
+      recursiveFetchUserFollowers(result?.page_info?.end_cursor),
+    );
+    return {
+      ...result,
+      ...anotherResult,
+      data: concat(result?.data || [], anotherResult?.data || []),
+    };
+  }
+  return result;
+};
+
+export const fetchInsUserAllFollower = () => async dispatch => {
+  dispatch(requestInsUserFollower());
+  const result = await dispatch(recursiveFetchUserFollowers());
+  dispatch(receiveInsUserFollower(result));
+  return result;
 };
 
 export const followUserAction = userId => async (dispatch, getState, { apis }) => {

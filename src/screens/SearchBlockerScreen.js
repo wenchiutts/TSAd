@@ -7,6 +7,7 @@ import {
   View,
   TextInput,
   ScrollView,
+  FlatList,
   Text,
   KeyboardAvoidingView,
   Platform,
@@ -58,6 +59,20 @@ const ListWrapper = styled(ScrollView)`
   width: 100%;
   margin-top: 5%;
 `;
+
+const BlockerList = styled(FlatList)`
+  width: 100%;
+  margin-top: 5%;
+`;
+
+const BlockerListItem = ({ item }) => (
+  <LocalUserListItem
+    username={item?.profile?.username}
+    key={item?.profile?.id}
+    profilePicture={item?.profile?.profile_pic_url}
+    timestamp={item.createdAt}
+  />
+);
 
 const Description = styled(Text)`
   color: ${path(['theme', 'primary', 'lightBlue'])};
@@ -224,16 +239,7 @@ const SearchBlockerScreen = () => {
         [
           allPass([compose(not, path(['isFocus'])), compose(not, path(['isEmpty']))]),
           always(
-            <ListWrapper>
-              {map(user => (
-                <LocalUserListItem
-                  username={user?.profile?.username}
-                  key={user?.profile?.id}
-                  profilePicture={user?.profile?.profile_pic_url}
-                  timestamp={user.createdAt}
-                />
-              ))(blockers)}
-            </ListWrapper>,
+            <BlockerList data={blockers} initialNumToRender={10} renderItem={BlockerListItem} />,
           ),
         ],
       ])({

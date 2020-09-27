@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { path } from 'ramda';
-import { ScrollView, Text } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import styled from 'styled-components/native';
 
 import UserListItem from 'components/UserListItem';
@@ -28,6 +28,17 @@ LocalUserListItem.propTypes = {
   timestamp: PropTypes.number,
 };
 
+const ListItem = ({ item }) => (
+  <LocalUserListItem
+    profilePicture={item?.profile?.profile_pic_url}
+    username={item?.profile?.username}
+    isFollowing={item?.profile?.followed_by_viewer}
+    timestamp={item?.createdAt}
+    userId={item?.profile?.id}
+    key={item?.profile?.id}
+  />
+);
+
 const selectors = createStructuredSelector({
   users: newFollowersWithProfileSelector,
 });
@@ -35,25 +46,12 @@ const selectors = createStructuredSelector({
 const NewFollowersScreen = () => {
   const { users } = useSelector(selectors);
 
-  return (
-    <StyledView>
-      {users.map((user, index) => (
-        <LocalUserListItem
-          profilePicture={user?.profile?.profile_pic_url}
-          username={user?.profile?.username}
-          isFollowing={user?.profile?.followed_by_viewer}
-          timestamp={user?.createdAt}
-          userId={user?.profile?.id}
-          key={user?.profile?.id}
-        />
-      ))}
-    </StyledView>
-  );
+  return <StyledView data={users} initialNumToRender={10} renderItem={ListItem} />;
 };
 
 export default NewFollowersScreen;
 
-const StyledView = styled(ScrollView).attrs({
+const StyledView = styled(FlatList).attrs({
   contentContainerStyle: {
     justifyContent: 'flex-start',
     alignItems: 'center',
