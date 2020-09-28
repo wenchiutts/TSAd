@@ -1,55 +1,36 @@
 import * as React from 'react';
-import { ScrollView } from 'react-native';
+import { createStructuredSelector } from 'reselect';
+import { useSelector } from 'react-redux';
+import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
 
 import UserListItem from 'components/UserListItem';
+import { mutualFollowingSelector } from 'modules/instagram/selector';
 
-const LocalUserListItem = ({ username }) => (
-  <UserListItem username={username} isFollower isFollowing />
+const LocalUserListItem = props => <UserListItem isFollower isFollowing {...props} />;
+
+const selector = createStructuredSelector({
+  users: mutualFollowingSelector,
+});
+
+const ListItem = ({ item }) => (
+  <LocalUserListItem
+    key={item.id}
+    username={item.username}
+    profilePicture={item.profile_pic_url}
+    userId={item.id}
+  />
 );
 
 const MutualFollowingScreen = () => {
-  const users = [
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: true,
-      time: 'Today',
-    },
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: false,
-      time: '07-23-2020',
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: true,
-      time: 'Today',
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: false,
-      time: '07-23-2020',
-    },
-  ];
+  const { users } = useSelector(selector);
 
-  return (
-    <StyledView>
-      {users.map((user, index) => {
-        if (user.isFollower && user.isFollowing) {
-          return <LocalUserListItem {...user} key={index} />;
-        }
-      })}
-    </StyledView>
-  );
+  return <StyledView data={users} initialNumToRender={10} renderItem={ListItem} />;
 };
 
 export default MutualFollowingScreen;
 
-const StyledView = styled(ScrollView).attrs({
+const StyledView = styled(FlatList).attrs({
   contentContainerStyle: {
     justifyContent: 'flex-start',
     alignItems: 'center',

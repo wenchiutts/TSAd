@@ -1,20 +1,62 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { Text, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { path } from 'ramda';
 
 import { Avatar } from 'components/AvatarImage';
+import { followUserAction, unfollowUserAction } from 'modules/instagram/insAuthActions';
 
-const UserListItem = ({ username, isFollower, isFollowing, buttonHide, descriptionElement }) => (
-  <Wrapper>
-    <Avatar isFollower={isFollower} isFollowing={isFollowing} />
-    <TextWrapper>
-      <Username>@{username}</Username>
-      {descriptionElement}
-    </TextWrapper>
-    {!buttonHide ? <FollowButton isFollowing={isFollowing} /> : <></>}
-  </Wrapper>
-);
+const UserListItem = ({
+  username,
+  isFollower,
+  isFollowing,
+  buttonHide,
+  descriptionElement,
+  profilePicture,
+  userId,
+  roundedWidth,
+  style,
+}) => {
+  const dispatch = useDispatch();
+  const follow = () => dispatch(followUserAction(userId));
+  const unfollow = () => dispatch(unfollowUserAction(userId));
+  return (
+    <Wrapper style={style}>
+      <Avatar
+        source={{ uri: profilePicture }}
+        isFollower={isFollower}
+        isFollowing={isFollowing}
+        roundedWidth={roundedWidth}
+      />
+      <TextWrapper>
+        <Username>@{username}</Username>
+        {descriptionElement}
+      </TextWrapper>
+      {!buttonHide ? (
+        <FollowButton isFollowing={isFollowing} onPress={isFollowing ? unfollow : follow} />
+      ) : (
+        <></>
+      )}
+    </Wrapper>
+  );
+};
+
+UserListItem.propTypes = {
+  username: PropTypes.string,
+  isFollower: PropTypes.bool,
+  isFollowing: PropTypes.bool,
+  buttonHide: PropTypes.bool,
+  descriptionElement: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.arrayOf(PropTypes.element),
+  ]),
+  profilePicture: PropTypes.string,
+  userId: PropTypes.string,
+  roundedWidth: PropTypes.number,
+  style: PropTypes.array,
+};
 
 export default UserListItem;
 
@@ -37,11 +79,16 @@ const Username = styled(Text)`
   margin-bottom: 8;
 `;
 
-const FollowButton = ({ isFollowing }) => (
-  <ButtonWrapper isFollowing={isFollowing}>
+const FollowButton = ({ isFollowing, onPress }) => (
+  <ButtonWrapper isFollowing={isFollowing} onPress={onPress}>
     <ButtonText>{isFollowing ? 'Unfollow' : 'Follow'}</ButtonText>
   </ButtonWrapper>
 );
+
+FollowButton.propTypes = {
+  isFollowing: PropTypes.bool,
+  onPress: PropTypes.func,
+};
 
 const ButtonWrapper = styled(TouchableOpacity)`
   width: 90;

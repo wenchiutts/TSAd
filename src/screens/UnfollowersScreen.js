@@ -1,66 +1,57 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { path } from 'ramda';
-import { ScrollView, Text } from 'react-native';
+import { createStructuredSelector } from 'reselect';
+import { useSelector } from 'react-redux';
+import { FlatList, Text } from 'react-native';
 import styled from 'styled-components/native';
 
 import UserListItem from 'components/UserListItem';
+import { unFollowersWithProfileSelector } from 'modules/instagram/selector';
+
+const selectors = createStructuredSelector({
+  users: unFollowersWithProfileSelector,
+});
 
 const Description = styled(Text)`
   color: ${path(['theme', 'primary', 'lightBlue'])};
   font-size: 14;
 `;
 
-const LocalUserListItem = ({ username, isFollowing, time }) => (
+const LocalUserListItem = ({ timestamp, ...rest }) => (
   <UserListItem
-    username={username}
+    {...rest}
     isFollower={false}
-    isFollowing={isFollowing}
-    descriptionElement={<Description>Unfollowed: {time}</Description>}
+    descriptionElement={
+      <Description>Unfollowed: {new Date(timestamp).toLocaleDateString()}</Description>
+    }
+  />
+);
+
+LocalUserListItem.propTypes = {
+  timestamp: PropTypes.number,
+};
+
+const ListItem = ({ item }) => (
+  <LocalUserListItem
+    profilePicture={item?.profile?.profile_pic_url}
+    timestamp={item?.updatedAt}
+    username={item?.profile?.username}
+    isFollowing={item?.profile?.followed_by_viewer}
+    userId={item?.profile?.id}
+    key={item?.profile?.id}
   />
 );
 
 const UnfollowersScreen = () => {
-  const users = [
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: true,
-      time: 'Today',
-    },
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: false,
-      time: '07-23-2020',
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: true,
-      time: 'Today',
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: false,
-      time: '07-23-2020',
-    },
-  ];
+  const { users } = useSelector(selectors);
 
-  return (
-    <StyledView>
-      {users.map((user, index) => {
-        if (!user.isFollower) {
-          return <LocalUserListItem {...user} key={index} />;
-        }
-      })}
-    </StyledView>
-  );
+  return <StyledView data={users} initialNumToRender={10} renderItem={ListItem} />;
 };
 
 export default UnfollowersScreen;
 
-const StyledView = styled(ScrollView).attrs({
+const StyledView = styled(FlatList).attrs({
   contentContainerStyle: {
     justifyContent: 'flex-start',
     alignItems: 'center',

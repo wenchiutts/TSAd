@@ -51,7 +51,7 @@ const IconListItem = ({ style, iconSource, description, value, onPress }) => (
 
 IconListItem.propTypes = {
   style: PropTypes.array,
-  iconSource: PropTypes.object,
+  iconSource: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
   description: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onPress: PropTypes.func,
