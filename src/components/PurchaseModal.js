@@ -35,7 +35,7 @@ const ImageWrapper = styled(View)`
 `;
 
 const StyledImage = styled(Image)`
-  flex: 1 0 100%;
+  flex: 1;
   width: 100%;
   resize-mode: contain;
 `;
