@@ -29,16 +29,14 @@ export const purchaseSubscriptionAction = ({ purchaseTime, productId }) => async
 export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }) => { // Check if subscription expired
   const state = getState();
   const premium = state?.user?.premium;
-  console.log('fuck', premium);
 
   if (premium?.status !== 'active') {
     return;
   }
 
   const purchaseHistory = state?.payment?.history;
-  console.log('purchaseHistory', purchaseHistory)
   const latestPurchase = purchaseHistory.sort((a, b) => b?.purchaseTime - a?.purchaseTime)?.[0];
-  console.log('latestPurchase', latestPurchase);
+
   if (latestPurchase) {
     const { purchaseTime, productId } = latestPurchase;
     const periodDays = IAP_PRODUCTS[productId];
@@ -54,7 +52,6 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
     return;
   }
   if (premium?.status === 'active') {
-    console.log('fuck active')
     dispatch(updatePremium({
       status: 'expired',
       productId: null,

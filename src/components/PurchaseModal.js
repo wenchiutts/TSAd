@@ -113,26 +113,14 @@ const PurchaseModal = ({ navigation }) => {
     const initIap = async () => {
       try {
         // Init IAP
-        const history = await InAppPurchases.connectAsync().catch(e =>
-          console.log('initIap error: ', e),
-        );
+
         const productIds = Object.values(PRODUCTS_IDS);
         const { responseCode, results: productResults } = await InAppPurchases.getProductsAsync(
           productIds,
         );
         setListContents(productResults);
-        // const listContentsWithPrice = results.sort(
-        //   (a, b) => a?.priceAmountMicros - b?.priceAmountMicros,
-        // );
-        const {
-          responseCode: historyResponseCode,
-          results: historyResult,
-        } = await InAppPurchases.getPurchaseHistoryAsync(false);
-        // if (historyResponseCode === InAppPurchases.IAPResponseCode.OK) {
-        console.log(premium);
-        console.log('historyResult', historyResult);
-        //   return;
-        // }
+
+
         // Add Purchase Listener
         InAppPurchases.setPurchaseListener(async ({ responseCode, results, errorCode }) => {
           if (responseCode === InAppPurchases.IAPResponseCode.OK) {
@@ -154,7 +142,6 @@ const PurchaseModal = ({ navigation }) => {
                 ...productInfo,
                 purchaseTime: purchases[0]?.purchaseTime,
               };
-              console.log('purchaseSubscriptionAction productInfo', productInfoWithPurchaseTime);
               dispatch(purchaseSubscriptionAction(productInfoWithPurchaseTime));
             }
           } else {
