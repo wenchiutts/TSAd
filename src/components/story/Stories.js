@@ -1,15 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Animated,
-  StatusBar,
-  PanResponder,
-  LayoutAnimation,
-} from 'react-native';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { StyleSheet, View, Dimensions, Animated, StatusBar } from 'react-native';
 import styled from 'styled-components/native';
-import { useNavigation } from '@react-navigation/native';
 
 import Story from 'components/story/Story';
 
@@ -25,34 +17,15 @@ const Stories = ({
   verticalSwipe,
   swipedHorizontally,
 }) => {
-  const navigation = useNavigation();
+  const { stories, backOpacity, deckIdx } = storyState;
 
-  const { stories, carouselOpen, paused, backOpacity, deckIdx } = storyState;
-
-  const {
-    openCarousel,
-    dismissCarousel,
-    leaveStories,
-    setStoryIdx,
-    setDeckIdx,
-    setBackOpacity,
-    pause,
-    play,
-    animateIndicator,
-    resetVerticalSwipe,
-    onNextItem,
-    onPrevItem,
-    onNextDeck,
-    onPrevDeck,
-    animateDeck,
-    currentStory,
-  } = functions;
+  const { dismissCarousel, setBackOpacity, onNextItem, onPrevItem } = functions;
 
   useEffect(() => {
     StatusBar.setHidden(true);
   }, []);
 
-  functions = { onNextItem, onPrevItem, pause, dismissCarousel, setBackOpacity };
+  functions = { onNextItem, onPrevItem, dismissCarousel, setBackOpacity };
 
   return (
     <Wrapper {...panResponder.panHandlers}>
@@ -92,9 +65,8 @@ const Stories = ({
             ]}>
             <Story
               story={story}
-              currentDeck={deckIdx == idx}
-              storyState={storyState}
-              setStoryState={setStoryState}
+              isVisible={deckIdx === idx}
+              backOpacity={backOpacity}
               functions={functions}
               indicatorAnim={indicatorAnim}
             />
@@ -103,6 +75,17 @@ const Stories = ({
       })}
     </Wrapper>
   );
+};
+
+Stories.propTypes = {
+  storyState: PropTypes.object,
+  setStoryState: PropTypes.func,
+  functions: PropTypes.object,
+  panResponder: PropTypes.object,
+  indicatorAnim: PropTypes.instanceOf(Animated.Value),
+  horizontalSwipe: PropTypes.instanceOf(Animated.Value),
+  verticalSwipe: PropTypes.instanceOf(Animated.Value),
+  swipedHorizontally: PropTypes.bool,
 };
 
 export default Stories;

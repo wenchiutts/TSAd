@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { View, Dimensions, LayoutAnimation, Animated, PanResponder } from 'react-native';
+import { adjust, evolve, add } from 'ramda';
 import styled from 'styled-components/native';
-import * as Progress from 'react-native-progress';
 
 import Stories from 'components/story/Stories';
 import data from 'components/story/data';
+import useIsMount from 'hooks/useIsMount';
 
 const { width, height } = Dimensions.get('window');
 const VERTICAL_THRESHOLD = 80;
@@ -16,14 +18,6 @@ const StyledView = styled(View)`
   align-items: center;
   margin-top: 20;
 `;
-
-const useIsMount = () => {
-  const isMountRef = useRef(false);
-  useEffect(() => {
-    isMountRef.current = true;
-  }, []);
-  return isMountRef.current;
-};
 
 const StoryModal = ({ route, navigation }) => {
   const { deckIndex } = route.params;
@@ -68,45 +62,27 @@ const StoryModal = ({ route, navigation }) => {
         return false;
       },
       onPanResponderGrant: () => {
-        if (swipedHorizontally) {
-          console.log('onPanResponderGrant true', horizontalSwipe);
-          console.log('deckIdx', deckIdx);
+        if (swipedHorizontally.current) {
           horizontalSwipe.setOffset(horizontalSwipe._value);
           horizontalSwipe.setValue(0);
-          console.log(
-            'onPanResponderGrant horizontalSwipe reset',
-            'value',
-            horizontalSwipe._value,
-            'offset',
-            horizontalSwipe._offset,
-          );
         }
-        setStoryState(prev => {
-          return { ...prev, paused: true, backOpacity: 0 };
-        });
+        pauseIndicator();
+        setBackOpacity(0);
       },
       onPanResponderMove: (e, { dx, dy }) => {
-        if (swipedHorizontally) {
+        if (swipedHorizontally.current) {
           horizontalSwipe.setValue(-dx);
-          console.log('onPanResponderMove', horizontalSwipe._value);
         } else {
           verticalSwipe.setValue(dy);
         }
       },
       onPanResponderRelease: (e, { dx, dy }) => {
-        if (!swipedHorizontally) {
+        if (!swipedHorizontally.current) {
           if (dy > VERTICAL_THRESHOLD) return leaveStories();
-          // play();
+          // playProgressIndicator();
           // return resetVerticalSwipe();
         }
         horizontalSwipe.flattenOffset();
-        console.log(
-          'onPanResponderRelease flattenOffset',
-          'value',
-          horizontalSwipe._value,
-          'offset',
-          horizontalSwipe._offset,
-        );
         // setStoryState(prev => {
         //   return { ...prev, horizontalSwipe };
         // });
@@ -118,8 +94,8 @@ const StoryModal = ({ route, navigation }) => {
         if (dx < -HORIZONTAL_THRESHOLD) {
           return onNextDeck();
         }
-        play();
-        return animateDeck(width * deckIdx);
+        playProgressIndicator();
+        animateDeck(width * deckIdx);
       },
     }),
   ).current;
@@ -129,92 +105,62 @@ const StoryModal = ({ route, navigation }) => {
   // Toggle Carousel
   const openCarousel = (idx, offset) => {
     horizontalSwipe.setValue(idx * width);
-    setStoryState(prev => {
-      return {
-        ...prev,
-        offset,
-        deckIdx: idx,
-      };
-    });
+    setStoryState(prev => ({
+      ...prev,
+      offset,
+      deckIdx: idx,
+    }));
     requestAnimationFrame(() => {
       LayoutAnimation.easeInEaseOut();
-      setStoryState(prev => {
-        return { ...prev, carouselOpen: true };
-      });
+      setStoryState(prev => ({ ...prev, carouselOpen: true }));
       animateIndicator();
     });
   };
 
   const dismissCarousel = () => {
     LayoutAnimation.easeInEaseOut();
-    setStoryState(prev => {
-      return { ...prev, carouselOpen: false };
-    });
+    setStoryState(prev => ({ ...prev, carouselOpen: false }));
   };
 
   const leaveStories = () => {
+    indicatorAnim.stopAnimation();
     dismissCarousel();
     navigation.goBack();
   };
 
   // Setter
-  const setStoryIdx = idx => {
-    const updatedStory = { ...stories[deckIdx], idx };
-    stories.splice(deckIdx, 1, updatedStory);
-    setStoryState(prev => {
-      return { ...prev, stories };
-    });
+  const setStoryIdx = diff => {
+    setStoryState(prev => ({
+      ...prev,
+      stories: adjust(prev.deckIdx, evolve({ idx: add(diff) }), prev.stories),
+    }));
   };
 
-  const setDeckIdx = action => {
-    console.log('setDeckIdx', action);
-    if (action === 'plus')
-      setStoryState(prev => {
-        return { ...prev, deckIdx: prev.deckIdx + 1 };
-      });
-    if (action === 'minus')
-      setStoryState(prev => {
-        return { ...prev, deckIdx: prev.deckIdx - 1 };
-      });
-  };
+  const setDeckIdxDiff = difference =>
+    setStoryState(prev => ({ ...prev, deckIdx: prev.deckIdx + difference }));
 
-  const setBackOpacity = backOpacity => {
-    setStoryState(prev => {
-      return { ...prev, backOpacity };
-    });
-  };
+  const setBackOpacity = backOpacity => setStoryState(prev => ({ ...prev, backOpacity }));
 
   // Toggle Indicator Animation
 
-  const pause = () => {
+  const pauseIndicator = () => {
     indicatorAnim.stopAnimation();
-    setStoryState(prev => {
-      return { ...prev, paused: true, indicatorAnim };
-    });
+    setStoryState(prev => ({ ...prev, paused: true }));
   };
 
-  const play = () => {
-    console.log(paused);
-    if (paused) {
-      setStoryState(prev => {
-        return { ...prev, paused: false };
-      });
-      // animateIndicator(false);
-    }
+  const playProgressIndicator = () => {
+    setStoryState(prev => ({ ...prev, paused: false }));
+    animateIndicator(false);
   };
 
   const animateIndicator = (reset = true) => {
     if (reset) {
-      console.log('animateIndicator reset');
       indicatorAnim.setValue(0);
-      setStoryState(prev => {
-        return { ...prev, indicatorAnim };
-      });
     }
     requestAnimationFrame(() => {
       Animated.timing(indicatorAnim, {
         toValue: 1,
-        duration: 5000 * (1 - indicatorAnim._value),
+        duration: 5000,
         useNativeDriver: true,
       }).start(({ finished }) => {
         if (finished) onNextItem();
@@ -224,74 +170,69 @@ const StoryModal = ({ route, navigation }) => {
 
   // Navigate Story Items
   const onNextItem = () => {
-    // if (paused) return play();
+    // if (paused) return playProgressIndicator();
     const story = stories[deckIdx];
-    if (story.idx >= story.items.length - 1) return onNextDeck();
-    setStoryIdx(story.idx + 1);
+    if (story.idx >= story.items.length - 1) {
+      onNextDeck();
+    } else {
+      setStoryIdx(1);
+    }
   };
 
   const onPrevItem = () => {
-    if (backOpacity == 1)
-      setStoryState(prev => {
-        return { ...prev, backOpacity: 0 };
-      });
+    if (backOpacity === 1) setStoryState(prev => ({ ...prev, backOpacity: 0 }));
     const story = stories[deckIdx];
-    if (story.idx == 0) return onPrevDeck();
-    setStoryIdx(story.idx - 1);
+    if (story.idx === 0) {
+      onPrevDeck();
+    } else {
+      setStoryIdx(-1);
+    }
   };
 
   // Navigate Deck Items
   const onNextDeck = () => {
-    console.log('onNextDeck deckIdx', deckIdx);
-    console.log('onNextDeck horizontalSwipe value', horizontalSwipe);
-    if (deckIdx >= stories.length - 1) return leaveStories();
-    setDeckIdx('plus');
+    setDeckIdxDiff(1);
   };
   const onPrevDeck = () => {
-    if (deckIdx == 0) return leaveStories();
-    setDeckIdx('minus');
+    setDeckIdxDiff(-1);
   };
 
   const animateDeck = (toValue, reset = false) => {
     if (reset) {
       animateIndicator();
-      console.log('animateDeck Reset', '#toValue:', toValue);
-      console.log('animateDeck horizontalSwipe value', horizontalSwipe);
     }
     Animated.spring(horizontalSwipe, {
       toValue,
       friction: 9,
       useNativeDriver: false,
-    }).start(({ finished }) => {
-      if (finished) {
-        console.log(horizontalSwipe._value, toValue);
-      }
-    });
+    }).start();
   };
 
   useEffect(() => {
     if (isMount) {
-      if (paused) animateIndicator(false);
-      animateDeck(deckIdx * width, true);
+      if (deckIdx < stories.length && deckIdx >= 0) {
+        if (paused) {
+          animateIndicator(false);
+        }
+        animateDeck(deckIdx * width, true);
+      } else {
+        leaveStories();
+      }
     }
   }, [deckIdx]);
 
   useEffect(() => {
-    if (isMount) {
+    const isDeckInRange = deckIdx >= 0 && deckIdx < stories.length;
+    if (isMount && isDeckInRange) {
       animateIndicator();
     }
-  }, [stories[deckIdx].idx]);
+  }, [stories[deckIdx]?.idx]);
 
   const functions = {
     openCarousel,
     dismissCarousel,
     leaveStories,
-    setStoryIdx,
-    setDeckIdx,
     setBackOpacity,
-    pause,
-    play,
-    animateIndicator,
     // resetVerticalSwipe,
     onNextItem,
     onPrevItem,
@@ -312,12 +253,18 @@ const StoryModal = ({ route, navigation }) => {
           indicatorAnim={indicatorAnim}
           horizontalSwipe={horizontalSwipe}
           verticalSwipe={verticalSwipe}
-          swipedHorizontally={swipedHorizontally}
+          swipedHorizontally={swipedHorizontally.current}
         />
       </CarouselWrap>
     </StyledView>
   );
 };
+
+StoryModal.propTypes = {
+  route: PropTypes.object,
+  navigation: PropTypes.object,
+};
+
 export default StoryModal;
 
 const CarouselWrap = styled(View)`

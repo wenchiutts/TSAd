@@ -1,29 +1,21 @@
-import React, { useEffect } from 'react';
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  TouchableWithoutFeedback,
-  ImageBackground,
-  LayoutAnimation,
-} from 'react-native';
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import { View, Dimensions, TouchableWithoutFeedback, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import styled from 'styled-components/native';
 
 import ProgressBar from 'components/story/ProgressBar';
 import Image from 'react-native-image-progress';
-import CircleSnail from 'react-native-progress/CircleSnail';
 
 import CancelButton from 'components/header/CancelButton';
 
 const { width, height } = Dimensions.get('window');
 
-const Story = ({ story, currentDeck, storyState, setStoryState, functions, indicatorAnim }) => {
+const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
   const navigation = useNavigation();
-  const { stories, carouselOpen, paused, backOpacity } = storyState;
 
-  const { onNextItem, onPrevItem, pause, dismissCarousel, setBackOpacity } = functions;
+  const { onNextItem, onPrevItem, dismissCarousel, setBackOpacity } = functions;
 
   const onPress = () => {
     dismissCarousel();
@@ -31,19 +23,12 @@ const Story = ({ story, currentDeck, storyState, setStoryState, functions, indic
   };
 
   return (
-    <TouchableWithoutFeedback
-      onPress={onNextItem}
-      delayPressIn={200} //onPressIn={pause}
-    >
+    <TouchableWithoutFeedback onPress={onNextItem} delayPressIn={200}>
       <View>
-        <CancelButton
-          onPress={onPress}
-          style={{ marginTop: 5, marginBottom: 12 }}
-          setStoryState={setStoryState}
-        />
+        <CancelButton onPress={onPress} style={{ marginTop: 5, marginBottom: 12 }} />
 
         <StyledImage source={{ uri: story.items[story.idx].src }}>
-          <StoryIndicator story={story} currentDeck={currentDeck} indicatorAnim={indicatorAnim} />
+          <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
           <BackButton
             onPrevItem={onPrevItem}
             setBackOpacity={setBackOpacity}
@@ -55,9 +40,17 @@ const Story = ({ story, currentDeck, storyState, setStoryState, functions, indic
   );
 };
 
+Story.propTypes = {
+  story: PropTypes.object,
+  isVisible: PropTypes.bool,
+  backOpacity: PropTypes.number,
+  functions: PropTypes.object,
+  indicatorAnim: PropTypes.instanceOf(Animated.Value),
+};
+
 export default Story;
 
-const StoryIndicator = ({ story, currentDeck, indicatorAnim }) => (
+const StoryIndicator = ({ story, isVisible, indicatorAnim }) => (
   <IndicatorsWrap>
     <StyledLinearGradient colors={['rgba(0,0,0,0.33)', 'transparent']} locations={[0, 0.95]} />
     <Indicators>
@@ -65,7 +58,7 @@ const StoryIndicator = ({ story, currentDeck, indicatorAnim }) => (
         <ProgressBar
           key={i}
           i={i}
-          animate={currentDeck && story.idx == i}
+          animate={isVisible && story.idx === i}
           story={story}
           indicatorAnim={indicatorAnim}
         />
@@ -73,6 +66,12 @@ const StoryIndicator = ({ story, currentDeck, indicatorAnim }) => (
     </Indicators>
   </IndicatorsWrap>
 );
+
+StoryIndicator.propTypes = {
+  story: PropTypes.object,
+  isVisible: PropTypes.bool,
+  indicatorAnim: PropTypes.instanceOf(Animated.Value),
+};
 
 const IndicatorsWrap = styled(View)`
   position: absolute;
@@ -118,6 +117,12 @@ const BackButton = ({ onPrevItem, backOpacity, setBackOpacity }) => (
     />
   </TouchableWithoutFeedback>
 );
+
+BackButton.propTypes = {
+  onPrevItem: PropTypes.func,
+  backOpacity: PropTypes.number,
+  setBackOpacity: PropTypes.func,
+};
 
 const BackButtonGradient = styled(LinearGradient)`
   background-color: transparent;
