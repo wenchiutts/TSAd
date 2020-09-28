@@ -23,6 +23,9 @@ const Description = styled(Text)`
   font-weight: 500;
   letter-spacing: -0.68;
   line-height: 17;
+
+  flex: 1;
+  flex-wrap: wrap;
 `;
 
 const Value = styled(Text)`
