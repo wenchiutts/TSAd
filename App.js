@@ -14,6 +14,8 @@ import SearchModal from 'components/SearchModal';
 import Colors from 'constants/Colors';
 import configureStore from 'store/configureStore';
 import { getAuthStateAction } from 'modules/auth/authActions';
+import { connectAppStore } from 'actions/paymentActions';
+import { checkSubscriptionStatus } from 'actions/userActions';
 import LoginScreen from 'screens/LoginScreen';
 import { IgUserNameContext, useCheckUserLoginIg } from 'modules/instagram/useCheckUserLoginIg';
 import Splash from 'components/Splash';
@@ -25,7 +27,12 @@ const { store } = configureStore();
 
 export default function App() {
   React.useEffect(() => {
-    store.dispatch(getAuthStateAction());
+    const init = async () => {
+      store.dispatch(getAuthStateAction());
+      await store.dispatch(connectAppStore());
+      store.dispatch(checkSubscriptionStatus());
+    }
+    init();
   }, []);
   const { igUserNameContext, igUserNameState } = useCheckUserLoginIg(store);
 
@@ -89,8 +96,8 @@ export default function App() {
                     <Stack.Screen name="search" component={SearchModal} />
                   </>
                 ) : (
-                  <Stack.Screen name="Login" component={LoginScreen} />
-                )}
+                    <Stack.Screen name="Login" component={LoginScreen} />
+                  )}
               </Stack.Navigator>
             </NavigationContainer>
           </View>

@@ -11,3 +11,15 @@ export const PRODUCT_PLAN_TYPE_MAP = {
   'Monthly pass': PLAN_TYPE.MONTH,
   'Weekly pass': PLAN_TYPE.WEEK,
 };
+
+export const IAP_PRODUCTS = {
+  [PRODUCTS_IDS.PACKAGE_WEEKLY]: {
+    periodDays: 7,
+  },
+  [PRODUCTS_IDS.PACKAGE_MONTHLY]: {
+    periodDays: 31,
+  },
+  [PRODUCTS_IDS.PACKAGE_ANNUALY]: {
+    periodDays: 365,
+  }
+};

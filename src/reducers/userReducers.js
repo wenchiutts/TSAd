@@ -3,8 +3,8 @@ import { UPDATE_PREMIUM } from 'actions/userActions';
 
 const initialState = {
   premium: {
-    status: 'inactive',
-    plan: null,
+    status: 'inactive', // 'inactive' | 'active' | 'expired'
+    productId: null,
     lastUpdatedAt: null,
   },
 };
@@ -14,9 +14,9 @@ export default createReducers(initialState, {
     ...state,
     premium: {
       ...state.premium,
-      status: action.status,
-      plan: action.planType,
-      lastUpdatedAt: action.purchaseTime,
+      status: action.purchase?.status,
+      productId: action.purchase?.productId,
+      lastUpdatedAt: action.purchase?.lastUpdatedAt,
     },
   }),
 });
