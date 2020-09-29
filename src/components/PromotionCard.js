@@ -15,7 +15,7 @@ const PromotionCard = () => {
   };
 
   return (
-    <View>
+    <TouchableOpacity onPress={onPress}>
       <ImageBackground
         source={require('assets/images/upgrade.png')}
         style={{ width: '100%', height: 160 }}
@@ -23,12 +23,12 @@ const PromotionCard = () => {
         <ContentWrapper>
           <StyledText>Upgrade to</StyledText>
           <StyledStrongText>PRO account!</StyledStrongText>
-          <TryButton title="Try it now" onPress={onPress}>
+          <TryButton title="Try it now">
             <ButtonText>Try it now</ButtonText>
           </TryButton>
         </ContentWrapper>
       </ImageBackground>
-    </View>
+    </TouchableOpacity>
   );
 };
 
