@@ -20,6 +20,8 @@ import {
   unFollowersCountSelector,
   blockerCountSelector,
 } from 'modules/instagram/selector';
+import { Avatar, AvatarImage } from 'components/AvatarImage';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   fetchInsUserAllFollowing,
   fetchInsUserProfileAction,
@@ -100,6 +102,30 @@ const HomeScreen = ({ navigation }) => {
         following={following}
         profilePicture={profilePicture}
       />
+      <StoriesWrapper>
+        <Title>Watch Stories Anonymously</Title>
+        <AvatarsWrapper horizontal>
+          <SearchAvatar navigation={navigation} />
+          <AvatarWithUsername
+            username="kai_hello"
+            isExistStory
+            onPress={() => navigation.navigate('story', { deckIndex: 0 })}
+          />
+          <AvatarWithUsername username="kai_hello" />
+          <AvatarWithUsername
+            username="kai_hello"
+            isExistStory
+            onPress={() => navigation.navigate('story', { deckIndex: 2 })}
+          />
+          <AvatarWithUsername username="kai_hello" />
+          <AvatarWithUsername username="kai_hello" />
+          <AvatarWithUsername username="kai_hello" />
+          <AvatarWithUsername username="kai_hello" />
+          <AvatarWithUsername username="kai_hello" />
+          <AvatarWithUsername username="kai_hello" />
+          <AvatarWithUsername username="kai_hello" />
+        </AvatarsWrapper>
+      </StoriesWrapper>
       <ListWrapper>
         <Title>Follower Status</Title>
         {/*
@@ -171,10 +197,65 @@ HomeScreen.propTypes = {
 export default HomeScreen;
 
 const ListWrapper = styled(View)`
-  margin-top: 24;
+  margin-top: 12;
   padding-bottom: 28%;
 `;
 
 const Title = styled(Text)`
   color: ${path(['theme', 'primary', 'lightBlue'])};
+`;
+
+const StoriesWrapper = styled(View)`
+  margin-top: 24;
+`;
+
+const AvatarsWrapper = styled(ScrollView).attrs(props => ({
+  contentContainerStyle: {
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+}))`
+  height: 100;
+  flex: 1;
+  margin-top: 6;
+`;
+
+const AvatarWithUsername = ({ username, userPicture, isExistStory, onPress }) => (
+  <StyledAvatar onPress={onPress}>
+    <Avatar isExistStory={isExistStory} />
+    <AvatarUsername>@{username}</AvatarUsername>
+  </StyledAvatar>
+);
+
+const StyledAvatar = styled(TouchableOpacity)`
+  margin-horizontal: 8;
+  height: 100;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const AvatarUsername = styled(Text)`
+  padding-top: 5;
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  font-size: 12;
+  text-align: center;
+`;
+
+const SearchAvatar = ({ navigation, following }) => (
+  <StyledAvatar>
+    <Background onPress={() => navigation.navigate('search')}>
+      <AvatarImage source={require('assets/icons/search.png')} roundedWidth={30} />
+    </Background>
+    <AvatarUsername></AvatarUsername>
+  </StyledAvatar>
+);
+
+const Background = styled(TouchableOpacity)`
+  width: 60;
+  height: 60;
+  border-radius: 30;
+  align-items: center;
+  justify-content: center;
+  background-color: ${path(['theme', 'listItemBg'])};
 `;

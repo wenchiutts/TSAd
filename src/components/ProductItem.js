@@ -1,34 +1,35 @@
 // @format
-import * as React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { path, cond, pathEq } from 'ramda';
+import { purchaseItemAsync } from 'expo-in-app-purchases';
 
 export const PLAN_TYPE = {
+  WEEK: 'WEEK',
   MONTH: 'MONTH',
-  HALF_YEAR: 'HALF_YEAR',
+  // HALF_YEAR: 'HALF_YEAR',
   YEAR: 'YEAR',
 };
 
 const PLAN_TYPE_ICON_MAP = {
+  [PLAN_TYPE.WEEK]: require('assets/icons/pro_plan1.png'),
   [PLAN_TYPE.MONTH]: require('assets/icons/pro_plan1.png'),
-  [PLAN_TYPE.HALF_YEAR]: require('assets/icons/pro_plan1.png'),
+  // [PLAN_TYPE.HALF_YEAR]: require('assets/icons/pro_plan1.png'),
   [PLAN_TYPE.YEAR]: require('assets/icons/pro_plan1.png'),
 };
 
 const PLAN_TYPE_NAME_MAP = {
+  [PLAN_TYPE.WEEK]: '1 week',
   [PLAN_TYPE.MONTH]: '1 month',
-  [PLAN_TYPE.HALF_YEAR]: '6 month',
+  // [PLAN_TYPE.HALF_YEAR]: '6 month',
   [PLAN_TYPE.YEAR]: '1 Year',
 };
 
 const Container = styled(TouchableOpacity)`
-  background-color: ${cond([
-    [pathEq(['type'], PLAN_TYPE.YEAR), path(['theme', 'primary', 'lightPink'])],
-    [pathEq(['type'], PLAN_TYPE.HALF_YEAR), path(['theme', 'primary', 'pink'])],
-    [pathEq(['type'], PLAN_TYPE.MONTH), path(['theme', 'primary', 'blue'])],
-  ])};
+  background-color: ${path(['theme', 'primary', 'pink'])};
+
   padding-vertical: 19;
   padding-right: 32;
   padding-left: 20;
@@ -75,8 +76,8 @@ const AvgPrice = styled(StyledText)`
   text-align: right;
 `;
 
-const ProductItem = ({ style, planType, price = '$29.99', avgPrice = '$2.49' }) => (
-  <Container style={style} type={planType}>
+const ProductItem = ({ style, planType, price = '$29.99', avgPrice = '$2.49', onPress }) => (
+  <Container style={style} type={planType} onPress={onPress}>
     <Icon source={PLAN_TYPE_ICON_MAP[planType]} />
     <PlanName>{PLAN_TYPE_NAME_MAP[planType]}</PlanName>
     <PriceWrapper>
@@ -91,6 +92,30 @@ ProductItem.propTypes = {
   price: PropTypes.string,
   avgPrice: PropTypes.string,
   style: PropTypes.array,
+  onPress: PropTypes.func,
 };
 
-export default ProductItem;
+const ProductItemWithIAP = props => {
+  const onPress = async () => {
+    console.log('ProductItemWithIAP productId', props?.productId);
+    props.setIsLoading(true);
+    // TODO: Victor if the content productId would changed in list item,
+    // should put the content as dependency
+    const res = await purchaseItemAsync(props?.productId);
+    props.setIsLoading(false);
+  };
+  // const onPress = useCallback(async () => {
+  //   props.setIsLoading(true);
+  //   // TODO: Victor if the content productId would changed in list item,
+  //   // should put the content as dependency
+  //   const res = await purchaseItemAsync(props?.content?.productId);
+  //   props.setIsLoading(false);
+  // }, []);
+  return <ProductItem {...props} onPress={onPress} />;
+};
+
+ProductItemWithIAP.propTypes = {
+  setIsLoading: PropTypes.func,
+};
+
+export default ProductItemWithIAP;
