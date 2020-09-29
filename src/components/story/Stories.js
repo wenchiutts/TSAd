@@ -16,8 +16,9 @@ const Stories = ({
   horizontalSwipe,
   verticalSwipe,
   swipedHorizontally,
+  stories,
 }) => {
-  const { stories, backOpacity, deckIdx } = storyState;
+  const { backOpacity, deckIdx } = storyState;
 
   const { dismissCarousel, setBackOpacity, onNextItem, onPrevItem } = functions;
 
@@ -86,6 +87,7 @@ Stories.propTypes = {
   horizontalSwipe: PropTypes.instanceOf(Animated.Value),
   verticalSwipe: PropTypes.instanceOf(Animated.Value),
   swipedHorizontally: PropTypes.bool,
+  stories: PropTypes.array,
 };
 
 export default Stories;

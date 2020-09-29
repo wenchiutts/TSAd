@@ -42,6 +42,8 @@ import {
   END_UNFOLLOW_USER,
   REQUEST_CHECK_BLOCKER,
   RECEIVE_CHECK_BLOCKER,
+  REQUEST_STORY_FEED,
+  RECEIVE_STORY_FEED,
 } from 'modules/instagram/insAuthActions';
 import { objFromListWith } from 'utils/ramdaUtils';
 
@@ -58,8 +60,10 @@ const initialState = {
   isPostingFollowUser: false,
   isPostingUnFollowUser: false,
   isCheckingBlocker: false,
+  isFetchingStoryReels: false,
   followersTimeStamp: {},
   unFollowersTimeStamp: {},
+  storyFeed: undefined,
 };
 
 // const dataSelector = path(['data']);
@@ -258,4 +262,13 @@ export default createReducers(initialState, {
       isCheckingBlocker: false,
     };
   },
+  [REQUEST_STORY_FEED]: (state, actions) => ({
+    ...state,
+    isFetchingStoryReels: true,
+  }),
+  [RECEIVE_STORY_FEED]: (state, actions) => ({
+    ...state,
+    isFetchingStoryReels: false,
+    storyFeed: actions.storyFeed,
+  }),
 });

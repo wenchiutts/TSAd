@@ -15,6 +15,9 @@ import {
   values,
   into,
   map,
+  pathOr,
+  reduce,
+  pluck,
   __,
 } from 'ramda';
 import { createSelector } from 'reselect';
@@ -45,6 +48,28 @@ export const insFollowingsSelector = createSelector(instagramSelector, path(['fo
 export const insFollowersSelector = createSelector(instagramSelector, path(['followers']));
 
 export const blockersSelector = createSelector(instagramSelector, path(['blockers']));
+
+export const storyFeedSelector = createSelector(
+  instagramSelector,
+  compose(pathOr([], ['storyFeed'])),
+);
+
+export const storyFeedListSelector = createSelector(
+  storyFeedSelector,
+  reduce(
+    (acc, c) => ({
+      ...acc,
+      [c.id]: {
+        idx: 0,
+        id: c.id,
+        items: [],
+      },
+    }),
+    {},
+  ),
+);
+
+export const storyFeedPositionSelector = createSelector(storyFeedSelector, pluck('id'));
 
 const dataSelector = path(['data']);
 const dataWithDefaultEmptyObjectSelector = compose(defaultTo({}), dataSelector);

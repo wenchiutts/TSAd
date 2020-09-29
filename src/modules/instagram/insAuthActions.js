@@ -19,6 +19,8 @@ export const REQUEST_UNFOLLOW_USER = 'REQUEST_UNFOLLOW_USER';
 export const END_UNFOLLOW_USER = 'END_UNFOLLOW_USER';
 export const REQUEST_CHECK_BLOCKER = 'REQUEST_CHECK_BLOCKER';
 export const RECEIVE_CHECK_BLOCKER = 'RECEIVE_CHECK_BLOCKER';
+export const REQUEST_STORY_FEED = 'REQUEST_STORY_FEED';
+export const RECEIVE_STORY_FEED = 'RECEIVE_STORY_FEED';
 
 export const receiveInsCookies = makeActionCreator(RECEIVE_INS_COOKIES, 'cookies');
 export const requestInsCookies = makeActionCreator(REQUEST_INS_COOKIES);
@@ -34,6 +36,8 @@ export const requestUnFollowUSer = makeActionCreator(REQUEST_UNFOLLOW_USER, 'use
 export const endUnFollowUser = makeActionCreator(END_UNFOLLOW_USER, 'userId');
 export const requestCheckBlocker = makeActionCreator(REQUEST_CHECK_BLOCKER);
 export const receiveCheckBlocker = makeActionCreator(RECEIVE_CHECK_BLOCKER, 'isBlocker', 'user');
+export const requestStoryFeed = makeActionCreator(REQUEST_STORY_FEED);
+export const receiveStoryFeed = makeActionCreator(RECEIVE_STORY_FEED, 'storyFeed');
 
 export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis }) => {
   try {
@@ -165,6 +169,19 @@ export const searchUserAction = username => async (dispatch, getState, { apis })
   } catch (e) {
     if (__DEV__) {
       console.log('check user', username, e, e.response);
+    }
+  }
+};
+
+export const fetchUserStoriesFeed = () => async (dispatch, getState, { apis }) => {
+  try {
+    dispatch(requestStoryFeed());
+    const result = await apis.instagram.getStoryReelFeedViaWeb();
+    dispatch(receiveStoryFeed(result));
+    return result;
+  } catch (e) {
+    if (__DEV__) {
+      console.log('fetch story feed', e, e.response);
     }
   }
 };
