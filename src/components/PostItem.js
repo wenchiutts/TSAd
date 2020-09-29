@@ -6,8 +6,6 @@ import { path } from 'ramda';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const Wrapper = styled(TouchableOpacity)``;
-
 const Img = styled(ImageBackground)`
   width: ${(screenWidth - 4) / 3};
   height: ${(screenWidth - 4) / 3};
@@ -45,14 +43,14 @@ const InteractionWrapper = ({ iconType, value }) => (
 );
 
 const PostItem = ({ likes, comments, src, onPress }) => (
-  <Wrapper onPress={onPress}>
+  <TouchableOpacity onPress={onPress}>
     <Img source={src}>
       <Mask>
         {likes && <InteractionWrapper iconType="like" value={likes} />}
         {comments && <InteractionWrapper iconType="comment" value={comments} />}
       </Mask>
     </Img>
-  </Wrapper>
+  </TouchableOpacity>
 );
 
 PostItem.propTypes = {
