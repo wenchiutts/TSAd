@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
 import { Text, Image, TouchableOpacity, ImageBackground, Dimensions, View } from 'react-native';
 import { path } from 'ramda';
+import { isExist } from 'utils/ramdaUtils';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -46,8 +47,8 @@ const PostItem = ({ likes, comments, src, onPress }) => (
   <TouchableOpacity onPress={onPress}>
     <Img source={src}>
       <Mask>
-        {likes && <InteractionWrapper iconType="like" value={likes} />}
-        {comments && <InteractionWrapper iconType="comment" value={comments} />}
+        {isExist(likes) && <InteractionWrapper iconType="like" value={likes} />}
+        {isExist(comments) && <InteractionWrapper iconType="comment" value={comments} />}
       </Mask>
     </Img>
   </TouchableOpacity>
