@@ -7,7 +7,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeStack from 'navigation/HomeStack';
 import SettingsScreen from 'screens/SettingsScreen';
-import InsightScreen from 'screens/InsightScreen';
+import InsightsStack from 'navigation/InsightsStack';
+
 import TabBarIcon from 'components/TabBarIcon';
 import styled from 'styled-components';
 
@@ -15,7 +16,6 @@ const Tab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
 export default function BottomTabNavigator({ navigation, route }) {
-  // const headerTitle = getHeaderTitle(route);
   navigation.setOptions({
     headerTitle: getHeaderTitle(route),
     // header: () => (
@@ -73,16 +73,35 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <Tab.Screen
         name="Insight"
-        component={InsightScreen}
-        options={{
-          cardStyle: { backgroundColor: '#0C0A2E' },
-          tabBarIcon: props => (
-            <TabBarIcon
-              {...props}
-              activeImg={require('assets/icons/tabbar_insight_S.png')}
-              inActiveImg={require('assets/icons/tabbar_insight_N.png')}
-            />
-          ),
+        component={InsightsStack}
+        options={({ route }) => {
+          const routeName =
+            route.state?.routes[route.state.index]?.name ||
+            route.state?.routes[0]?.name ||
+            'Insight';
+          if (routeName === 'Insight') {
+            return {
+              tabBarVisible: true,
+              tabBarIcon: props => (
+                <TabBarIcon
+                  {...props}
+                  activeImg={require('assets/icons/tabbar_insight_S.png')}
+                  inActiveImg={require('assets/icons/tabbar_insight_N.png')}
+                />
+              ),
+            };
+          } else {
+            return {
+              tabBarVisible: false,
+              tabBarIcon: props => (
+                <TabBarIcon
+                  {...props}
+                  activeImg={require('assets/icons/tabbar_insight_S.png')}
+                  inActiveImg={require('assets/icons/tabbar_insight_N.png')}
+                />
+              ),
+            };
+          }
         }}
       />
       <Tab.Screen

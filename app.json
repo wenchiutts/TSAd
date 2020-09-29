@@ -17,10 +17,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ins.reports.analyzer.instagram.tracker"
+    },
+    "android": {
+      "package": "com.tikfans2.www"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
-    }
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }
