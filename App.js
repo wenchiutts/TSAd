@@ -76,7 +76,7 @@ export default function App() {
                           route.state?.routes[route.state.index]?.name ||
                           route.state?.routes[0]?.name ||
                           'Home';
-                        if (routeName === 'Home') {
+                        if (routeName === 'Home' || routeName === 'Insight') {
                           return { headerShown: false };
                         }
                         return { headerShown: true };
