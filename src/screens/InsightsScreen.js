@@ -12,7 +12,7 @@ const StyledView = styled(View)`
   flex: 1;
   background-color: ${path(['theme', 'screenBackground'])};
   padding-horizontal: 12;
-  padding-top: 15%;
+  padding-top: 0;
 `;
 
 const ListWrapper = styled(View)`
@@ -63,23 +63,22 @@ const postInsightList = [
   {
     iconSource: require('assets/icons/popular.png'),
     description: 'Most popular posts',
-    navigation: () => navigation.navigate(''),
+    route: 'MostPopularPosts',
   },
   {
     iconSource: require('assets/icons/mostliked.png'),
     description: 'Most liked posts',
-    navigation: () => navigation.navigate(''),
+    route: 'MostLikedPosts',
   },
   {
     iconSource: require('assets/icons/mostcommend.png'),
     description: 'Most commented posts',
-    navigation: () => navigation.navigate(''),
+    route: 'MostCommentedPosts',
   },
 ];
 
-const InsightScreen = () => (
+const InsightScreen = ({ navigation }) => (
   <StyledView>
-    <Text>Insight!</Text>
     <ListWrapper>
       <Title>Story Insights</Title>
       <FlatList
@@ -97,7 +96,9 @@ const InsightScreen = () => (
         numColumns={2}
         data={postInsightList}
         keyExtractor={(item, index) => index}
-        renderItem={({ item }) => <StyledIconList {...item} />}
+        renderItem={({ item }) => (
+          <StyledIconList {...item} onPress={() => navigation.navigate(item.route)} />
+        )}
       />
     </ListWrapper>
   </StyledView>
