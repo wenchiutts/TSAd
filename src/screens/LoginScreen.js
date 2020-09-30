@@ -7,6 +7,7 @@ import { WebView } from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
 import { Modalize } from 'react-native-modalize';
 import styled from 'styled-components/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { isExist } from 'utils/ramdaUtils';
 import {
@@ -140,30 +141,38 @@ const GradientLayer = styled(View)`
 `;
 
 const LoginButtonWrapper = styled(TouchableOpacity)`
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 80%;
-  max-width: 342;
-  height: 60;
+  width: 60%;
+  max-width: 225;
+  height: 40;
   border-radius: 12;
-  background-color: #8f71ff;
+
   margin-top: auto;
-  margin-bottom: 207.5;
+  margin-bottom: 40%;
+  background-color: #32c5ff;
 `;
 
 const LoginButton = ({ onPress }) => (
   <LoginButtonWrapper onPress={onPress}>
-    <Ionicons name="logo-instagram" size={32} color="white" />
-    <Text
-      style={{
-        color: '#FFFFFF',
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginLeft: 10,
-      }}>
-      Login With Instagram
-    </Text>
+    <StyledLinearGradient
+      colors={['transparent', '#B620E0']}
+      locations={[0.1, 1]}
+      start={[0.7, 0.4]}
+      end={[0, 1]}>
+      <StyledLinearGradient
+        colors={['transparent', 'rgba(182,32,224, 0.7)']}
+        locations={[0.1, 1]}
+        start={[0.5, 0.4]}
+        end={[1, 1]}>
+        <Text
+          style={{
+            color: '#FFFFFF',
+            fontSize: 20,
+            fontWeight: 'bold',
+          }}>
+          Login with Instagram
+        </Text>
+      </StyledLinearGradient>
+    </StyledLinearGradient>
   </LoginButtonWrapper>
 );
 
@@ -175,4 +184,16 @@ const LoginLogo = styled(Image)`
   width: 65%;
   max-width: 260;
   max-height: 270;
+`;
+
+const StyledLinearGradient = styled(LinearGradient)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12;
 `;

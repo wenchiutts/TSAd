@@ -31,7 +31,7 @@ export default function App() {
       store.dispatch(getAuthStateAction());
       await store.dispatch(connectAppStore());
       store.dispatch(checkSubscriptionStatus());
-    }
+    };
     init();
   }, []);
   const { igUserNameContext, igUserNameState } = useCheckUserLoginIg(store);
@@ -96,8 +96,12 @@ export default function App() {
                     <Stack.Screen name="search" component={SearchModal} />
                   </>
                 ) : (
-                    <Stack.Screen name="Login" component={LoginScreen} />
-                  )}
+                  <Stack.Screen
+                    name="Login"
+                    component={LoginScreen}
+                    options={{ headerShown: false }}
+                  />
+                )}
               </Stack.Navigator>
             </NavigationContainer>
           </View>
