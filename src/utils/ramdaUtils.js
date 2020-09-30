@@ -26,6 +26,9 @@ import {
   curry,
   chain,
   zipObj,
+  when,
+  path,
+  dissocPath,
 } from 'ramda';
 
 export const isNilOrEmpty = anyPass([isNil, isEmpty]);
@@ -52,3 +55,7 @@ const _mayInvoke = ifElse(
 export const mayInvoke = unapply(_mayInvoke);
 
 export const objFromListWith = curry((fn, list) => chain(zipObj, map(fn))(list));
+
+export const dissocPathIfNilOrEmpty = curry((array, data) =>
+  when(compose(isNilOrEmpty, path(array)), dissocPath(array))(data),
+);

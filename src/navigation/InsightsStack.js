@@ -2,6 +2,7 @@ import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import InsightsScreen from 'screens/InsightsScreen';
+import StoryHistoryScreen from 'modules/insights/components/StoryHistoryScreen';
 import MostPopularPostsScreen from 'screens/insights/MostPopularPostsScreen';
 import MostLikedPostsScreens from 'screens/insights/MostLikedPostsScreens';
 import MostCommentedPostsScreen from 'screens/insights/MostCommentedPostsScreen';
@@ -38,6 +39,7 @@ const InsightsStack = ({ navigation, route }) => (
       headerLeft: () => <BackButton />,
     }}>
     <Stack.Screen name="Insight" component={InsightsScreen} options={{ headerLeft: null }} />
+    <Stack.Screen name="StoryHistory" component={StoryHistoryScreen} />
     <Stack.Screen name="MostPopularPosts" component={MostPopularPostsScreen} />
     <Stack.Screen name="MostLikedPosts" component={MostLikedPostsScreens} />
     <Stack.Screen name="MostCommentedPosts" component={MostCommentedPostsScreen} />
@@ -61,6 +63,8 @@ function getHeaderTitle(route) {
       return 'Most Liked Posts';
     case 'MostCommentedPosts':
       return 'Most Commented Posts';
+    case 'StoryHistory':
+      return 'History';
     default:
       return 'Insights';
   }

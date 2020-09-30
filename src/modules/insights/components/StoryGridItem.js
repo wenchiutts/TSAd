@@ -4,16 +4,20 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
 import { ImageBackground, View, Dimensions } from 'react-native';
 import { InteractionWithValue, InteractionIcon } from './InteractionWithValue';
+import { isExist } from 'utils/ramdaUtils';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const Img = styled(ImageBackground)`
-  width: ${(screenWidth - 4) / 3};
-  height: 245.5;
+  flex: 1;
+  resize-mode: contain;
+  justify-content: center;
 `;
 
 const StyledView = styled(View)`
   position: relative;
+  width: ${(screenWidth - 4) / 3};
+  height: 245.5;
 `;
 
 const Overlay = styled(View)`
@@ -33,12 +37,17 @@ const StyledInteractionWithValue = styled(InteractionWithValue)`
 
 const StoryGridItem = ({ imgSrc, viewsCount = 592 }) => (
   <StyledView>
-    <Img source={{ uri: imgSrc }} />
-    <Overlay />
-    <StyledInteractionWithValue
-      iconSlot={<InteractionIcon source={require('assets/icons/followstatus_visit_small.png')} />}
-      value={viewsCount}
-    />
+    <Img source={{ uri: imgSrc }}>
+      <Overlay />
+      {isExist(viewsCount) && (
+        <StyledInteractionWithValue
+          iconSlot={
+            <InteractionIcon source={require('assets/icons/followstatus_visit_small.png')} />
+          }
+          value={viewsCount}
+        />
+      )}
+    </Img>
   </StyledView>
 );
 

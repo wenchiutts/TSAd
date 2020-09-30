@@ -35,7 +35,7 @@ const storyInsightList = [
   {
     iconSource: require('assets/icons/history.png'),
     description: 'History',
-    navigation: () => navigation.navigate(''),
+    route: 'StoryHistory',
   },
   {
     iconSource: require('assets/icons/followstatus_best.png'),
@@ -86,7 +86,9 @@ const InsightScreen = ({ navigation }) => (
         numColumns={2}
         data={storyInsightList}
         keyExtractor={(item, index) => index}
-        renderItem={({ item }) => <StyledIconList {...item} />}
+        renderItem={({ item }) => (
+          <StyledIconList {...item} onPress={() => item.route && navigation.navigate(item.route)} />
+        )}
       />
     </ListWrapper>
     <ListWrapper>

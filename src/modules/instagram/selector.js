@@ -19,6 +19,11 @@ import {
   reduce,
   pluck,
   __,
+  descend,
+  prop,
+  sort,
+  evolve,
+  head,
 } from 'ramda';
 import { createSelector } from 'reselect';
 
@@ -158,3 +163,12 @@ export const unFollowersWithProfileSelector = createSelector(newUnFollowersSelec
 export const blockerDataSelector = createSelector(blockersSelector, values);
 
 export const blockerCountSelector = createSelector(blockerDataSelector, length);
+
+export const archivesSelector = createSelector(instagramSelector, path(['archives']));
+
+const byCreatedAt = descend(prop('created_at'));
+
+export const archivesListSelector = createSelector(
+  archivesSelector,
+  compose(map(evolve({ items: head })), sort(byCreatedAt), values),
+);

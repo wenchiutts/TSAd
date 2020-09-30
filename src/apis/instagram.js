@@ -2,6 +2,7 @@
 import Axios from 'axios';
 import UserAgent from 'user-agents';
 import { map, compose, path } from 'ramda';
+import qs from 'qs';
 // import delay from 'delay';
 
 import { normalizeInsProfileData } from 'utils/instagram';
@@ -70,7 +71,7 @@ export const checkBlockedById = async userId => {
     const res = await axios.get(`/api/v1/users/${userId}/info`, {
       baseURL: 'https://i.instagram.com',
       headers: {
-        'User-Agent': 'Instagram 60.0.0.12.96 ',
+        'User-Agent': 'Instagram 121.0.0.29.119',
       },
     });
     return res?.data?.user;
@@ -181,8 +182,34 @@ export const getStoryReelFeed = async () => {
   const res = await axios.get('/api/v1/feed/reels_tray/', {
     baseURL: 'https://i.instagram.com',
     headers: {
-      'User-Agent': 'Instagram 60.0.0.12.96 ',
+      'User-Agent': 'Instagram 121.0.0.29.119',
     },
+  });
+
+  return res.data;
+};
+
+export const getUserArchiveStories = async () => {
+  const res = await axios.get('/api/v1/archive/reel/day_shells/', {
+    baseURL: 'https://i.instagram.com',
+    headers: {
+      'User-Agent': 'Instagram 121.0.0.29.119',
+    },
+  });
+
+  return res.data;
+};
+
+export const getStoryDetailById = async ids => {
+  const res = await axios.get('/api/v1/feed/reels_media/', {
+    baseURL: 'https://i.instagram.com',
+    headers: {
+      'User-Agent': 'Instagram 121.0.0.29.119',
+    },
+    params: {
+      user_ids: ids,
+    },
+    paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }),
   });
 
   return res.data;

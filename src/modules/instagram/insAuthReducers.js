@@ -24,6 +24,8 @@ import {
   or,
   objOf,
   mergeRight,
+  pick,
+  mergeDeepWithKey,
   __,
 } from 'ramda';
 
@@ -44,8 +46,10 @@ import {
   RECEIVE_CHECK_BLOCKER,
   REQUEST_STORY_FEED,
   RECEIVE_STORY_FEED,
+  REQUEST_USER_ARCHIVE_STORY,
+  RECEIVE_USER_ARCHIVE_STORY,
 } from 'modules/instagram/insAuthActions';
-import { objFromListWith } from 'utils/ramdaUtils';
+import { objFromListWith, dissocPathIfNilOrEmpty } from 'utils/ramdaUtils';
 
 const initialState = {
   cookies: undefined,
@@ -61,9 +65,11 @@ const initialState = {
   isPostingUnFollowUser: false,
   isCheckingBlocker: false,
   isFetchingStoryReels: false,
+  isFetchingArchives: false,
   followersTimeStamp: {},
   unFollowersTimeStamp: {},
   storyFeed: undefined,
+  storyArchvies: {},
 };
 
 // const dataSelector = path(['data']);
@@ -270,5 +276,27 @@ export default createReducers(initialState, {
     ...state,
     isFetchingStoryReels: false,
     storyFeed: actions.storyFeed,
+  }),
+  [REQUEST_USER_ARCHIVE_STORY]: (state, actions) => ({
+    ...state,
+    isFetchingArchives: true,
+  }),
+  [RECEIVE_USER_ARCHIVE_STORY]: (state, actions) => ({
+    ...state,
+    archives: compose(
+      mergeDeepWithKey((k, l, r) => {
+        if (k === 'items') {
+          const newRight = compose(
+            dissocPathIfNilOrEmpty([0, 'viewer_count']),
+            dissocPathIfNilOrEmpty([0, 'viewer']),
+            dissocPathIfNilOrEmpty([0, 'total_viewer_count']),
+          )(r);
+          return [mergeRight(l[0], newRight[0])];
+        }
+        return r;
+      })(state.archives),
+      map(pick(['id', 'user', 'items', 'created_at'])),
+      path(['reels']),
+    )(actions.archives),
   }),
 });
