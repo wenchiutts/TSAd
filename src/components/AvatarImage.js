@@ -67,7 +67,7 @@ const AvatarWrapper = styled(View)`
 `;
 
 const Avatar = ({ source, isFollower, isFollowing, isExistStory, roundedWidth = 60 }) => (
-  <AvatarWrapper roundedWidth={roundedWidth} isExistStory={isExistStory}>
+  <AvatarWrapper roundedWidth={roundedWidth + 6} isExistStory={isExistStory}>
     <AvatarImage source={source} roundedWidth={roundedWidth} />
     <FollowingStatusImage isFollower={isFollower} isFollowing={isFollowing} />
   </AvatarWrapper>

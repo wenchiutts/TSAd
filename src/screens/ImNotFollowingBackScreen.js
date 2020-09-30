@@ -2,6 +2,7 @@ import * as React from 'react';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { FlatList } from 'react-native';
+import { path } from 'ramda';
 import styled from 'styled-components/native';
 
 import UserListItem from 'components/UserListItem';
@@ -15,7 +16,6 @@ const selector = createStructuredSelector({
 
 const ListItem = ({ item }) => (
   <LocalUserListItem
-    key={item.id}
     username={item.username}
     profilePicture={item.profile_pic_url}
     userId={item.id}
@@ -25,7 +25,14 @@ const ListItem = ({ item }) => (
 const ImNotFollowingBackScreen = () => {
   const { users } = useSelector(selector);
 
-  return <StyledView data={users} initialNumToRender={10} renderItem={ListItem} />;
+  return (
+    <StyledView
+      data={users}
+      initialNumToRender={10}
+      renderItem={ListItem}
+      keyExtractor={path(['id'])}
+    />
+  );
 };
 
 export default ImNotFollowingBackScreen;

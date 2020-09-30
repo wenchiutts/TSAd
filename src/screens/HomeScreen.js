@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, ScrollView, RefreshControl } from 'react-native';
+import { Text, View, ScrollView, RefreshControl, FlatList } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
@@ -19,14 +19,16 @@ import {
   newFollowersCountSelector,
   unFollowersCountSelector,
   blockerCountSelector,
+  storyFeedSelector,
 } from 'modules/instagram/selector';
-import { Avatar, AvatarImage } from 'components/AvatarImage';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   fetchInsUserAllFollowing,
   fetchInsUserProfileAction,
   fetchInsUserAllFollower,
+  fetchUserStoriesFeed,
 } from 'modules/instagram/insAuthActions';
+import { Avatar, AvatarImage } from 'components/AvatarImage';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -55,7 +57,22 @@ const userDataSelector = createStructuredSelector({
   mutualFollowing: mutualFollowingCountSelector,
   bestFollowers: always(0),
   ghostFollowers: always(0),
+  storyFeed: storyFeedSelector,
 });
+
+const renderAvatarListItem = ({ item, index }, navigation) => {
+  if (index === 0) {
+    return <SearchAvatar navigation={navigation} />;
+  }
+  return (
+    <AvatarWithUsername
+      username={item.user.username}
+      userPicture={{ uri: item.user.profile_pic_url }}
+      isExistStory
+      onPress={() => navigation.navigate('story', { deckIndex: index - 1 })}
+    />
+  );
+};
 
 const HomeScreen = ({ navigation }) => {
   const {
@@ -72,6 +89,7 @@ const HomeScreen = ({ navigation }) => {
     mutualFollowing,
     bestFollowers,
     ghostFollowers,
+    storyFeed,
   } = useSelector(userDataSelector);
 
   const dispatch = useDispatch();
@@ -79,6 +97,7 @@ const HomeScreen = ({ navigation }) => {
     await dispatch(fetchInsUserProfileAction());
     await dispatch(fetchInsUserAllFollowing());
     await dispatch(fetchInsUserAllFollower());
+    await dispatch(fetchUserStoriesFeed());
   };
   React.useEffect(() => {
     effectAction();
@@ -104,27 +123,16 @@ const HomeScreen = ({ navigation }) => {
       />
       <StoriesWrapper>
         <Title>Watch Stories Anonymously</Title>
-        <AvatarsWrapper horizontal>
-          <SearchAvatar navigation={navigation} />
-          <AvatarWithUsername
-            username="kai_hello"
-            isExistStory
-            onPress={() => navigation.navigate('story', { deckIndex: 0 })}
-          />
-          <AvatarWithUsername username="kai_hello" />
-          <AvatarWithUsername
-            username="kai_hello"
-            isExistStory
-            onPress={() => navigation.navigate('story', { deckIndex: 2 })}
-          />
-          <AvatarWithUsername username="kai_hello" />
-          <AvatarWithUsername username="kai_hello" />
-          <AvatarWithUsername username="kai_hello" />
-          <AvatarWithUsername username="kai_hello" />
-          <AvatarWithUsername username="kai_hello" />
-          <AvatarWithUsername username="kai_hello" />
-          <AvatarWithUsername username="kai_hello" />
-        </AvatarsWrapper>
+        <AvatarsWrapper
+          data={[
+            1, // for search item
+            ...storyFeed,
+          ]}
+          initialNumToRender={10}
+          keyExtractor={path(['id'])}
+          horizontal
+          renderItem={item => renderAvatarListItem(item, navigation)}
+        />
       </StoriesWrapper>
       <ListWrapper>
         <Title>Follower Status</Title>
@@ -209,7 +217,12 @@ const StoriesWrapper = styled(View)`
   margin-top: 24;
 `;
 
-const AvatarsWrapper = styled(ScrollView).attrs(props => ({
+const AvatarsListWrapper = styled(View)`
+  display: flex;
+  flex-direction: row;
+`;
+
+const AvatarsWrapper = styled(FlatList).attrs(props => ({
   contentContainerStyle: {
     justifyContent: 'flex-start',
     flexDirection: 'row',
@@ -223,7 +236,7 @@ const AvatarsWrapper = styled(ScrollView).attrs(props => ({
 
 const AvatarWithUsername = ({ username, userPicture, isExistStory, onPress }) => (
   <StyledAvatar onPress={onPress}>
-    <Avatar isExistStory={isExistStory} />
+    <Avatar isExistStory={isExistStory} source={userPicture} />
     <AvatarUsername>@{username}</AvatarUsername>
   </StyledAvatar>
 );
@@ -233,6 +246,11 @@ const StyledAvatar = styled(TouchableOpacity)`
   height: 100;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+`;
+
+const SearchAvatarWrapper = styled(StyledAvatar)`
+  flex: none;
 `;
 
 const AvatarUsername = styled(Text)`
@@ -243,12 +261,12 @@ const AvatarUsername = styled(Text)`
 `;
 
 const SearchAvatar = ({ navigation, following }) => (
-  <StyledAvatar>
+  <SearchAvatarWrapper>
     <Background onPress={() => navigation.navigate('search')}>
       <AvatarImage source={require('assets/icons/search.png')} roundedWidth={30} />
     </Background>
-    <AvatarUsername></AvatarUsername>
-  </StyledAvatar>
+    <AvatarUsername />
+  </SearchAvatarWrapper>
 );
 
 const Background = styled(TouchableOpacity)`
