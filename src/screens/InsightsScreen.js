@@ -5,6 +5,7 @@ import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
 
 import IconListItem from 'components/IconListItem';
+import useFetchArchiveStory from 'modules/insights/hooks/useFetchArchiveStory';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -50,12 +51,12 @@ const storyInsightList = [
   {
     iconSource: require('assets/icons/mostviewed.png'),
     description: 'Most viewed storyies',
-    navigation: () => navigation.navigate(''),
+    route: 'MostViewedStories',
   },
   {
     iconSource: require('assets/icons/leastviewed.png'),
     description: 'Least viewed storyies',
-    navigation: () => navigation.navigate(''),
+    route: 'LeastViewedStories',
   },
 ];
 
@@ -77,34 +78,40 @@ const postInsightList = [
   },
 ];
 
-const InsightScreen = ({ navigation }) => (
-  <StyledView>
-    <ListWrapper>
-      <Title>Story Insights</Title>
-      <FlatList
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
-        numColumns={2}
-        data={storyInsightList}
-        keyExtractor={(item, index) => index}
-        renderItem={({ item }) => (
-          <StyledIconList {...item} onPress={() => item.route && navigation.navigate(item.route)} />
-        )}
-      />
-    </ListWrapper>
-    <ListWrapper>
-      <Title>Post Insights</Title>
-      <FlatList
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
-        numColumns={2}
-        data={postInsightList}
-        keyExtractor={(item, index) => index}
-        renderItem={({ item }) => (
-          <StyledIconList {...item} onPress={() => navigation.navigate(item.route)} />
-        )}
-      />
-    </ListWrapper>
-  </StyledView>
-);
+const InsightScreen = ({ navigation }) => {
+  useFetchArchiveStory();
+  return (
+    <StyledView>
+      <ListWrapper>
+        <Title>Story Insights</Title>
+        <FlatList
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          numColumns={2}
+          data={storyInsightList}
+          keyExtractor={(item, index) => index}
+          renderItem={({ item }) => (
+            <StyledIconList
+              {...item}
+              onPress={() => item.route && navigation.navigate(item.route)}
+            />
+          )}
+        />
+      </ListWrapper>
+      <ListWrapper>
+        <Title>Post Insights</Title>
+        <FlatList
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          numColumns={2}
+          data={postInsightList}
+          keyExtractor={(item, index) => index}
+          renderItem={({ item }) => (
+            <StyledIconList {...item} onPress={() => navigation.navigate(item.route)} />
+          )}
+        />
+      </ListWrapper>
+    </StyledView>
+  );
+};
 
 InsightScreen.propTypes = {};
 

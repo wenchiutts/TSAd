@@ -7,10 +7,10 @@ import { path } from 'ramda';
 // import styled from 'styled-components/native';
 
 import StoryGridItem from 'modules/insights/components/StoryGridItem';
-import { archivesListSelector } from 'modules/instagram/selector';
+import { mostViewedArchivesListSelector } from 'modules/instagram/selector';
 
 const selector = createStructuredSelector({
-  archiveStory: archivesListSelector,
+  archiveStory: mostViewedArchivesListSelector,
 });
 
 const GridItem = ({ item }) => (
@@ -20,7 +20,7 @@ const GridItem = ({ item }) => (
   />
 );
 
-const StoryHistoryScreen = () => {
+const MostViewedStoriesScreen = () => {
   const { archiveStory } = useSelector(selector);
 
   return (
@@ -37,4 +37,4 @@ const StoryHistoryScreen = () => {
   );
 };
 
-export default StoryHistoryScreen;
+export default MostViewedStoriesScreen;

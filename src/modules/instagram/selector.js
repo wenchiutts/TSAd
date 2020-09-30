@@ -24,6 +24,7 @@ import {
   sort,
   evolve,
   head,
+  ascend,
 } from 'ramda';
 import { createSelector } from 'reselect';
 
@@ -171,4 +172,17 @@ const byCreatedAt = descend(prop('created_at'));
 export const archivesListSelector = createSelector(
   archivesSelector,
   compose(map(evolve({ items: head })), sort(byCreatedAt), values),
+);
+
+const byTotalViewCountDesc = descend(path(['items', 'total_viewer_count']));
+const byTotalViewCountAsc = ascend(path(['items', 'total_viewer_count']));
+
+export const mostViewedArchivesListSelector = createSelector(
+  archivesListSelector,
+  sort(byTotalViewCountDesc),
+);
+
+export const leastViewedArchivesListSelector = createSelector(
+  archivesListSelector,
+  sort(byTotalViewCountAsc),
 );
