@@ -1,5 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { compose, isEmpty, path } from 'ramda';
 import { View, Dimensions, TouchableWithoutFeedback, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,8 +10,16 @@ import ProgressBar from 'components/story/ProgressBar';
 import Image from 'react-native-image-progress';
 
 import CancelButton from 'components/header/CancelButton';
+import Spinner from 'components/Spinner';
 
 const { width, height } = Dimensions.get('window');
+
+const isEmptyStories = compose(isEmpty, path(['items']));
+
+const SpinnerWrapper = styled(View)`
+  width: ${width};
+  height: ${height};
+`;
 
 const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
   const navigation = useNavigation();
@@ -26,15 +35,21 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
     <TouchableWithoutFeedback onPress={onNextItem} delayPressIn={200}>
       <View>
         <CancelButton onPress={onPress} style={{ marginTop: 5, marginBottom: 12 }} />
-
-        <StyledImage source={{ uri: story.items[story.idx].src }}>
-          <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
-          <BackButton
-            onPrevItem={onPrevItem}
-            setBackOpacity={setBackOpacity}
-            backOpacity={backOpacity}
-          />
-        </StyledImage>
+        {isEmptyStories(story) && (
+          <SpinnerWrapper>
+            <Spinner />
+          </SpinnerWrapper>
+        )}
+        {!isEmptyStories(story) && (
+          <StyledImage source={{ uri: story?.items[story.idx].src }}>
+            <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
+            <BackButton
+              onPrevItem={onPrevItem}
+              setBackOpacity={setBackOpacity}
+              backOpacity={backOpacity}
+            />
+          </StyledImage>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -54,7 +69,7 @@ const StoryIndicator = ({ story, isVisible, indicatorAnim }) => (
   <IndicatorsWrap>
     <StyledLinearGradient colors={['rgba(0,0,0,0.33)', 'transparent']} locations={[0, 0.95]} />
     <Indicators>
-      {story.items.map((item, i) => (
+      {story?.items.map((item, i) => (
         <ProgressBar
           key={i}
           i={i}

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { FlatList } from 'react-native';
+import { path } from 'ramda';
 import styled from 'styled-components/native';
 
 import UserListItem from 'components/UserListItem';
@@ -25,7 +26,14 @@ const ListItem = ({ item }) => (
 const MutualFollowingScreen = () => {
   const { users } = useSelector(selector);
 
-  return <StyledView data={users} initialNumToRender={10} renderItem={ListItem} />;
+  return (
+    <StyledView
+      data={users}
+      initialNumToRender={10}
+      renderItem={ListItem}
+      keyExtractor={path(['id'])}
+    />
+  );
 };
 
 export default MutualFollowingScreen;

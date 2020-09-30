@@ -46,7 +46,14 @@ const ListItem = ({ item }) => (
 const UnfollowersScreen = () => {
   const { users } = useSelector(selectors);
 
-  return <StyledView data={users} initialNumToRender={10} renderItem={ListItem} />;
+  return (
+    <StyledView
+      data={users}
+      initialNumToRender={10}
+      renderItem={ListItem}
+      keyExtractor={path(['id'])}
+    />
+  );
 };
 
 export default UnfollowersScreen;

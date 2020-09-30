@@ -1,6 +1,7 @@
 // @format
 import Axios from 'axios';
 import UserAgent from 'user-agents';
+import { map, compose, path } from 'ramda';
 // import delay from 'delay';
 
 import { normalizeInsProfileData } from 'utils/instagram';
@@ -138,3 +139,51 @@ export const getFollowings = ({ userId, first = 20, after = '' }) =>
 export const follow = userId => axios.post(`/web/friendships/${userId}/follow/`);
 
 export const unfollow = userId => axios.post(`/web/friendships/${userId}/unfollow/`);
+
+export const getStoryReelFeedViaWeb = async (onlyStories = true) => {
+  const res = await axios.get('/graphql/query/', {
+    params: {
+      query_hash: '60b755363b5c230111347a7a4e242001',
+      variables: JSON.stringify({
+        only_stories: onlyStories,
+      }),
+    },
+  });
+
+  return compose(
+    map(path(['node'])),
+    path(['data', 'data', 'user', 'feed_reels_tray', 'edge_reels_tray_to_reel', 'edges']),
+  )(res);
+};
+
+export const getStoryDetails = async ({
+  reelIds = [],
+  tagNames = [],
+  locationIds = [],
+  precomposedOverlay = false,
+}) => {
+  const res = await axios.get('/graphql/query/', {
+    params: {
+      query_hash: '297c491471fff978fa2ab83c0673a618',
+      variables: JSON.stringify({
+        reel_ids: reelIds,
+        tag_names: tagNames,
+        location_ids: locationIds,
+        precomposed_overlay: precomposedOverlay,
+      }),
+    },
+  });
+
+  return res?.data?.data.reels_media;
+};
+
+export const getStoryReelFeed = async () => {
+  const res = await axios.get('/api/v1/feed/reels_tray/', {
+    baseURL: 'https://i.instagram.com',
+    headers: {
+      'User-Agent': 'Instagram 60.0.0.12.96 ',
+    },
+  });
+
+  return res.data;
+};
