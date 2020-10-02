@@ -1,9 +1,9 @@
 // @format
-
 import { compose, when, path, concat, pluck } from 'ramda';
 
 import makeActionCreator from 'actions/makeActionCreator';
 import { insProfileIdSelector } from 'modules/instagram//selector';
+import DEBUG from 'utils/logUtils';
 
 export const RECEIVE_INS_COOKIES = 'RECEIVE_INS_COOKIES';
 export const REQUEST_INS_COOKIES = 'REQUEST_INS_COOKIES';
@@ -23,6 +23,8 @@ export const REQUEST_STORY_FEED = 'REQUEST_STORY_FEED';
 export const RECEIVE_STORY_FEED = 'RECEIVE_STORY_FEED';
 export const REQUEST_USER_ARCHIVE_STORY = 'REQUEST_USER_ARCHIVE_STORY';
 export const RECEIVE_USER_ARCHIVE_STORY = 'RECEIVE_USER_ARCHIVE_STORY';
+export const REQUEST_USER_POSTS = 'REQUEST_USER_POSTS';
+export const RECEIVE_USER_POSTS = 'RECEIVE_USER_POSTS';
 
 export const receiveInsCookies = makeActionCreator(RECEIVE_INS_COOKIES, 'cookies');
 export const requestInsCookies = makeActionCreator(REQUEST_INS_COOKIES);
@@ -42,6 +44,8 @@ export const requestStoryFeed = makeActionCreator(REQUEST_STORY_FEED);
 export const receiveStoryFeed = makeActionCreator(RECEIVE_STORY_FEED, 'storyFeed');
 export const requestUserArchiveStory = makeActionCreator(REQUEST_USER_ARCHIVE_STORY);
 export const receiveUserArchiveStory = makeActionCreator(RECEIVE_USER_ARCHIVE_STORY, 'archives');
+export const requestUserPosts = makeActionCreator(REQUEST_USER_POSTS);
+export const receiveUserPosts = makeActionCreator(RECEIVE_USER_POSTS, 'posts');
 
 export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis }) => {
   try {
@@ -87,7 +91,7 @@ export const fetchInsUserAllFollowing = (after = '') => async dispatch => {
     ),
   )(result);
 
-  return result.count;
+  return result?.count;
 };
 
 export const fetchInsUserFollower = (after = '') => async (dispatch, getState, { apis }) => {
@@ -203,4 +207,28 @@ export const fetchUserArchiveStoryies = () => async (dispatch, getState, { apis 
       console.log('fetch story feed', e, e.response);
     }
   }
+};
+
+export const fetchUserPosts = (after = '') => async (dispatch, getState, { apis }) => {
+  try {
+    const userIgId = compose(insProfileIdSelector, getState)();
+    dispatch(requestUserPosts());
+    const posts = await apis.instagram.getPosts({ userId: userIgId, after });
+    dispatch(receiveUserPosts(posts));
+    return posts;
+  } catch (e) {
+    DEBUG.log('fetch user posts error', e, e.response);
+  }
+};
+
+export const fetchAllUserPosts = (after = '') => async dispatch => {
+  const result = await dispatch(fetchUserPosts(after));
+  when(
+    path(['page_info', 'has_next_page']),
+    compose(
+      endCursor => setTimeout(() => dispatch(fetchAllUserPosts(endCursor)), 3000),
+      path(['page_info', 'end_cursor']),
+    ),
+  )(result);
+  return result?.count;
 };

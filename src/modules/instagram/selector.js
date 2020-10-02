@@ -266,3 +266,17 @@ export const archivesLeastViewerListSelector = createSelector(
   archivesUserViewListSelector,
   sort(byViewedCountAsc),
 );
+
+export const postsSelector = createSelector(instagramSelector, path(['posts']));
+
+export const postsListSelector = createSelector(postsSelector, compose(values, path(['edges'])));
+
+const byPopularityDesc = descend(path(['popularity']));
+const byLikedCount = descend(path(['edge_media_preview_like', 'count']));
+const byCommentCount = descend(path(['edge_media_to_comment', 'count']));
+
+export const postsByPopularitySelector = createSelector(postsListSelector, sort(byPopularityDesc));
+
+export const postByLikedCountSelector = createSelector(postsListSelector, sort(byLikedCount));
+
+export const postByCommentCountSelector = createSelector(postsListSelector, sort(byCommentCount));

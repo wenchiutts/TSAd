@@ -26,6 +26,7 @@ import {
   mergeRight,
   pick,
   mergeDeepWithKey,
+  identity,
   __,
 } from 'ramda';
 
@@ -48,8 +49,11 @@ import {
   RECEIVE_STORY_FEED,
   REQUEST_USER_ARCHIVE_STORY,
   RECEIVE_USER_ARCHIVE_STORY,
+  REQUEST_USER_POSTS,
+  RECEIVE_USER_POSTS,
 } from 'modules/instagram/insAuthActions';
 import { objFromListWith, dissocPathIfNilOrEmpty } from 'utils/ramdaUtils';
+import {} from './insAuthActions';
 
 const initialState = {
   cookies: undefined,
@@ -61,6 +65,7 @@ const initialState = {
   isFetching: false,
   isFetchingFollowers: false,
   isFetchingFollowings: false,
+  isFetchingUserPosts: false,
   isPostingFollowUser: false,
   isPostingUnFollowUser: false,
   isCheckingBlocker: false,
@@ -298,5 +303,30 @@ export default createReducers(initialState, {
       map(pick(['id', 'user', 'items', 'created_at'])),
       path(['reels']),
     )(actions.archives),
+  }),
+  [REQUEST_USER_POSTS]: (state, actions) => ({
+    ...state,
+    isFetchingUserPosts: true,
+  }),
+  [RECEIVE_USER_POSTS]: (state, actions) => ({
+    ...state,
+    isFetchingUserPosts: false,
+    posts: evolve({
+      edges: compose(
+        mergeRight(state?.posts?.edges || {}),
+        map(
+          converge(mergeRight, [
+            identity,
+            applySpec({
+              popularity: converge(add, [
+                path(['edge_media_to_comment', 'count']),
+                path(['edge_media_preview_like', 'count']),
+              ]),
+            }),
+          ]),
+        ),
+        objFromListWith(path(['id'])),
+      ),
+    })(actions.posts),
   }),
 });

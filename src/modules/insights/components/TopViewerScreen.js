@@ -23,7 +23,7 @@ const ListItem = ({ item }) => (
   <UserListItem
     isFollower={item.isFollower}
     isFollowing={item.isFollowing}
-    username={item.user.username}
+    username={item.user?.username}
     profilePicture={item.user.profile_pic_url}
     userId={item.user.pk}
     descriptionElement={<Description>viewed {item.count} stories</Description>}

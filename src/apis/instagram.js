@@ -1,7 +1,7 @@
 // @format
 import Axios from 'axios';
 import UserAgent from 'user-agents';
-import { map, compose, path, pathOr } from 'ramda';
+import { map, compose, path, pathOr, evolve } from 'ramda';
 import qs from 'qs';
 // import delay from 'delay';
 
@@ -213,4 +213,43 @@ export const getStoryDetailById = async ids => {
   });
 
   return res.data;
+};
+
+export const getChainsData = async userId => {
+  const result = await axios.get('/graphql/query/', {
+    params: {
+      query_hash: '7c16654f22c819fb63d1183034a5162f',
+      variables: JSON.stringify({
+        user_id: userId,
+        include_chaining: true,
+        include_reel: false,
+        include_suggested_users: false,
+        include_logged_out_extras: false,
+        include_highlight_reels: false,
+      }),
+    },
+  });
+  return compose(
+    map(path(['node'])),
+    pathOr([], ['data', 'data', 'user', 'edge_chaining', 'edges']),
+  )(result);
+};
+
+export const getPosts = async ({ userId, perPage = 12, after = '' }) => {
+  const res = await axios.get('/graphql/query/', {
+    params: {
+      query_hash: '42323d64886122307be10013ad2dcc44',
+      variables: JSON.stringify({
+        id: userId,
+        first: perPage,
+        after,
+      }),
+    },
+  });
+  return compose(
+    evolve({
+      edges: map(path(['node'])),
+    }),
+    path(['data', 'data', 'user', 'edge_owner_to_timeline_media']),
+  )(res);
 };

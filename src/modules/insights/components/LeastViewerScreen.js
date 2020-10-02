@@ -8,6 +8,7 @@ import styled from 'styled-components/native';
 
 import { archivesLeastViewerListSelector } from 'modules/instagram/selector';
 import UserListItem from 'components/UserListItem';
+import { isExist } from 'utils/ramdaUtils';
 
 const selector = createStructuredSelector({
   viewers: archivesLeastViewerListSelector,
@@ -22,9 +23,9 @@ const ListItem = ({ item }) => (
   <UserListItem
     isFollower={item.isFollower}
     isFollowing={item.isFollowing}
-    username={item.user.username}
-    profilePicture={item.user.profile_pic_url}
-    userId={item.user.pk}
+    username={item.user?.username}
+    profilePicture={item.user?.profile_pic_url}
+    userId={item.user?.pk}
     descriptionElement={<Description>viewed {item.count} stories</Description>}
   />
 );
@@ -34,12 +35,14 @@ const TopViewerScreen = () => {
 
   return (
     <View>
-      <FlatList
-        data={viewers}
-        keyExtractor={compose(String, path(['user', 'pk']))}
-        renderItem={ListItem}
-        initialNumToRender={10}
-      />
+      {isExist(viewers) && (
+        <FlatList
+          data={viewers}
+          keyExtractor={compose(String, path(['user', 'pk']))}
+          renderItem={ListItem}
+          initialNumToRender={10}
+        />
+      )}
     </View>
   );
 };

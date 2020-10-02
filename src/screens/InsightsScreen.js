@@ -7,6 +7,7 @@ import { path, pathOr } from 'ramda';
 
 import IconListItem from 'components/IconListItem';
 import useFetchArchiveStory from 'modules/insights/hooks/useFetchArchiveStory';
+import useFetchAllUserPosts from 'modules/insights/hooks/useFetchAllUserPosts';
 import { mapIndexed } from 'utils/ramdaUtils';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -93,6 +94,7 @@ const TwoColumnViewWrapper = styled(View)`
 const InsightScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const { effectAction } = useFetchArchiveStory();
+  useFetchAllUserPosts();
   const onRefresh = React.useCallback(() => {
     const callbackAction = async () => {
       setRefreshing(true);

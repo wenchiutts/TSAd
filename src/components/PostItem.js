@@ -1,13 +1,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
-import { Text, Image, TouchableOpacity, ImageBackground, Dimensions, View } from 'react-native';
+import { Text, Image, TouchableOpacity, Dimensions, View } from 'react-native';
 import { path } from 'ramda';
 import { isExist } from 'utils/ramdaUtils';
+import FastImage from 'react-native-fast-image';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const Img = styled(ImageBackground)`
+const Img = styled(FastImage)`
   width: ${(screenWidth - 4) / 3};
   height: ${(screenWidth - 4) / 3};
   margin-bottom: 2;
@@ -45,12 +46,17 @@ const InteractionWrapper = ({ iconType, value }) => (
 
 const PostItem = ({ likes, comments, src, onPress }) => (
   <TouchableOpacity onPress={onPress}>
-    <Img source={src}>
-      <Mask>
-        {isExist(likes) && <InteractionWrapper iconType="like" value={likes} />}
-        {isExist(comments) && <InteractionWrapper iconType="comment" value={comments} />}
-      </Mask>
-    </Img>
+    <Img
+      source={{
+        ...src,
+        priority: FastImage.priority.normal,
+      }}
+      resizeMode={FastImage.resizeMode.contain}
+    />
+    <Mask>
+      {isExist(likes) && <InteractionWrapper iconType="like" value={likes} />}
+      {isExist(comments) && <InteractionWrapper iconType="comment" value={comments} />}
+    </Mask>
   </TouchableOpacity>
 );
 
@@ -61,4 +67,4 @@ PostItem.propTypes = {
   onPress: PropTypes.func,
 };
 
-export default PostItem;
+export default React.memo(PostItem);
