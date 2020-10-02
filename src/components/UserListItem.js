@@ -17,6 +17,7 @@ const UserListItem = ({
   profilePicture,
   userId,
   roundedWidth,
+  isExistStory,
   style,
 }) => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const UserListItem = ({
         isFollower={isFollower}
         isFollowing={isFollowing}
         roundedWidth={roundedWidth}
+        isExistStory={isExistStory}
       />
       <TextWrapper>
         <Username>@{username}</Username>
