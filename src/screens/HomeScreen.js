@@ -129,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
             ...storyFeed,
           ]}
           initialNumToRender={10}
-          keyExtractor={path(['id'])}
+          keyExtractor={pathOr('0', ['id'])}
           horizontal
           renderItem={item => renderAvatarListItem(item, navigation)}
         />

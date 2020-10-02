@@ -24,7 +24,7 @@ const AvatarImage = ({
 }) => <StyledImage source={source} {...rest} />;
 
 AvatarImage.propTypes = {
-  source: PropTypes.object,
+  source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
 };
 
 const FollowingStatusIcon = styled(Image)`
@@ -74,7 +74,7 @@ const Avatar = ({ source, isFollower, isFollowing, isExistStory, roundedWidth = 
 );
 
 Avatar.propTypes = {
-  source: PropTypes.object,
+  source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
   isFollower: PropTypes.bool,
   isFollowing: PropTypes.bool,
   isExistStory: PropTypes.bool,

@@ -1,6 +1,6 @@
 // @format
 
-import { compose, when, path, concat } from 'ramda';
+import { compose, when, path, concat, pluck } from 'ramda';
 
 import makeActionCreator from 'actions/makeActionCreator';
 import { insProfileIdSelector } from 'modules/instagram//selector';
@@ -21,6 +21,8 @@ export const REQUEST_CHECK_BLOCKER = 'REQUEST_CHECK_BLOCKER';
 export const RECEIVE_CHECK_BLOCKER = 'RECEIVE_CHECK_BLOCKER';
 export const REQUEST_STORY_FEED = 'REQUEST_STORY_FEED';
 export const RECEIVE_STORY_FEED = 'RECEIVE_STORY_FEED';
+export const REQUEST_USER_ARCHIVE_STORY = 'REQUEST_USER_ARCHIVE_STORY';
+export const RECEIVE_USER_ARCHIVE_STORY = 'RECEIVE_USER_ARCHIVE_STORY';
 
 export const receiveInsCookies = makeActionCreator(RECEIVE_INS_COOKIES, 'cookies');
 export const requestInsCookies = makeActionCreator(REQUEST_INS_COOKIES);
@@ -38,6 +40,8 @@ export const requestCheckBlocker = makeActionCreator(REQUEST_CHECK_BLOCKER);
 export const receiveCheckBlocker = makeActionCreator(RECEIVE_CHECK_BLOCKER, 'isBlocker', 'user');
 export const requestStoryFeed = makeActionCreator(REQUEST_STORY_FEED);
 export const receiveStoryFeed = makeActionCreator(RECEIVE_STORY_FEED, 'storyFeed');
+export const requestUserArchiveStory = makeActionCreator(REQUEST_USER_ARCHIVE_STORY);
+export const receiveUserArchiveStory = makeActionCreator(RECEIVE_USER_ARCHIVE_STORY, 'archives');
 
 export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis }) => {
   try {
@@ -178,6 +182,21 @@ export const fetchUserStoriesFeed = () => async (dispatch, getState, { apis }) =
     dispatch(requestStoryFeed());
     const result = await apis.instagram.getStoryReelFeedViaWeb();
     dispatch(receiveStoryFeed(result));
+    return result;
+  } catch (e) {
+    if (__DEV__) {
+      console.log('fetch story feed', e, e.response);
+    }
+  }
+};
+
+export const fetchUserArchiveStoryies = () => async (dispatch, getState, { apis }) => {
+  try {
+    dispatch(requestUserArchiveStory());
+    const archives = await apis.instagram.getUserArchiveStories();
+    const reelIds = compose(pluck('id'), path(['items']))(archives);
+    const result = await apis.instagram.getStoryDetailById(reelIds);
+    dispatch(receiveUserArchiveStory(result));
     return result;
   } catch (e) {
     if (__DEV__) {
