@@ -3,6 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import InsightsScreen from 'screens/InsightsScreen';
 import StoryHistoryScreen from 'modules/insights/components/StoryHistoryScreen';
+import TopViewerScreen from 'modules/insights/components/TopViewerScreen';
+import LeastViewerScreen from 'modules/insights/components/LeastViewerScreen';
 import MostPopularPostsScreen from 'screens/insights/MostPopularPostsScreen';
 import MostLikedPostsScreens from 'screens/insights/MostLikedPostsScreens';
 import MostCommentedPostsScreen from 'screens/insights/MostCommentedPostsScreen';
@@ -42,6 +44,8 @@ const InsightsStack = ({ navigation, route }) => (
     }}>
     <Stack.Screen name="Insight" component={InsightsScreen} options={{ headerLeft: null }} />
     <Stack.Screen name="StoryHistory" component={StoryHistoryScreen} />
+    <Stack.Screen name="TopViewers" component={TopViewerScreen} />
+    <Stack.Screen name="LeastViewers" component={LeastViewerScreen} />
     <Stack.Screen name="MostViewedStories" component={MostViewedStoriesScreen} />
     <Stack.Screen name="LeastViewedStories" component={LeastViewedStoriesScreen} />
     <Stack.Screen name="MostPopularPosts" component={MostPopularPostsScreen} />
@@ -69,6 +73,10 @@ function getHeaderTitle(route) {
       return 'Most Commented Posts';
     case 'StoryHistory':
       return 'History';
+    case 'TopViewers':
+      return 'Top Viewers';
+    case 'LeastViewers':
+      return 'Least Viewers';
     default:
       return 'Insights';
   }

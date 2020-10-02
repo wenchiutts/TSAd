@@ -1,19 +1,25 @@
 // @format
 import * as React from 'react';
-import { Text, View, FlatList, Dimensions } from 'react-native';
+import PropTypes from 'prop-types';
+import { Text, View, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
 
 import IconListItem from 'components/IconListItem';
 import useFetchArchiveStory from 'modules/insights/hooks/useFetchArchiveStory';
+import { mapIndexed } from 'utils/ramdaUtils';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const StyledView = styled(View)`
+const StyledView = styled(ScrollView).attrs(props => ({
+  contentContainerStyle: {
+    paddingHorizontal: 12,
+    paddingTop: 0,
+    paddingBottom: '28%',
+  },
+}))`
   flex: 1;
   background-color: ${path(['theme', 'screenBackground'])};
-  padding-horizontal: 12;
-  padding-top: 0;
 `;
 
 const ListWrapper = styled(View)`
@@ -41,12 +47,12 @@ const storyInsightList = [
   {
     iconSource: require('assets/icons/followstatus_best.png'),
     description: 'Top viewers',
-    navigation: () => navigation.navigate(''),
+    route: 'TopViewers',
   },
   {
     iconSource: require('assets/icons/followstatus_ghost.png'),
     description: 'Least viewers',
-    navigation: () => navigation.navigate(''),
+    route: 'LeastViewers',
   },
   {
     iconSource: require('assets/icons/mostviewed.png'),
@@ -78,41 +84,55 @@ const postInsightList = [
   },
 ];
 
+const TwoColumnViewWrapper = styled(View)`
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+`;
+
 const InsightScreen = ({ navigation }) => {
-  useFetchArchiveStory();
+  const [refreshing, setRefreshing] = React.useState(false);
+  const { effectAction } = useFetchArchiveStory();
+  const onRefresh = React.useCallback(() => {
+    const callbackAction = async () => {
+      setRefreshing(true);
+      await effectAction();
+      setRefreshing(false);
+    };
+    callbackAction();
+  }, []);
   return (
-    <StyledView>
+    <StyledView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <ListWrapper>
         <Title>Story Insights</Title>
-        <FlatList
-          columnWrapperStyle={{ justifyContent: 'space-between' }}
-          numColumns={2}
-          data={storyInsightList}
-          keyExtractor={(item, index) => index}
-          renderItem={({ item }) => (
+        <TwoColumnViewWrapper>
+          {mapIndexed((item, idx) => (
             <StyledIconList
+              key={idx}
               {...item}
               onPress={() => item.route && navigation.navigate(item.route)}
             />
-          )}
-        />
+          ))(storyInsightList)}
+        </TwoColumnViewWrapper>
       </ListWrapper>
       <ListWrapper>
         <Title>Post Insights</Title>
-        <FlatList
-          columnWrapperStyle={{ justifyContent: 'space-between' }}
-          numColumns={2}
-          data={postInsightList}
-          keyExtractor={(item, index) => index}
-          renderItem={({ item }) => (
-            <StyledIconList {...item} onPress={() => navigation.navigate(item.route)} />
-          )}
-        />
+        <TwoColumnViewWrapper>
+          {mapIndexed((item, idx) => (
+            <StyledIconList
+              key={idx}
+              {...item}
+              onPress={() => item.route && navigation.navigate(item.route)}
+            />
+          ))(postInsightList)}
+        </TwoColumnViewWrapper>
       </ListWrapper>
     </StyledView>
   );
 };
 
-InsightScreen.propTypes = {};
+InsightScreen.propTypes = {
+  navigation: PropTypes.object,
+};
 
 export default InsightScreen;

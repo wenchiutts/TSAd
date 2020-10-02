@@ -7,13 +7,15 @@ import { fetchUserArchiveStoryies } from 'modules/instagram/insAuthActions';
 const useFetchArchiveStory = (props, dependency = []) => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const effectAction = async () => {
-      await dispatch(fetchUserArchiveStoryies());
-    };
+  const effectAction = async () => {
+    await dispatch(fetchUserArchiveStoryies());
+  };
 
+  useEffect(() => {
     effectAction();
   }, dependency);
+
+  return { effectAction };
 };
 
 export default useFetchArchiveStory;

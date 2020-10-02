@@ -288,7 +288,7 @@ export default createReducers(initialState, {
         if (k === 'items') {
           const newRight = compose(
             dissocPathIfNilOrEmpty([0, 'viewer_count']),
-            dissocPathIfNilOrEmpty([0, 'viewer']),
+            dissocPathIfNilOrEmpty([0, 'viewers']),
             dissocPathIfNilOrEmpty([0, 'total_viewer_count']),
           )(r);
           return [mergeRight(l[0], newRight[0])];

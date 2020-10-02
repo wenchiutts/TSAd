@@ -1,7 +1,7 @@
 // @format
 import Axios from 'axios';
 import UserAgent from 'user-agents';
-import { map, compose, path } from 'ramda';
+import { map, compose, path, pathOr } from 'ramda';
 import qs from 'qs';
 // import delay from 'delay';
 
@@ -153,7 +153,7 @@ export const getStoryReelFeedViaWeb = async (onlyStories = true) => {
 
   return compose(
     map(path(['node'])),
-    path(['data', 'data', 'user', 'feed_reels_tray', 'edge_reels_tray_to_reel', 'edges']),
+    pathOr([], ['data', 'data', 'user', 'feed_reels_tray', 'edge_reels_tray_to_reel', 'edges']),
   )(res);
 };
 

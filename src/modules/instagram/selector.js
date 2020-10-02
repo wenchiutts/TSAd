@@ -1,6 +1,7 @@
 // @format
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
+  objOf,
   path,
   compose,
   filter,
@@ -25,8 +26,16 @@ import {
   evolve,
   head,
   ascend,
+  converge,
+  applySpec,
+  identity,
+  always,
+  mergeDeepWithKey,
+  concat,
+  add,
 } from 'ramda';
 import { createSelector } from 'reselect';
+import { isExist, lookup } from 'utils/ramdaUtils';
 
 const instagramSelector = path(['instagram']);
 
@@ -185,4 +194,75 @@ export const mostViewedArchivesListSelector = createSelector(
 export const leastViewedArchivesListSelector = createSelector(
   archivesListSelector,
   sort(byTotalViewCountAsc),
+);
+
+export const archivesUserViewSelector = createSelector(
+  archivesListSelector,
+  followersDataSelector,
+  insFollowingsSelector,
+  (list, followers, followings) => {
+    const lookupFollowers = lookup(followers);
+    const lookupFollowings = lookup(followings);
+    const result = reduce((acc, c) => {
+      const user = compose(
+        reduce(
+          (userAcc, userC) =>
+            compose(
+              mergeDeepWithKey(
+                (k, l, r) => {
+                  if (k === 'viewedStory') {
+                    return concat(l, r);
+                  } else if (k === 'count') {
+                    return add(l, r);
+                  }
+                  return r;
+                },
+                __,
+                userAcc,
+              ),
+              converge(objOf, [
+                path(['pk']),
+                applySpec({
+                  user: identity,
+                  viewedStory: always([c.id]),
+                  count: always(1),
+                  isFollowing: compose(isExist, lookupFollowings, path(['pk'])),
+                  isFollower: compose(isExist, lookupFollowers, path(['pk'])),
+                }),
+              ]),
+            )(userC),
+          {},
+        ),
+        path(['items', 'viewers']),
+      )(c);
+      return mergeDeepWithKey(
+        (k, l, r) => {
+          if (k === 'viewedStory') {
+            return concat(l, r);
+          } else if (k === 'count') {
+            return add(l, r);
+          }
+          return r;
+        },
+        user,
+        acc,
+      );
+    }, {})(list);
+    return result;
+  },
+);
+
+export const archivesUserViewListSelector = createSelector(archivesUserViewSelector, values);
+
+const byViewedCountDesc = descend(path(['count']));
+const byViewedCountAsc = ascend(path(['count']));
+
+export const archivesTopViewerListSelector = createSelector(
+  archivesUserViewListSelector,
+  sort(byViewedCountDesc),
+);
+
+export const archivesLeastViewerListSelector = createSelector(
+  archivesUserViewListSelector,
+  sort(byViewedCountAsc),
 );

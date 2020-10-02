@@ -55,7 +55,7 @@ UserListItem.propTypes = {
     PropTypes.arrayOf(PropTypes.element),
   ]),
   profilePicture: PropTypes.string,
-  userId: PropTypes.string,
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   roundedWidth: PropTypes.number,
   style: PropTypes.array,
 };
