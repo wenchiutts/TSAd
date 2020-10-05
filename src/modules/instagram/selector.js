@@ -1,6 +1,8 @@
 // @format
 /* eslint-disable react-hooks/rules-of-hooks */
+import dayjs from 'dayjs';
 import {
+  objOf,
   path,
   compose,
   filter,
@@ -22,11 +24,19 @@ import {
   descend,
   prop,
   sort,
-  evolve,
-  head,
   ascend,
+  converge,
+  applySpec,
+  identity,
+  always,
+  mergeDeepWithKey,
+  concat,
+  add,
+  flatten,
 } from 'ramda';
+// import DEBUG from 'utils/logUtils';
 import { createSelector } from 'reselect';
+import { isExist, lookup } from 'utils/ramdaUtils';
 
 const instagramSelector = path(['instagram']);
 
@@ -48,6 +58,8 @@ export const insPostCountSelector = createSelector(insProfileSelector, path(['po
 export const insProfilePictureSelector = createSelector(insProfileSelector, path(['profilePicHd']));
 
 export const insProfileIdSelector = createSelector(insProfileSelector, path(['id']));
+
+export const insUsernameSelector = createSelector(insProfileSelector, path(['username']));
 
 export const insFollowingsSelector = createSelector(instagramSelector, path(['followings']));
 
@@ -80,8 +92,13 @@ export const storyFeedPositionSelector = createSelector(storyFeedSelector, pluck
 const dataSelector = path(['data']);
 const dataWithDefaultEmptyObjectSelector = compose(defaultTo({}), dataSelector);
 
-const followersDataSelector = createSelector(
+export const followersDataSelector = createSelector(
   insFollowersSelector,
+  dataWithDefaultEmptyObjectSelector,
+);
+
+export const followingsDataSelector = createSelector(
+  insFollowingsSelector,
   dataWithDefaultEmptyObjectSelector,
 );
 
@@ -165,17 +182,17 @@ export const blockerDataSelector = createSelector(blockersSelector, values);
 
 export const blockerCountSelector = createSelector(blockerDataSelector, length);
 
-export const archivesSelector = createSelector(instagramSelector, path(['archives']));
+export const archivesSelector = createSelector(instagramSelector, pathOr({}, ['archives']));
 
-const byCreatedAt = descend(prop('created_at'));
+const byTakenAt = descend(prop('taken_at'));
 
 export const archivesListSelector = createSelector(
   archivesSelector,
-  compose(map(evolve({ items: head })), sort(byCreatedAt), values),
+  compose(sort(byTakenAt), flatten, values, pluck('items')),
 );
 
-const byTotalViewCountDesc = descend(path(['items', 'total_viewer_count']));
-const byTotalViewCountAsc = ascend(path(['items', 'total_viewer_count']));
+const byTotalViewCountDesc = descend(path(['total_viewer_count']));
+const byTotalViewCountAsc = ascend(path(['total_viewer_count']));
 
 export const mostViewedArchivesListSelector = createSelector(
   archivesListSelector,
@@ -186,3 +203,109 @@ export const leastViewedArchivesListSelector = createSelector(
   archivesListSelector,
   sort(byTotalViewCountAsc),
 );
+
+export const archivesUserViewSelector = createSelector(
+  archivesListSelector,
+  followersDataSelector,
+  followingsDataSelector,
+  (list, followers, followings) => {
+    const lookupFollowers = lookup(followers);
+    const lookupFollowings = lookup(followings);
+    const result = reduce((acc, c) => {
+      const user = compose(
+        reduce(
+          (userAcc, userC) =>
+            compose(
+              mergeDeepWithKey(
+                (k, l, r) => {
+                  if (k === 'viewedStory') {
+                    return concat(l, r);
+                  } else if (k === 'count') {
+                    return add(l, r);
+                  }
+                  return r;
+                },
+                __,
+                userAcc,
+              ),
+              converge(objOf, [
+                path(['pk']),
+                applySpec({
+                  user: identity,
+                  viewedStory: always([c.id]),
+                  count: always(1),
+                  isFollowing: compose(isExist, lookupFollowings, String, path(['pk'])),
+                  isFollower: compose(isExist, lookupFollowers, String, path(['pk'])),
+                }),
+              ]),
+            )(userC),
+          {},
+        ),
+        path(['viewers']),
+      )(c);
+      return mergeDeepWithKey(
+        (k, l, r) => {
+          if (k === 'viewedStory') {
+            return concat(l, r);
+          } else if (k === 'count') {
+            return add(l, r);
+          }
+          return r;
+        },
+        user,
+        acc,
+      );
+    }, {})(list);
+    return result;
+  },
+);
+
+export const archivesUserViewListSelector = createSelector(archivesUserViewSelector, values);
+
+const byViewedCountDesc = descend(path(['count']));
+const byViewedCountAsc = ascend(path(['count']));
+
+export const archivesTopViewerListSelector = createSelector(
+  archivesUserViewListSelector,
+  sort(byViewedCountDesc),
+);
+
+export const archivesLeastViewerListSelector = createSelector(
+  archivesUserViewListSelector,
+  sort(byViewedCountAsc),
+);
+
+export const recentStoriesListSelector = createSelector(
+  archivesListSelector,
+  filter(compose(gt(__, dayjs().subtract(2, 'd').unix()), path(['taken_at']))),
+);
+
+export const recentStoriesListCountSelector = createSelector(recentStoriesListSelector, length);
+
+export const storyViewersSelector = createSelector(instagramSelector, path(['viewers']));
+
+export const storyViewersByStoryIdSelector = createSelector(
+  storyViewersSelector,
+  (__, storyId) => storyId,
+  (stories, storyId) => path([storyId], stories),
+);
+
+export const storyViewersListByStoryIdSelector = createSelector(
+  storyViewersByStoryIdSelector,
+  compose(values, path(['users'])),
+);
+
+export const postsSelector = createSelector(instagramSelector, path(['posts']));
+
+export const postsListSelector = createSelector(postsSelector, compose(values, path(['edges'])));
+export const postsDataLengthSelector = createSelector(postsListSelector, length);
+
+const byPopularityDesc = descend(path(['popularity']));
+const byLikedCount = descend(path(['edge_media_preview_like', 'count']));
+const byCommentCount = descend(path(['edge_media_to_comment', 'count']));
+
+export const postsByPopularitySelector = createSelector(postsListSelector, sort(byPopularityDesc));
+
+export const postByLikedCountSelector = createSelector(postsListSelector, sort(byLikedCount));
+
+export const postByCommentCountSelector = createSelector(postsListSelector, sort(byCommentCount));

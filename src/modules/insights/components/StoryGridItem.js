@@ -2,19 +2,21 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
-import { ImageBackground, View, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity, View, Dimensions } from 'react-native';
+import FastImage from 'react-native-fast-image';
+
 import { InteractionWithValue, InteractionIcon } from './InteractionWithValue';
 import { isExist } from 'utils/ramdaUtils';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const Img = styled(ImageBackground)`
+const Img = styled(FastImage)`
   flex: 1;
-  resize-mode: contain;
   justify-content: center;
 `;
 
-const StyledView = styled(View)`
+const StyledView = styled(TouchableOpacity)`
   position: relative;
   width: ${(screenWidth - 4) / 3};
   height: 245.5;
@@ -35,9 +37,20 @@ const StyledInteractionWithValue = styled(InteractionWithValue)`
   left: 8;
 `;
 
-const StoryGridItem = ({ imgSrc, viewsCount = 592 }) => (
-  <StyledView>
-    <Img source={{ uri: imgSrc }}>
+const StoryGridItem = ({ storyId, imgSrc, viewsCount = 592, style, onPress }) => {
+  const navigation = useNavigation();
+  return (
+    <StyledView
+      style={style}
+      onPress={() => {
+        navigation.navigate('StoryDetailInsight', {
+          storyId,
+        });
+      }}>
+      <Img
+        source={{ uri: imgSrc, priority: FastImage.priority.normal }}
+        resizeMode={FastImage.resizeMode.cover}
+      />
       <Overlay />
       {isExist(viewsCount) && (
         <StyledInteractionWithValue
@@ -47,13 +60,16 @@ const StoryGridItem = ({ imgSrc, viewsCount = 592 }) => (
           value={viewsCount}
         />
       )}
-    </Img>
-  </StyledView>
-);
+    </StyledView>
+  );
+};
 
 StoryGridItem.propTypes = {
+  storyId: PropTypes.string,
   imgSrc: PropTypes.string,
   viewsCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  style: PropTypes.array,
+  onPress: PropTypes.func,
 };
 
 export default StoryGridItem;

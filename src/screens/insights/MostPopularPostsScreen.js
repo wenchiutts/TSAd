@@ -1,121 +1,47 @@
 import * as React from 'react';
 import { FlatList, SafeAreaView } from 'react-native';
+import { createStructuredSelector } from 'reselect';
+import { useSelector } from 'react-redux';
+import { path } from 'ramda';
 
-import PostItem from 'components/PostItem';
+import PostItem, { POST_ITEM_WIDTH } from 'components/PostItem';
+import { postsByPopularitySelector } from 'modules/instagram/selector';
 
-const postsData = [
-  {
-    likes: 989,
-    comments: 23,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/7WQZUEU75C.jpg' },
-  },
-  {
-    likes: 98229,
-    comments: 23423,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/TXGQ76N3J0.jpg' },
-  },
-  {
-    likes: 777,
-    comments: 22,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/DJQQTMR8XV.jpg' },
-  },
-  {
-    likes: 857,
-    comments: 5544,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/XLYI8D8H5R.jpg' },
-  },
-  {
-    likes: 2222,
-    comments: 456,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/8N1P2AHD0W.jpg' },
-  },
-  {
-    likes: 444,
-    comments: 666,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/FC9HYIWC9B.jpg' },
-  },
-  {
-    likes: 22,
-    comments: 7777,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/8BY0ULY9GK.jpg' },
-  },
-  {
-    likes: 333,
-    comments: 678,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/SFJPODPJY4.jpg' },
-  },
-  {
-    likes: 989,
-    comments: 23,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/7WQZUEU75C.jpg' },
-  },
-  {
-    likes: 98229,
-    comments: 23423,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/TXGQ76N3J0.jpg' },
-  },
-  {
-    likes: 777,
-    comments: 22,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/DJQQTMR8XV.jpg' },
-  },
-  {
-    likes: 857,
-    comments: 5544,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/XLYI8D8H5R.jpg' },
-  },
-  {
-    likes: 2222,
-    comments: 456,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/8N1P2AHD0W.jpg' },
-  },
-  {
-    likes: 444,
-    comments: 666,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/FC9HYIWC9B.jpg' },
-  },
-  {
-    likes: 989,
-    comments: 23,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/7WQZUEU75C.jpg' },
-  },
-  {
-    likes: 98229,
-    comments: 23423,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/TXGQ76N3J0.jpg' },
-  },
-  {
-    likes: 777,
-    comments: 22,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/DJQQTMR8XV.jpg' },
-  },
-  {
-    likes: 857,
-    comments: 5544,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/XLYI8D8H5R.jpg' },
-  },
-  {
-    likes: 2222,
-    comments: 456,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/8N1P2AHD0W.jpg' },
-  },
-  {
-    likes: 444,
-    comments: 666,
-    src: { uri: 'https://snap-photos.s3.amazonaws.com/img-thumbs/960w/FC9HYIWC9B.jpg' },
-  },
-];
+const postImgSelector = path(['thumbnail_resources', 0, 'src']);
+const commentCountSelector = path(['edge_media_to_comment', 'count']);
+const likesSelector = path(['edge_media_preview_like', 'count']);
 
-const MostPopularPostsScreen = () => (
-  <SafeAreaView>
-    <FlatList
-      columnWrapperStyle={{ justifyContent: 'flex-start' }}
-      data={postsData}
-      numColumns={3}
-      keyExtractor={(item, index) => index}
-      renderItem={({ item }) => <PostItem {...item} />}
-    />
-  </SafeAreaView>
+const GridItem = ({ item }) => (
+  <PostItem
+    likes={likesSelector(item)}
+    comments={commentCountSelector(item)}
+    src={{ uri: postImgSelector(item) }}
+  />
 );
+
+const selector = createStructuredSelector({
+  post: postsByPopularitySelector,
+});
+
+const MostPopularPostsScreen = () => {
+  const { post } = useSelector(selector);
+  return (
+    <SafeAreaView>
+      <FlatList
+        columnWrapperStyle={{ justifyContent: 'flex-start', height: POST_ITEM_WIDTH }}
+        data={post}
+        numColumns={3}
+        keyExtractor={path(['id'])}
+        initialNumToRender={18}
+        renderItem={GridItem}
+        getItemLayout={(data, index) => ({
+          length: POST_ITEM_WIDTH,
+          offset: POST_ITEM_WIDTH * index,
+          index,
+        })}
+      />
+    </SafeAreaView>
+  );
+};
 
 export default MostPopularPostsScreen;

@@ -1,12 +1,21 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { Text, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
-import { path } from 'ramda';
+import { compose, path, prop } from 'ramda';
 
+import DEBUG from 'utils/logUtils';
 import { Avatar } from 'components/AvatarImage';
 import { followUserAction, unfollowUserAction } from 'modules/instagram/insAuthActions';
+import { isExist, lookup } from 'utils/ramdaUtils';
+import { followersDataSelector, followingsDataSelector } from 'modules/instagram/selector';
+
+const selector = createStructuredSelector({
+  followers: followersDataSelector,
+  followings: followingsDataSelector,
+});
 
 const UserListItem = ({
   username,
@@ -21,14 +30,19 @@ const UserListItem = ({
   style,
 }) => {
   const dispatch = useDispatch();
+  const { followers, followings } = useSelector(selector);
+  const lookupFollowers = lookup(followers);
+  const lookupFollowings = lookup(followings);
   const follow = () => dispatch(followUserAction(userId));
   const unfollow = () => dispatch(unfollowUserAction(userId));
+  const localIsFollowing = isFollowing ?? compose(isExist, lookupFollowings)(userId);
+  const localIsFollower = isFollower ?? compose(isExist, lookupFollowers)(userId);
   return (
     <Wrapper style={style}>
       <Avatar
         source={{ uri: profilePicture }}
-        isFollower={isFollower}
-        isFollowing={isFollowing}
+        isFollower={localIsFollower}
+        isFollowing={localIsFollowing}
         roundedWidth={roundedWidth}
         isExistStory={isExistStory}
       />
@@ -37,7 +51,10 @@ const UserListItem = ({
         {descriptionElement}
       </TextWrapper>
       {!buttonHide ? (
-        <FollowButton isFollowing={isFollowing} onPress={isFollowing ? unfollow : follow} />
+        <FollowButton
+          isFollowing={localIsFollowing}
+          onPress={localIsFollowing ? unfollow : follow}
+        />
       ) : (
         <></>
       )}
@@ -55,7 +72,7 @@ UserListItem.propTypes = {
     PropTypes.arrayOf(PropTypes.element),
   ]),
   profilePicture: PropTypes.string,
-  userId: PropTypes.string,
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   roundedWidth: PropTypes.number,
   style: PropTypes.array,
 };

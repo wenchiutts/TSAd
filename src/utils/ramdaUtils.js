@@ -29,6 +29,7 @@ import {
   when,
   path,
   dissocPath,
+  prop,
 } from 'ramda';
 
 export const isNilOrEmpty = anyPass([isNil, isEmpty]);
@@ -59,3 +60,5 @@ export const objFromListWith = curry((fn, list) => chain(zipObj, map(fn))(list))
 export const dissocPathIfNilOrEmpty = curry((array, data) =>
   when(compose(isNilOrEmpty, path(array)), dissocPath(array))(data),
 );
+
+export const lookup = flip(prop);
