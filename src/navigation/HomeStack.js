@@ -31,13 +31,13 @@ const HomeStack = ({ navigation, route }) => (
       headerTitleAlign: 'center',
       headerHideShadow: true,
       headerStyle: {
+        backgroundColor: Colors.screenBackground,
         borderBottomWidth: 0,
         shadowRadius: 0,
         shadowOffset: {
           height: 0,
         },
       },
-      headerTransparent: true,
       headerTintColor: Colors.primary.lightBlue,
       headerTitleStyle: {
         fontWeight: 'bold',
