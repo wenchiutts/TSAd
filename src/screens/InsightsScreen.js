@@ -1,14 +1,18 @@
 // @format
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { Text, View, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
 
 import IconListItem from 'components/IconListItem';
+import RecentStorySlider from 'modules/insights/components/RecentStorySlider';
 import useFetchArchiveStory from 'modules/insights/hooks/useFetchArchiveStory';
 import useFetchAllUserPosts from 'modules/insights/hooks/useFetchAllUserPosts';
 import { mapIndexed } from 'utils/ramdaUtils';
+import { recentStoriesListCountSelector } from 'modules/instagram/selector';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -37,6 +41,10 @@ const StyledIconList = styled(IconListItem)`
   width: ${(screenWidth - 35) / 2};
   padding-right: 12;
   padding-left: 12;
+`;
+
+const StyledRecentStoriesSlider = styled(RecentStorySlider)`
+  margin-top: 16;
 `;
 
 const storyInsightList = [
@@ -91,9 +99,14 @@ const TwoColumnViewWrapper = styled(View)`
   flex-wrap: wrap;
 `;
 
+const selector = createStructuredSelector({
+  recentStoriesCount: recentStoriesListCountSelector,
+});
+
 const InsightScreen = ({ navigation }) => {
+  const { recentStoriesCount } = useSelector(selector);
   const [refreshing, setRefreshing] = React.useState(false);
-  const { effectAction } = useFetchArchiveStory();
+  const { effectAction, updatedAt: archiveUpdatedAt } = useFetchArchiveStory();
   useFetchAllUserPosts();
   const onRefresh = React.useCallback(() => {
     const callbackAction = async () => {
@@ -105,6 +118,12 @@ const InsightScreen = ({ navigation }) => {
   }, []);
   return (
     <StyledView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      {recentStoriesCount !== 0 && (
+        <ListWrapper>
+          <Title>Recent Stories</Title>
+          <StyledRecentStoriesSlider updatedAt={archiveUpdatedAt} />
+        </ListWrapper>
+      )}
       <ListWrapper>
         <Title>Story Insights</Title>
         <TwoColumnViewWrapper>

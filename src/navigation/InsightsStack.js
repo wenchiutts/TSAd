@@ -13,6 +13,7 @@ import BackButton from 'components/header/BackButton';
 import Colors from 'constants/Colors';
 import MostViewedStoriesScreen from 'modules/insights/components/MostViewedStoriesScreen';
 import LeastViewedStoriesScreen from 'modules/insights/components/LeastViewedStoriesScreen';
+import StoryDetailInsightScreen from 'modules/insights/components/StoryDetailInsightScreen';
 
 const Stack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Insight';
@@ -51,6 +52,7 @@ const InsightsStack = ({ navigation, route }) => (
     <Stack.Screen name="MostPopularPosts" component={MostPopularPostsScreen} />
     <Stack.Screen name="MostLikedPosts" component={MostLikedPostsScreens} />
     <Stack.Screen name="MostCommentedPosts" component={MostCommentedPostsScreen} />
+    <Stack.Screen name="StoryDetailInsight" component={StoryDetailInsightScreen} />
   </Stack.Navigator>
 );
 

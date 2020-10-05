@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { path } from 'ramda';
 
-import PostItem from 'components/PostItem';
+import PostItem, { POST_ITEM_WIDTH } from 'components/PostItem';
 import { postsByPopularitySelector } from 'modules/instagram/selector';
 
 const postImgSelector = path(['thumbnail_resources', 0, 'src']);
@@ -28,12 +28,17 @@ const MostPopularPostsScreen = () => {
   return (
     <SafeAreaView>
       <FlatList
-        columnWrapperStyle={{ justifyContent: 'flex-start' }}
+        columnWrapperStyle={{ justifyContent: 'flex-start', height: POST_ITEM_WIDTH }}
         data={post}
         numColumns={3}
         keyExtractor={path(['id'])}
-        initialNumToRender={6}
+        initialNumToRender={18}
         renderItem={GridItem}
+        getItemLayout={(data, index) => ({
+          length: POST_ITEM_WIDTH,
+          offset: POST_ITEM_WIDTH * index,
+          index,
+        })}
       />
     </SafeAreaView>
   );

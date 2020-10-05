@@ -95,9 +95,9 @@ const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const effectAction = async () => {
     await dispatch(fetchInsUserProfileAction());
-    await dispatch(fetchInsUserAllFollowing());
-    await dispatch(fetchInsUserAllFollower());
     await dispatch(fetchUserStoriesFeed());
+    await dispatch(fetchInsUserAllFollower());
+    await dispatch(fetchInsUserAllFollowing());
   };
   React.useEffect(() => {
     effectAction();

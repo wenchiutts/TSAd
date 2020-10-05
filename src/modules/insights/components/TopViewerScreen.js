@@ -6,7 +6,7 @@ import { View, FlatList, Text } from 'react-native';
 import { compose, path } from 'ramda';
 import styled from 'styled-components/native';
 
-import DEBUG from 'utils/logUtils';
+// import DEBUG from 'utils/logUtils';
 import { archivesTopViewerListSelector } from 'modules/instagram/selector';
 import UserListItem from 'components/UserListItem';
 
@@ -32,7 +32,6 @@ const ListItem = ({ item }) => (
 
 const TopViewerScreen = () => {
   const { viewers } = useSelector(selector);
-  DEBUG.log('CHUCK top viewer', viewers);
 
   return (
     <View>

@@ -18,6 +18,7 @@ import {
   mergeLeft,
   has,
   mergeDeepLeft,
+  mergeDeepRight,
   assoc,
   ifElse,
   length,
@@ -28,6 +29,15 @@ import {
   mergeDeepWithKey,
   identity,
   __,
+  values,
+  nth,
+  pair,
+  cond,
+  anyPass,
+  max,
+  T,
+  pathEq,
+  tap,
 } from 'ramda';
 
 import {
@@ -51,9 +61,11 @@ import {
   RECEIVE_USER_ARCHIVE_STORY,
   REQUEST_USER_POSTS,
   RECEIVE_USER_POSTS,
+  REQUEST_STORY_VIEWER,
+  RECEIVE_STORY_VIEWER,
 } from 'modules/instagram/insAuthActions';
-import { objFromListWith, dissocPathIfNilOrEmpty } from 'utils/ramdaUtils';
-import {} from './insAuthActions';
+import { objFromListWith } from 'utils/ramdaUtils';
+import DEBUG from 'utils/logUtils';
 
 const initialState = {
   cookies: undefined,
@@ -291,12 +303,35 @@ export default createReducers(initialState, {
     archives: compose(
       mergeDeepWithKey((k, l, r) => {
         if (k === 'items') {
-          const newRight = compose(
-            dissocPathIfNilOrEmpty([0, 'viewer_count']),
-            dissocPathIfNilOrEmpty([0, 'viewers']),
-            dissocPathIfNilOrEmpty([0, 'total_viewer_count']),
-          )(r);
-          return [mergeRight(l[0], newRight[0])];
+          return compose(
+            values,
+            converge(
+              mergeDeepWithKey((key, left, right) =>
+                cond([
+                  [
+                    anyPass([
+                      pathEq(['key'], 'viewer_count'),
+                      pathEq(['key'], 'total_viewer_count'),
+                    ]),
+                    converge(max, [path(['left']), path(['right'])]),
+                  ],
+                  [
+                    pathEq(['key'], 'viewers'),
+                    compose(
+                      values,
+                      converge(mergeLeft, [nth(0), nth(1)]),
+                      map(objFromListWith(compose(String, path(['pk'])))),
+                      converge(pair, [path(['left']), path(['right'])]),
+                    ),
+                  ],
+                  [T, path(['right'])],
+                ])({ key, left, right }),
+              ),
+              [nth(0), nth(1)],
+            ),
+            map(objFromListWith(path(['id']))),
+            pair,
+          )(l, r);
         }
         return r;
       })(state.archives),
@@ -328,5 +363,25 @@ export default createReducers(initialState, {
         objFromListWith(path(['id'])),
       ),
     })(actions.posts),
+  }),
+  [REQUEST_STORY_VIEWER]: (state, action) => ({
+    ...state,
+    isFetchingStoryViewer: true,
+  }),
+  [RECEIVE_STORY_VIEWER]: (state, action) => ({
+    ...state,
+    isFetchingStoryViewer: false,
+    viewers: compose(
+      mergeDeepRight(state.viewers),
+      converge(objOf, [
+        path(['storyId']),
+        compose(
+          evolve({
+            users: objFromListWith(compose(String, path(['pk']))),
+          }),
+          path(['viewers']),
+        ),
+      ]),
+    )(action),
   }),
 });

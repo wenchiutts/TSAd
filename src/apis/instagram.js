@@ -71,7 +71,7 @@ export const checkBlockedById = async userId => {
     const res = await axios.get(`/api/v1/users/${userId}/info`, {
       baseURL: 'https://i.instagram.com',
       headers: {
-        'User-Agent': 'Instagram 121.0.0.29.119',
+        'User-Agent': `Instagram 121.0.0.29.119; 185203708 ${userAgent}`,
       },
     });
     return res?.data?.user;
@@ -100,12 +100,15 @@ export const search = async ({ query, context = 'blended' }) => {
   }
 };
 
-const getFollowData = ({ fieldName, queryHash, variables }) =>
+const getFollowData = ({ fieldName, queryHash, variables, referer = baseURL }) =>
   axios
     .get('/graphql/query/', {
       params: {
         query_hash: queryHash,
         variables: JSON.stringify(variables),
+      },
+      headers: {
+        referer,
       },
     })
     .then(res => res.data.data.user[fieldName])
@@ -115,26 +118,30 @@ const getFollowData = ({ fieldName, queryHash, variables }) =>
       data: edges.map(edge => edge.node),
     }));
 
-export const getFollowers = ({ userId, first = 20, after = '' }) =>
+export const getFollowers = ({ userId, username, first = 24, after = '' }) =>
   getFollowData({
     fieldName: 'edge_followed_by',
-    queryHash: '37479f2b8209594dde7facb0d904896a',
+    queryHash: 'c76146de99bb02f6415203be841dd25a',
     variables: {
       id: userId,
       first,
       after,
+      include_reel: true,
     },
+    referer: `${baseURL}/${username}/followers`,
   });
 
-export const getFollowings = ({ userId, first = 20, after = '' }) =>
+export const getFollowings = ({ userId, username, first = 24, after = '' }) =>
   getFollowData({
     fieldName: 'edge_follow',
-    queryHash: '58712303d941c6855d4e888c5f0cd22f',
+    queryHash: 'd04b0a864b4b54837c0d870b0e77e076',
     variables: {
       id: userId,
       first,
       after,
+      include_reel: true,
     },
+    referer: `${baseURL}/${username}/following`,
   });
 
 export const follow = userId => axios.post(`/web/friendships/${userId}/follow/`);
@@ -182,7 +189,7 @@ export const getStoryReelFeed = async () => {
   const res = await axios.get('/api/v1/feed/reels_tray/', {
     baseURL: 'https://i.instagram.com',
     headers: {
-      'User-Agent': 'Instagram 121.0.0.29.119',
+      'User-Agent': `Instagram 121.0.0.29.119; 185203708 ${userAgent}`,
     },
   });
 
@@ -193,7 +200,7 @@ export const getUserArchiveStories = async () => {
   const res = await axios.get('/api/v1/archive/reel/day_shells/', {
     baseURL: 'https://i.instagram.com',
     headers: {
-      'User-Agent': 'Instagram 121.0.0.29.119',
+      'User-Agent': `Instagram 121.0.0.29.119; 185203708 ${userAgent}`,
     },
   });
 
@@ -204,12 +211,26 @@ export const getStoryDetailById = async ids => {
   const res = await axios.get('/api/v1/feed/reels_media/', {
     baseURL: 'https://i.instagram.com',
     headers: {
-      'User-Agent': 'Instagram 121.0.0.29.119',
+      'User-Agent': `Instagram 121.0.0.29.119; 185203708 ${userAgent}`,
     },
     params: {
       user_ids: ids,
     },
     paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }),
+  });
+
+  return res.data;
+};
+
+export const getReelsMediaViewer = async (id, max_id = 0) => {
+  const res = await axios.get(`/api/v1/media/${id}/list_reel_media_viewer`, {
+    baseURL: 'https://i.instagram.com',
+    headers: {
+      'User-Agent': `Instagram 121.0.0.29.119; 185203708 ${userAgent}`,
+    },
+    params: {
+      max_id,
+    },
   });
 
   return res.data;

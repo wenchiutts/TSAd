@@ -15,8 +15,8 @@ const selector = createStructuredSelector({
 
 const GridItem = ({ item }) => (
   <StoryGridItem
-    imgSrc={path(['items', 'image_versions', 0, 'url'], item)}
-    viewsCount={path(['items', 'total_viewer_count'], item)}
+    imgSrc={path(['image_versions2', 'candidates', 3, 'url'], item)}
+    viewsCount={path(['total_viewer_count'], item)}
   />
 );
 

@@ -1,12 +1,17 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
-import { Text, Image, TouchableOpacity, Dimensions, View } from 'react-native';
-import { path } from 'ramda';
+import { TouchableOpacity, Dimensions, View } from 'react-native';
 import { isExist } from 'utils/ramdaUtils';
 import FastImage from 'react-native-fast-image';
+import {
+  InteractionWithValue,
+  InteractionIcon,
+} from '../modules/insights/components/InteractionWithValue';
 
 const { width: screenWidth } = Dimensions.get('window');
+
+export const POST_ITEM_WIDTH = (screenWidth - 4) / 3;
 
 const Img = styled(FastImage)`
   width: ${(screenWidth - 4) / 3};
@@ -25,24 +30,22 @@ const Mask = styled(View)`
   justify-content: flex-end;
 `;
 
-const StyledIcon = styled(Image)`
-  width: 20;
-  height: 20;
-  margin-right: 8;
-`;
-
-const Interaction = styled(Text)`
-  color: ${path(['theme', 'primary', 'lightBlue'])};
-  font-size: 14;
-`;
-
-const InteractionWrapper = ({ iconType, value }) => (
+const InteractionWrapper = React.memo(({ iconType, value }) => (
   <View style={{ height: 18, flexDirection: 'row', marginBottom: 5 }}>
-    {iconType === 'like' && <StyledIcon source={require('assets/icons/like_small.png')} />}
-    {iconType === 'comment' && <StyledIcon source={require('assets/icons/comment_small.png')} />}
-    <Interaction>{value}</Interaction>
+    {iconType === 'like' && (
+      <InteractionWithValue
+        iconSlot={<InteractionIcon source={require('assets/icons/like_small.png')} />}
+        value={value}
+      />
+    )}
+    {iconType === 'comment' && (
+      <InteractionWithValue
+        iconSlot={<InteractionIcon source={require('assets/icons/comment_small.png')} />}
+        value={value}
+      />
+    )}
   </View>
-);
+));
 
 const PostItem = ({ likes, comments, src, onPress }) => (
   <TouchableOpacity onPress={onPress}>

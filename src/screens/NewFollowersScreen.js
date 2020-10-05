@@ -51,7 +51,7 @@ const NewFollowersScreen = () => {
       data={users}
       initialNumToRender={10}
       renderItem={ListItem}
-      keyExtractor={path(['id'])}
+      keyExtractor={path(['profile', 'id'])}
     />
   );
 };
