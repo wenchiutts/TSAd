@@ -33,7 +33,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
     paddingHorizontal: 20,
-    paddingTop: '25%',
+    paddingTop: 20,
   },
 }))`
   flex: 1;

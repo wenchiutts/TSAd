@@ -2,8 +2,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
-import { View, Image } from 'react-native';
+import { View, Image, ImageBackground } from 'react-native';
 import { ifElse, path, always, both, cond, T, F } from 'ramda';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const avatarStyle = ({ roundedWidth = 45 }) => `
   border-radius: ${roundedWidth / 2};
@@ -59,15 +60,56 @@ const FollowingStatusImage = cond([
 
 const AvatarWrapper = styled(View)`
   ${avatarStyle}
-  background-color: ${ifElse(path(['isExistStory']), always('pink'), always('transparent'))};
+  background-color: transparent
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 `;
 
+const BackgroundWrapper = ({ roundedWidth, isExistStory }) => (
+  <GradientWrapper>
+    <StyledImageBackground roundedWidth={roundedWidth} />
+    <StyledLinearGradient
+      roundedWidth={roundedWidth}
+      colors={['transparent', 'rgba(182,32,224, 1)']}
+      locations={[0.1, 1]}
+      start={[1, 0]}
+      end={[0.5, 0.5]}
+    />
+    <StyledLinearGradient
+      roundedWidth={roundedWidth}
+      colors={['transparent', 'rgba(255,222,67, 1)']}
+      locations={[0.1, 0.8]}
+      start={[0.6, 0.4]}
+      end={[0, 1]}
+    />
+  </GradientWrapper>
+);
+
+const GradientWrapper = styled(View)`
+  position: absolute;
+`;
+
+const StyledLinearGradient = styled(LinearGradient)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: ${props => (props.roundedWidth ? props.roundedWidth / 2 : 33)};
+`;
+
+const StyledImageBackground = styled(ImageBackground)`
+  ${avatarStyle}
+  background-color: #32c5ff;
+`;
+
 const Avatar = ({ source, isFollower, isFollowing, isExistStory, roundedWidth = 60 }) => (
-  <AvatarWrapper roundedWidth={roundedWidth + 6} isExistStory={isExistStory}>
+  <AvatarWrapper roundedWidth={roundedWidth + 6}>
+    {isExistStory && (
+      <BackgroundWrapper roundedWidth={roundedWidth + 6} isExistStory={isExistStory} />
+    )}
     <AvatarImage source={source} roundedWidth={roundedWidth} />
     <FollowingStatusImage isFollower={isFollower} isFollowing={isFollowing} />
   </AvatarWrapper>
