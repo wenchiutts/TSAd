@@ -42,7 +42,7 @@ const StyledView = styled(FlatList).attrs({
   contentContainerStyle: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: '22%',
+    paddingTop: 10,
     paddingHorizontal: 20,
   },
 })`
