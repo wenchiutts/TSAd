@@ -29,7 +29,6 @@ const StyledView = styled(View)`
   flex: 1;
   justify-content: flex-start;
   align-items: center;
-  padding-top: 70;
   padding-horizontal: 20;
 `;
 

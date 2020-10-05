@@ -130,7 +130,7 @@ export default BestFollowersScreen;
 const StyledView = styled(View)`
   justify-content: flex-start;
   align-items: center;
-  padding-top: 25%;
+  padding-top: 10;
   padding-horizontal: 20;
   flex: 1;
 `;

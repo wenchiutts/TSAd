@@ -11,6 +11,7 @@ import InsightsStack from 'navigation/InsightsStack';
 
 import TabBarIcon from 'components/TabBarIcon';
 import styled from 'styled-components';
+import Colors from 'constants/Colors';
 
 const Tab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -36,8 +37,8 @@ export default function BottomTabNavigator({ navigation, route }) {
         showLabel: false,
         style: {
           borderTopWidth: 0,
-          height: 90,
-          backgroundColor: 'transparent',
+          height: 80,
+          backgroundColor: Colors.screenBackground,
           position: 'absolute',
         },
       }}>
