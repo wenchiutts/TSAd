@@ -83,13 +83,14 @@ export const checkBlockedById = async userId => {
   }
 };
 
-export const search = async ({ query, context = 'blended' }) => {
+export const search = async ({ query, context = 'blended', includeReel = false }) => {
   try {
     const res = await axios.get('/web/search/topsearch/', {
       withCredentials: false,
       params: {
         query,
         context,
+        include_reel: includeReel,
       },
     });
     return res.data;
@@ -172,7 +173,7 @@ export const getStoryDetails = async ({
 }) => {
   const res = await axios.get('/graphql/query/', {
     params: {
-      query_hash: '297c491471fff978fa2ab83c0673a618',
+      query_hash: 'c9c56db64beb4c9dea2d17740d0259d9',
       variables: JSON.stringify({
         reel_ids: reelIds,
         tag_names: tagNames,
