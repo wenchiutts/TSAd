@@ -183,9 +183,13 @@ export const checkBlockerAction = user => async (dispatch, getState, { apis }) =
   }
 };
 
-export const searchUserAction = (username, includeReel) => async (dispatch, getState, { apis }) => {
+export const searchUserAction = (username, includeReel, withCredentials) => async (
+  dispatch,
+  getState,
+  { apis },
+) => {
   try {
-    const result = await apis.instagram.search({ query: username, includeReel });
+    const result = await apis.instagram.search({ query: username, includeReel, withCredentials });
     return result?.users || [];
   } catch (e) {
     if (__DEV__) {

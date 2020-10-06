@@ -55,7 +55,10 @@ const StoryModal = ({ route, navigation }) => {
 
   const { carouselOpen, paused, backOpacity, deckIdx } = storyState;
 
-  const { setStoryIdx, stories, storyPosition, getDeckInfo } = useStoryData(data, deckIdx);
+  const { setStoryIdx, stories, storyPosition, getDeckInfo, getWindowData } = useStoryData(
+    data,
+    deckIdx,
+  );
 
   const panResponder = useRef(
     PanResponder.create({
@@ -258,7 +261,7 @@ const StoryModal = ({ route, navigation }) => {
     <StyledView>
       <CarouselWrap carouselOpen={carouselOpen}>
         <Stories
-          stories={orderByList(storyPosition, stories)}
+          stories={compose(getWindowData(1, deckIdx), orderByList)(storyPosition, stories)}
           storyState={storyState}
           setStoryState={setStoryState}
           panResponder={panResponder}

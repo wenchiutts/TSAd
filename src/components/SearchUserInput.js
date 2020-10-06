@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { TextInput, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components/native';
-import { is, path, compose, take, map } from 'ramda';
+import { path, compose, take, map } from 'ramda';
 
 import { objFromListWith } from 'utils/ramdaUtils';
 import Colors from 'constants/Colors';
@@ -33,7 +33,7 @@ const StyledTextInput = styled(TextInput)`
   font-weight: 500;
 `;
 
-export const useSearchUserInput = includeReel => {
+export const useSearchUserInput = (includeReel, withCredentials) => {
   const [searchResult, setSearchResult] = React.useState({});
   const tickingRef = React.useRef();
   const [inputState, setSearchUserInput] = React.useState({
@@ -48,7 +48,7 @@ export const useSearchUserInput = includeReel => {
     if (!tickingRef.current) {
       window.requestAnimationFrame(async () => {
         try {
-          const result = await dispatch(searchUserAction(text, includeReel));
+          const result = await dispatch(searchUserAction(text, includeReel, withCredentials));
           setSearchResult(
             compose(objFromListWith(path(['pk'])), map(path(['user'])), take(3))(result),
           );
