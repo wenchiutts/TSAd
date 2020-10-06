@@ -83,10 +83,15 @@ export const checkBlockedById = async userId => {
   }
 };
 
-export const search = async ({ query, context = 'blended', includeReel = false }) => {
+export const search = async ({
+  query,
+  context = 'blended',
+  includeReel = false,
+  withCredentials = false,
+}) => {
   try {
     const res = await axios.get('/web/search/topsearch/', {
-      withCredentials: false,
+      withCredentials,
       params: {
         query,
         context,

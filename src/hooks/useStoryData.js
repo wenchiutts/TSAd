@@ -34,6 +34,11 @@ import {
   over,
   lensPath,
   __,
+  ifElse,
+  gte,
+  always,
+  curry,
+  lt,
 } from 'ramda';
 
 // import useCompare from 'hooks/useCompare';
@@ -44,7 +49,7 @@ import { storyFeedPositionSelector } from 'modules/instagram/selector';
 const isFirstDeck = pathEq(['deckIdx'], 0);
 const isLastDeck = converge(equals, [
   path(['deckIdx']),
-  compose(subtract(__, 1), length, path(['stories'])),
+  compose(subtract(__, 1), length, path(['storyPosition'])),
 ]);
 
 const serializeStoryData = reduce(
@@ -114,12 +119,23 @@ const useStoryData = (stories, deckIdx) => {
     return newStories[id];
   };
 
+  const getWindowData = curry((size, currentPosition, data) => {
+    const head = ifElse(gte(__, 0), identity, always(0))(currentPosition - size);
+    const tail =
+      head === 0
+        ? 2 * size
+        : ifElse(lt(__, data.length), identity, always(data.length - 1))(currentPosition + size);
+    const finalHead = tail === data.length - 1 ? tail - 2 * size : head;
+    return slice(finalHead, tail + 1)(data);
+  });
+
   return {
     stories: newStories,
     isFetchingStories: isFetching,
     storyPosition,
     setStoryIdx,
     getDeckInfo,
+    getWindowData,
   };
 };
 
