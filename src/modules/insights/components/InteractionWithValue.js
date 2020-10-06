@@ -1,11 +1,12 @@
 // @format
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image } from 'react-native';
+import { View, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { path } from 'ramda';
+import FastImage from 'react-native-fast-image';
 
-export const InteractionIcon = styled(Image)`
+export const InteractionIcon = styled(FastImage)`
   width: 20;
   height: 20;
 `;
@@ -22,12 +23,12 @@ const Value = styled(Text)`
   margin-left: 8;
 `;
 
-export const InteractionWithValue = ({ iconSlot, value, style }) => (
+export const InteractionWithValue = React.memo(({ iconSlot, value, style }) => (
   <InteractionWrapper style={style}>
     {iconSlot}
     <Value>{value}</Value>
   </InteractionWrapper>
-);
+));
 
 InteractionWithValue.propTypes = {
   style: PropTypes.array,

@@ -14,6 +14,9 @@ const prettyConsole = method =>
  */
 export default {
   log: prettyConsole('log'),
+  info: prettyConsole('info'),
+  group: prettyConsole('group'),
+  groupEnd: prettyConsole('groupEnd'),
   warn: prettyConsole('warn'),
   error: prettyConsole('error'),
 };

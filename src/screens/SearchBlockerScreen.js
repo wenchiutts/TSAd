@@ -2,10 +2,9 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { path, cond, compose, allPass, not, always, take, map, values } from 'ramda';
+import { path, cond, compose, allPass, not, always, map, values } from 'ramda';
 import {
   View,
-  TextInput,
   ScrollView,
   FlatList,
   Text,
@@ -15,43 +14,20 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 
-import Colors from 'constants/Colors';
-import SearchButton from 'components/SearchButton';
 import EmptyStatusView from 'components/EmptyStatusView';
 import UserListItem from 'components/UserListItem';
-import { checkBlockerAction, searchUserAction } from 'modules/instagram/insAuthActions';
-import { isExist, objFromListWith, isNilOrEmpty } from 'utils/ramdaUtils';
+import { checkBlockerAction } from 'modules/instagram/insAuthActions';
+import { isExist, isNilOrEmpty } from 'utils/ramdaUtils';
 import BlockerModal from 'components/BlockerModal';
 import { blockerDataSelector } from 'modules/instagram/selector';
 import Spinner from 'components/Spinner';
+import SearchUserInput, { useSearchUserInput } from 'components/SearchUserInput';
 
 const StyledView = styled(View)`
   flex: 1;
   justify-content: flex-start;
   align-items: center;
   padding-horizontal: 20;
-`;
-
-const StyledInput = styled(View)`
-  height: 48;
-  width: 100%;
-  border-top-right-radius: 8;
-  border-top-left-radius: 8;
-  border-bottom-right-radius: ${props => (props?.isShowList ? 0 : 8)};
-  border-bottom-left-radius: ${props => (props?.isShowList ? 0 : 8)};
-  background-color: ${path(['theme', 'primary', 'lightPurple'])};
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  padding-left: 16;
-  margin-top: 10%;
-`;
-
-const StyledTextInput = styled(TextInput)`
-  margin-left: 8;
-  font-size: 14;
-  color: ${path(['theme', 'noticeText'])};
-  font-weight: 500;
 `;
 
 const ListWrapper = styled(ScrollView)`
@@ -109,6 +85,11 @@ const StyledUserListItem = styled(UserListItem)`
   margin-vertical: 10;
 `;
 
+const StyledSearchUserInput = styled(SearchUserInput)`
+  border-bottom-right-radius: ${props => (props?.isShowList ? 0 : 8)};
+  border-bottom-left-radius: ${props => (props?.isShowList ? 0 : 8)};
+`;
+
 const SearchResultListItem = ({ onPress, ...rest }) => (
   <StyledTouchableOpacity onPress={onPress}>
     <StyledUserListItem {...rest} />
@@ -124,14 +105,15 @@ const selectors = createStructuredSelector({
 });
 
 const SearchBlockerScreen = () => {
+  const {
+    cleanSearchResult,
+    searchResult,
+    setSearchUserInput,
+    isFocus: isSearchInputFocus,
+    ...searchUserInputOpt
+  } = useSearchUserInput();
   const inputEle = React.useRef(null);
   const { blockers } = useSelector(selectors);
-  const tickingRef = React.useRef();
-  const [searchResult, setSearchResult] = React.useState({});
-  const [inputState, setInputState] = React.useState({
-    isFocus: false,
-    text: '',
-  });
   const [resultModal, setResultModal] = React.useState({
     isLoading: false,
     isShowing: false,
@@ -141,33 +123,6 @@ const SearchBlockerScreen = () => {
   const dispatch = useDispatch();
   const isEmpty = isNilOrEmpty(blockers);
 
-  const onFocus = () => {
-    setInputState(prevState => ({ ...prevState, isFocus: true }));
-  };
-
-  const onBlur = () => {
-    setInputState(prevState => ({ ...prevState, isFocus: false }));
-  };
-
-  const onChangeText = text => {
-    setInputState(prevState => ({ ...prevState, text }));
-
-    if (!tickingRef.current) {
-      window.requestAnimationFrame(async () => {
-        try {
-          const result = await dispatch(searchUserAction(text));
-          setSearchResult(
-            compose(objFromListWith(path(['pk'])), map(path(['user'])), take(3))(result),
-          );
-          tickingRef.current = false;
-        } catch (e) {
-          setSearchResult([]);
-        }
-      });
-      tickingRef.current = true;
-    }
-  };
-
   const onPress = user => async () => {
     setResultModal(prev => ({
       ...prev,
@@ -175,11 +130,11 @@ const SearchBlockerScreen = () => {
     }));
     inputEle.current.blur();
     const result = await dispatch(checkBlockerAction(user));
-    setInputState(prev => ({
+    setSearchUserInput(prev => ({
       ...prev,
-      text: '',
+      value: '',
     }));
-    setSearchResult({});
+    cleanSearchResult();
     setResultModal({
       isLoading: false,
       isShowing: true,
@@ -198,19 +153,11 @@ const SearchBlockerScreen = () => {
   return (
     <StyledView>
       {resultModal.isLoading && <Spinner />}
-      <StyledInput isShowList={inputState.isFocus && isExist(searchResult)}>
-        <SearchButton />
-        <StyledTextInput
-          ref={inputEle}
-          placeholder="Search by username"
-          placeholderTextColor={Colors.primary.lightBlue}
-          onFocus={onFocus}
-          returnKeyType="search"
-          onChangeText={onChangeText}
-          onBlur={onBlur}
-          value={inputState.text}
-        />
-      </StyledInput>
+      <StyledSearchUserInput
+        ref={inputEle}
+        {...searchUserInputOpt}
+        isShowList={isSearchInputFocus && isExist(searchResult)}
+      />
       {cond([
         [
           allPass([path(['isFocus']), compose(isExist, path(['searchResult']))]),
@@ -247,7 +194,7 @@ const SearchBlockerScreen = () => {
           ),
         ],
       ])({
-        isFocus: inputState.isFocus,
+        isFocus: isSearchInputFocus,
         isEmpty,
         searchResult,
         blockers,

@@ -12,14 +12,15 @@ import rootReducer from 'reducers';
 // import * as firebaseApi from 'services/firebase';
 // import {verifyAuth} from 'modules/auth/authActions';
 import apis from 'apis';
+import DEBUG from 'utils/logUtils';
 
 export const loggerMiddleware = store => next => action => {
-  console.group(action.type);
-  console.info('dispatching', action);
-  // console.log('current state', store.getState());
+  DEBUG.group(action.type);
+  DEBUG.info('dispatching', action);
+  // DEBUG.log('current state', store.getState());
   const result = next(action);
-  // console.log('next state', store.getState());
-  console.groupEnd();
+  // DEBUG.log('next state', store.getState());
+  DEBUG.groupEnd();
   return result;
 };
 

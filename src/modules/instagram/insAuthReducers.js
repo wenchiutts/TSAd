@@ -18,6 +18,7 @@ import {
   mergeLeft,
   has,
   mergeDeepLeft,
+  mergeDeepRight,
   assoc,
   ifElse,
   length,
@@ -26,7 +27,17 @@ import {
   mergeRight,
   pick,
   mergeDeepWithKey,
+  identity,
   __,
+  values,
+  nth,
+  pair,
+  cond,
+  anyPass,
+  max,
+  T,
+  pathEq,
+  tap,
 } from 'ramda';
 
 import {
@@ -48,8 +59,13 @@ import {
   RECEIVE_STORY_FEED,
   REQUEST_USER_ARCHIVE_STORY,
   RECEIVE_USER_ARCHIVE_STORY,
+  REQUEST_USER_POSTS,
+  RECEIVE_USER_POSTS,
+  REQUEST_STORY_VIEWER,
+  RECEIVE_STORY_VIEWER,
 } from 'modules/instagram/insAuthActions';
-import { objFromListWith, dissocPathIfNilOrEmpty } from 'utils/ramdaUtils';
+import { objFromListWith } from 'utils/ramdaUtils';
+import DEBUG from 'utils/logUtils';
 
 const initialState = {
   cookies: undefined,
@@ -61,6 +77,7 @@ const initialState = {
   isFetching: false,
   isFetchingFollowers: false,
   isFetchingFollowings: false,
+  isFetchingUserPosts: false,
   isPostingFollowUser: false,
   isPostingUnFollowUser: false,
   isCheckingBlocker: false,
@@ -286,17 +303,85 @@ export default createReducers(initialState, {
     archives: compose(
       mergeDeepWithKey((k, l, r) => {
         if (k === 'items') {
-          const newRight = compose(
-            dissocPathIfNilOrEmpty([0, 'viewer_count']),
-            dissocPathIfNilOrEmpty([0, 'viewer']),
-            dissocPathIfNilOrEmpty([0, 'total_viewer_count']),
-          )(r);
-          return [mergeRight(l[0], newRight[0])];
+          return compose(
+            values,
+            converge(
+              mergeDeepWithKey((key, left, right) =>
+                cond([
+                  [
+                    anyPass([
+                      pathEq(['key'], 'viewer_count'),
+                      pathEq(['key'], 'total_viewer_count'),
+                    ]),
+                    converge(max, [path(['left']), path(['right'])]),
+                  ],
+                  [
+                    pathEq(['key'], 'viewers'),
+                    compose(
+                      values,
+                      converge(mergeLeft, [nth(0), nth(1)]),
+                      map(objFromListWith(compose(String, path(['pk'])))),
+                      converge(pair, [path(['left']), path(['right'])]),
+                    ),
+                  ],
+                  [T, path(['right'])],
+                ])({ key, left, right }),
+              ),
+              [nth(0), nth(1)],
+            ),
+            map(objFromListWith(path(['id']))),
+            pair,
+          )(l, r);
         }
         return r;
       })(state.archives),
       map(pick(['id', 'user', 'items', 'created_at'])),
       path(['reels']),
     )(actions.archives),
+  }),
+  [REQUEST_USER_POSTS]: (state, actions) => ({
+    ...state,
+    isFetchingUserPosts: true,
+  }),
+  [RECEIVE_USER_POSTS]: (state, actions) => ({
+    ...state,
+    isFetchingUserPosts: false,
+    posts: evolve({
+      edges: compose(
+        mergeRight(state?.posts?.edges || {}),
+        map(
+          converge(mergeRight, [
+            identity,
+            applySpec({
+              popularity: converge(add, [
+                path(['edge_media_to_comment', 'count']),
+                path(['edge_media_preview_like', 'count']),
+              ]),
+            }),
+          ]),
+        ),
+        objFromListWith(path(['id'])),
+      ),
+    })(actions.posts),
+  }),
+  [REQUEST_STORY_VIEWER]: (state, action) => ({
+    ...state,
+    isFetchingStoryViewer: true,
+  }),
+  [RECEIVE_STORY_VIEWER]: (state, action) => ({
+    ...state,
+    isFetchingStoryViewer: false,
+    viewers: compose(
+      mergeDeepRight(state.viewers),
+      converge(objOf, [
+        path(['storyId']),
+        compose(
+          evolve({
+            users: objFromListWith(compose(String, path(['pk']))),
+          }),
+          path(['viewers']),
+        ),
+      ]),
+    )(action),
   }),
 });

@@ -1,9 +1,15 @@
 // @format
-
-import { compose, when, path, concat, pluck } from 'ramda';
+import { compose, when, path, concat, gt, filter, prop, map, into, __, allPass, lte } from 'ramda';
+import dayjs from 'dayjs';
 
 import makeActionCreator from 'actions/makeActionCreator';
-import { insProfileIdSelector } from 'modules/instagram//selector';
+import {
+  insProfileIdSelector,
+  postsDataLengthSelector,
+  insUsernameSelector,
+} from 'modules/instagram/selector';
+import DEBUG from 'utils/logUtils';
+import { isExist } from 'utils/ramdaUtils';
 
 export const RECEIVE_INS_COOKIES = 'RECEIVE_INS_COOKIES';
 export const REQUEST_INS_COOKIES = 'REQUEST_INS_COOKIES';
@@ -23,6 +29,10 @@ export const REQUEST_STORY_FEED = 'REQUEST_STORY_FEED';
 export const RECEIVE_STORY_FEED = 'RECEIVE_STORY_FEED';
 export const REQUEST_USER_ARCHIVE_STORY = 'REQUEST_USER_ARCHIVE_STORY';
 export const RECEIVE_USER_ARCHIVE_STORY = 'RECEIVE_USER_ARCHIVE_STORY';
+export const REQUEST_STORY_VIEWER = 'REQUEST_STORY_VIEWER';
+export const RECEIVE_STORY_VIEWER = 'RECEIVE_STORY_VIEWER';
+export const REQUEST_USER_POSTS = 'REQUEST_USER_POSTS';
+export const RECEIVE_USER_POSTS = 'RECEIVE_USER_POSTS';
 
 export const receiveInsCookies = makeActionCreator(RECEIVE_INS_COOKIES, 'cookies');
 export const requestInsCookies = makeActionCreator(REQUEST_INS_COOKIES);
@@ -42,6 +52,10 @@ export const requestStoryFeed = makeActionCreator(REQUEST_STORY_FEED);
 export const receiveStoryFeed = makeActionCreator(RECEIVE_STORY_FEED, 'storyFeed');
 export const requestUserArchiveStory = makeActionCreator(REQUEST_USER_ARCHIVE_STORY);
 export const receiveUserArchiveStory = makeActionCreator(RECEIVE_USER_ARCHIVE_STORY, 'archives');
+export const requestStoryViewer = makeActionCreator(REQUEST_STORY_VIEWER);
+export const receiveStoryViewer = makeActionCreator(RECEIVE_STORY_VIEWER, 'storyId', 'viewers');
+export const requestUserPosts = makeActionCreator(REQUEST_USER_POSTS);
+export const receiveUserPosts = makeActionCreator(RECEIVE_USER_POSTS, 'posts');
 
 export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis }) => {
   try {
@@ -58,16 +72,18 @@ export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis
   } catch (e) {
     dispatch(receiveInsProfile());
     if (__DEV__) {
-      console.log('fetchInsUserProfileAction error: ', e);
+      console.log('fetchInsUserProfileAction error: ', e, e.response);
     }
   }
 };
 
 export const fetchInsUserFollowing = (after = '') => async (dispatch, getState, { apis }) => {
+  const state = getState();
   try {
-    const userIgId = compose(insProfileIdSelector, getState)();
+    const userIgId = insProfileIdSelector(state);
+    const username = insUsernameSelector(state);
     dispatch(requestInsUserFollowing());
-    const result = await apis.instagram.getFollowings({ userId: userIgId, after });
+    const result = await apis.instagram.getFollowings({ userId: userIgId, after, username });
     dispatch(receiveInsUserFollowing(result));
     return result;
   } catch (e) {
@@ -82,19 +98,20 @@ export const fetchInsUserAllFollowing = (after = '') => async dispatch => {
   when(
     path(['page_info', 'has_next_page']),
     compose(
-      endCursor => dispatch(fetchInsUserAllFollowing(endCursor)),
+      endCursor => setTimeout(() => dispatch(fetchInsUserAllFollowing(endCursor)), 2500),
       path(['page_info', 'end_cursor']),
     ),
   )(result);
 
-  return result.count;
+  return result?.count;
 };
 
 export const fetchInsUserFollower = (after = '') => async (dispatch, getState, { apis }) => {
+  const state = getState();
   try {
-    const userIgId = compose(insProfileIdSelector, getState)();
-    const result = await apis.instagram.getFollowers({ userId: userIgId, after });
-    // dispatch(receiveInsUserFollower(result));
+    const userIgId = insProfileIdSelector(state);
+    const username = insUsernameSelector(state);
+    const result = await apis.instagram.getFollowers({ userId: userIgId, after, username });
     return result;
   } catch (e) {
     if (__DEV__) {
@@ -166,9 +183,9 @@ export const checkBlockerAction = user => async (dispatch, getState, { apis }) =
   }
 };
 
-export const searchUserAction = username => async (dispatch, getState, { apis }) => {
+export const searchUserAction = (username, includeReel) => async (dispatch, getState, { apis }) => {
   try {
-    const result = await apis.instagram.search({ query: username });
+    const result = await apis.instagram.search({ query: username, includeReel });
     return result?.users || [];
   } catch (e) {
     if (__DEV__) {
@@ -194,13 +211,69 @@ export const fetchUserArchiveStoryies = () => async (dispatch, getState, { apis 
   try {
     dispatch(requestUserArchiveStory());
     const archives = await apis.instagram.getUserArchiveStories();
-    const reelIds = compose(pluck('id'), path(['items']))(archives);
-    const result = await apis.instagram.getStoryDetailById(reelIds);
-    dispatch(receiveUserArchiveStory(result));
-    return result;
+    const reelIds = compose(
+      into(
+        [],
+        compose(
+          filter(compose(gt(__, dayjs().subtract(2, 'day').unix()), path(['timestamp']))),
+          map(prop('id')),
+        ),
+      ),
+      path(['items']),
+    )(archives);
+    if (isExist(reelIds)) {
+      const result = await apis.instagram.getStoryDetailById(reelIds);
+      dispatch(receiveUserArchiveStory(result));
+      return result;
+    }
+    return [];
   } catch (e) {
     if (__DEV__) {
       console.log('fetch story feed', e, e.response);
     }
   }
+};
+
+export const fetchReelsMediaViewer = (id, max_id = 0) => async (dispatch, getState, { apis }) => {
+  try {
+    dispatch(requestStoryViewer());
+    const result = await apis.instagram.getReelsMediaViewer(id, max_id);
+    dispatch(receiveStoryViewer(id, result));
+    // users, next_max_id, total_viewer_count
+    if (isExist(result?.next_max_id)) {
+      await dispatch(fetchReelsMediaViewer(id, result?.next_max_id));
+    }
+    return result?.total_viewer_count;
+  } catch (e) {
+    DEBUG.log('fetchReelsMediaViewer error', e, e.response);
+  }
+};
+
+export const fetchUserPosts = (after = '') => async (dispatch, getState, { apis }) => {
+  try {
+    const userIgId = compose(insProfileIdSelector, getState)();
+    dispatch(requestUserPosts());
+    const posts = await apis.instagram.getPosts({ userId: userIgId, after });
+    dispatch(receiveUserPosts(posts));
+    return posts;
+  } catch (e) {
+    DEBUG.log('fetch user posts error', e, e.response);
+  }
+};
+
+export const fetchAllUserPosts = (after = '') => async (dispatch, getState) => {
+  const state = getState();
+  const currentPostsLength = postsDataLengthSelector(state);
+  const result = await dispatch(fetchUserPosts(after));
+  when(
+    allPass([
+      path(['page_info', 'has_next_page']),
+      compose(lte(currentPostsLength), path(['count'])),
+    ]),
+    compose(
+      endCursor => setTimeout(() => dispatch(fetchAllUserPosts(endCursor)), 3000),
+      path(['page_info', 'end_cursor']),
+    ),
+  )(result);
+  return result?.count;
 };

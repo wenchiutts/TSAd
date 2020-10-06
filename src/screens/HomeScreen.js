@@ -66,8 +66,8 @@ const renderAvatarListItem = ({ item, index }, navigation) => {
   }
   return (
     <AvatarWithUsername
-      username={item.user.username}
-      userPicture={{ uri: item.user.profile_pic_url }}
+      username={item.user?.username}
+      userPicture={{ uri: item.user?.profile_pic_url }}
       isExistStory
       onPress={() => navigation.navigate('story', { deckIndex: index - 1 })}
     />
@@ -95,9 +95,9 @@ const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const effectAction = async () => {
     await dispatch(fetchInsUserProfileAction());
-    await dispatch(fetchInsUserAllFollowing());
-    await dispatch(fetchInsUserAllFollower());
     await dispatch(fetchUserStoriesFeed());
+    await dispatch(fetchInsUserAllFollower());
+    await dispatch(fetchInsUserAllFollowing());
   };
   React.useEffect(() => {
     effectAction();
@@ -129,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
             ...storyFeed,
           ]}
           initialNumToRender={10}
-          keyExtractor={pathOr('0', ['id'])}
+          keyExtractor={(item, index) => pathOr(String(index), ['id'], item)}
           horizontal
           renderItem={item => renderAvatarListItem(item, navigation)}
         />
