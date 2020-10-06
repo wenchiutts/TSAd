@@ -4,6 +4,7 @@ import { path, map, values } from 'ramda';
 import { View, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { useDispatch } from 'react-redux';
+import { isExist } from 'utils/ramdaUtils';
 
 import Colors from 'constants/Colors';
 import CancelButton from 'components/header/CancelButton';
@@ -55,7 +56,6 @@ const SearchModal = ({ navigation }) => {
   console.log('searchUserInputOpt', searchUserInputOpt, 'searchResult', searchResult);
 
   const inputEle = React.useRef(null);
-  const [resultStories, setResultStories] = React.useState([]);
 
   const dispatch = useDispatch();
 
@@ -79,7 +79,7 @@ const SearchModal = ({ navigation }) => {
   return (
     <StyledView>
       <SearchUserInput ref={inputEle} {...searchUserInputOpt} />
-      {Object.keys(searchResult).length !== 0 ? (
+      {isExist(searchResult) ? (
         <View style={{ width: '100%', paddingTop: 10 }}>
           {map(user => (
             <LocalUserListItem
