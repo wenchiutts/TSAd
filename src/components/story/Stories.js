@@ -43,7 +43,7 @@ const Stories = ({
         }
         return (
           <Animated.View
-            key={idx}
+            key={story?.id}
             style={[
               styles.deck,
               {
