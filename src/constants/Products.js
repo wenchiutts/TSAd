@@ -1,9 +1,9 @@
 import { PLAN_TYPE } from 'components/ProductItem';
 
 export const PRODUCTS_IDS = {
-  PACKAGE_WEEKLY: 'com.ins.reports.analyzer.instagram.tracker.weekly',
-  PACKAGE_MONTHLY: 'com.ins.reports.analyzer.instagram.tracker.monthly',
-  PACKAGE_ANNUALY: 'com.ins.reports.analyzer.instagram.tracker.annualy',
+  PACKAGE_WEEKLY: 'com.ins.reports.analyzer.insta.followers.tracker.weekly',
+  PACKAGE_MONTHLY: 'com.ins.reports.analyzer.insta.followers.tracker.monthly',
+  PACKAGE_ANNUALY: 'com.ins.reports.analyzer.insta.followers.tracker.annualy',
 };
 
 export const PRODUCT_PLAN_TYPE_MAP = {

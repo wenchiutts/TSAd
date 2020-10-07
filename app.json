@@ -18,7 +18,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ins.reports.analyzer.instagram.tracker"
+      "bundleIdentifier": "com.ins.reports.analyzer.insta.followers.tracker"
     },
     "android": {
       "package": "com.tikfans2.www"
