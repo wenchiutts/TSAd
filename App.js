@@ -15,7 +15,7 @@ import Colors from 'constants/Colors';
 import configureStore from 'store/configureStore';
 import { getAuthStateAction } from 'modules/auth/authActions';
 import { connectAppStore } from 'actions/paymentActions';
-import { checkSubscriptionStatus } from 'actions/userActions';
+import { checkSubscriptionStatus, updateUserProfile } from 'actions/userActions';
 import LoginScreen from 'screens/LoginScreen';
 import { IgUserNameContext, useCheckUserLoginIg } from 'modules/instagram/useCheckUserLoginIg';
 import Splash from 'components/Splash';
@@ -28,7 +28,8 @@ const { store } = configureStore();
 export default function App() {
   React.useEffect(() => {
     const init = async () => {
-      store.dispatch(getAuthStateAction());
+      const { user } = await store.dispatch(getAuthStateAction());
+      store.dispatch(updateUserProfile(user));
       await store.dispatch(connectAppStore());
       store.dispatch(checkSubscriptionStatus());
     };

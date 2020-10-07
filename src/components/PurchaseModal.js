@@ -8,12 +8,19 @@ import ImageSlider from 'react-native-image-slider';
 import _ from 'lodash';
 import { ifElse, path, always } from 'ramda';
 import * as InAppPurchases from 'expo-in-app-purchases';
+import { createStructuredSelector } from 'reselect';
 
 import Colors from 'constants/Colors';
 import CancelButton from 'components/header/CancelButton';
 import ProductItemWithIAP, { PLAN_TYPE } from 'components/ProductItem';
 import { PRODUCTS_IDS, PRODUCT_PLAN_TYPE_MAP } from 'constants/Products';
-import { purchaseSubscriptionAction } from 'actions/userActions';
+import { purchaseSubscriptionAction, newTap, purchaseErrorAction } from 'actions/userActions';
+import {
+  insFollowersCountSelector,
+  insFollowingsCountSelector,
+  insProfilePictureSelector,
+  insUsernameSelector,
+} from 'modules/instagram/selector';
 
 const StyledView = styled(ScrollView).attrs({
   contentContainerStyle: {
@@ -93,8 +100,16 @@ const images = [
 const initialListContents = Object.values(PRODUCTS_IDS);
 console.log('initialListContents', initialListContents);
 
+const userDataSelector = createStructuredSelector({
+  followerCount: insFollowersCountSelector,
+  followingCount: insFollowingsCountSelector,
+  profilePicHd: insProfilePictureSelector,
+  username: insUsernameSelector,
+});
+
 const PurchaseModal = ({ navigation }) => {
   const premium = useSelector(state => state?.user?.premium);
+  const insData = useSelector(userDataSelector);
   const dispatch = useDispatch();
   const [listContents, setListContents] = React.useState(initialListContents);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -110,6 +125,7 @@ const PurchaseModal = ({ navigation }) => {
   });
 
   React.useEffect(() => {
+    dispatch(newTap(insData));
     const initIap = async () => {
       try {
         // Init IAP
@@ -119,7 +135,6 @@ const PurchaseModal = ({ navigation }) => {
           productIds,
         );
         setListContents(productResults);
-
 
         // Add Purchase Listener
         InAppPurchases.setPurchaseListener(async ({ responseCode, results, errorCode }) => {
@@ -142,22 +157,22 @@ const PurchaseModal = ({ navigation }) => {
                 ...productInfo,
                 purchaseTime: purchases[0]?.purchaseTime,
               };
-              dispatch(purchaseSubscriptionAction(productInfoWithPurchaseTime));
+              dispatch(purchaseSubscriptionAction(productInfoWithPurchaseTime, insData));
             }
           } else {
             if (responseCode === InAppPurchases.IAPResponseCode.USER_CANCELED) {
               const errorMessage = 'User canceled the transaction';
               console.log(errorMessage);
-              // dispatch(purchaseErrorAction({ errorMessage }));
+              dispatch(purchaseErrorAction(errorMessage, insData));
             } else if (responseCode === InAppPurchases.IAPResponseCode.DEFERRED) {
               const errorMessage =
                 'User does not have permissions to buy but requested parental approval (iOS only)';
               console.log(errorMessage);
-              // dispatch(purchaseErrorAction({ errorMessage }));
+              dispatch(purchaseErrorAction(errorMessage, insData));
             } else {
               const errorMessage = `Something went wrong with the purchase. Received errorCode ${errorCode}`;
               console.log(errorMessage);
-              // dispatch(purchaseErrorAction({ errorMessage }));
+              dispatch(purchaseErrorAction(errorMessage, insData));
             }
           }
         });

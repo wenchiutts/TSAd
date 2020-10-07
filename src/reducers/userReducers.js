@@ -1,7 +1,8 @@
 import createReducers from 'reducers/createReducers';
-import { UPDATE_PREMIUM } from 'actions/userActions';
+import { RECEIVE_USER_PROFILE, UPDATE_PREMIUM } from 'actions/userActions';
 
 const initialState = {
+  hasLaunched: false,
   premium: {
     status: 'inactive', // 'inactive' | 'active' | 'expired'
     productId: null,
@@ -18,5 +19,9 @@ export default createReducers(initialState, {
       productId: action.purchase?.productId,
       lastUpdatedAt: action.purchase?.lastUpdatedAt,
     },
+  }),
+  [RECEIVE_USER_PROFILE]: (state, action) => ({
+    ...state,
+    ...action.profile,
   }),
 });
