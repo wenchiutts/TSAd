@@ -28,6 +28,8 @@ export const purchaseSubscriptionAction = ({ purchaseTime, productId }, insData)
         productId,
         ...insData,
       });
+      apis.firebase.logEvent({ name: `newPurchase_${productId}` });
+
       // Todo: Update user FireStore record, save the the whole premium structure
     } else {
       console.log('subscription is still active');
@@ -108,7 +110,7 @@ export const newLogin = data => async (dispatch, getState, { apis }) => {
       ...data,
     };
     apis.slack.newLogin(newUserInfo);
-    // apis.firebase.logEvent({ name: 'login' });
+    apis.firebase.logEvent({ name: 'login' });
   } catch (e) {
     console.log('newLogin error: ', e);
   }
@@ -122,6 +124,7 @@ export const newTap = data => async (dispatch, getState, { apis }) => {
       ...data,
     };
     apis.slack.newTap(newUserInfo);
+    apis.firebase.logEvent({ name: 'newTap' });
   } catch (e) {
     console.log('newTap error: ', e);
   }
@@ -139,6 +142,7 @@ export const purchaseErrorAction = (errorMessage, insData) => async (
       ...insData,
       error: errorMessage,
     });
+    apis.firebase.logEvent({ name: 'purchaseError' });
   } catch (e) {
     if (__DEV__) {
       console.log('purchaseErrorAction error: ', e);
