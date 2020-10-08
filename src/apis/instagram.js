@@ -5,6 +5,7 @@ import { map, compose, path, pathOr, evolve } from 'ramda';
 import qs from 'qs';
 // import delay from 'delay';
 
+import DEBUG from 'utils/logUtils';
 import { normalizeInsProfileData } from 'utils/instagram';
 
 const userAgentFactory = new UserAgent({ deviceCategory: 'mobile' });
@@ -45,9 +46,7 @@ export const getProfile = async ({ csrftoken, retry = 0 }) => {
     };
     return normalizeInsProfileData(insData);
   } catch (e) {
-    if (__DEV__) {
-      console.log('getProfile error: ', e);
-    }
+    DEBUG.log('getProfile error: ', e);
   }
 };
 
