@@ -5,6 +5,8 @@ import { path, pathOr } from 'ramda';
 import * as MailComposer from 'expo-mail-composer';
 import dedent from 'dedent';
 import Constants from 'expo-constants';
+import CookieManager from '@react-native-community/cookies';
+
 
 import IconListItem from 'components/IconListItem';
 
@@ -46,9 +48,8 @@ const SettingsScreen = () => (
                         platform: $user?.platform
                         country: $user?.countryCode
                         uniqueId: $user?.tiktok?.uniqueId
-                        version: ${
-                          process.env?.APP_MANIFEST?.version || Constants.manifest.version
-                        }`,
+                        version: ${process.env?.APP_MANIFEST?.version || Constants.manifest.version
+              }`,
         };
         MailComposer.composeAsync(options);
       }}
@@ -68,6 +69,12 @@ const SettingsScreen = () => (
     <IconListWithMargin
       iconSource={require('assets/icons/settings_logour.png')}
       description="Log Out"
+      onPress={() => {
+        CookieManager.clearAll()
+          .then((success) => {
+            console.log('CookieManager.clearAll =>', success);
+          });
+      }}
     />
   </StyledView>
 );

@@ -8,6 +8,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Modalize } from 'react-native-modalize';
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import CookieManager from '@react-native-community/cookies';
+import delay from 'delay';
 
 import { isExist } from 'utils/ramdaUtils';
 import {
@@ -23,7 +25,7 @@ import { IgUserNameContext } from 'modules/instagram/useCheckUserLoginIg';
 //   fetchInsUserProfileAction
 // } from 'actions/userActions';
 
-const { height: initialHeight } = Dimensions.get('window');
+const { height: initialHeight, width: initialWidth } = Dimensions.get('window');
 
 const LoginScreen = ({ navigation }) => {
   const { setUserName } = React.useContext(IgUserNameContext);
@@ -34,6 +36,13 @@ const LoginScreen = ({ navigation }) => {
   const handleLayout = ({ layout }) => {
     setHeight(layout.height);
   };
+
+  React.useEffect(() => {
+    CookieManager.clearAll()
+      .then((success) => {
+        console.log('CookieManager.clearAll =>', success);
+      });
+  }, []);
 
   const jsCode = 'window.ReactNativeWebView.postMessage(document.cookie)';
 
@@ -61,18 +70,26 @@ const LoginScreen = ({ navigation }) => {
     const { data } = event.nativeEvent;
     console.log('data', data);
     const cookies = data.split(';'); // `csrftoken=...; rur=...; mid=...; somethingelse=...`
-
+    console.log('cookies', cookies);
     const cookiesObj = cookies.reduce((obj, cookie) => {
       const c = cookie.trim().split('=');
       obj[c[0]] = c[1];
       return obj;
     }, {});
 
+    CookieManager.getAll()
+      .then((cookies) => {
+        console.log('CookieManager.getAll =>', cookies);
+      });
     if (isExist(cookiesObj.ds_user_id)) {
       dispatch(receiveInsCookies(cookiesObj));
-      onSuccessfulLogin();
+      // onSuccessfulLogin();
       // navigation.navigate('Home');
+      await delay(1000);
       const profile = await dispatch(fetchInsUserProfileAction());
+      if (profile?.username === undefined || profile?.username === 'undefined') {
+        return;
+      }
       setUserName(profile?.username);
       // dispatch(newLogin());
     }
@@ -81,9 +98,8 @@ const LoginScreen = ({ navigation }) => {
   return (
     <Container>
       <BackgroundImage source={require('assets/images/splash.png')} />
-      {/* <GradientLayer /> */}
       <LoginButton onPress={onPressLogin} />
-      <Modalize ref={modalizeRef} onLayout={handleLayout} modalTopOffset={35}>
+      <Modalize ref={modalizeRef} onLayout={handleLayout} modalTopOffset={15}>
         {isLoading && <StyledActivityIndicator size="large" color="black" />}
         <WebView
           style={{ height }}
@@ -91,6 +107,9 @@ const LoginScreen = ({ navigation }) => {
           onNavigationStateChange={onNavigationStateChange}
           onMessage={_onMessage}
           injectedJavaScript={jsCode}
+          thirdPartyCookiesEnabled={true}
+          cacheMode="LOAD_NO_CACHE"
+        // incognito={true}
         />
       </Modalize>
     </Container>
