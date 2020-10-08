@@ -10,6 +10,8 @@
 #import <EXSplashScreen/EXSplashScreenService.h>
 #import <UMCore/UMModuleRegistryProvider.h>
 
+@import Firebase;
+
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
@@ -56,8 +58,10 @@ static void InitializeFlipper(UIApplication *application) {
   #endif
 
   [super application:application didFinishLaunchingWithOptions:launchOptions];
-
-  return YES;
+    if ([FIRApp defaultApp] == nil) {
+      [FIRApp configure];
+    }  
+    return YES;
 }
 
 - (RCTBridge *)initializeReactNativeApp

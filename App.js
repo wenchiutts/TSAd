@@ -6,6 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { ThemeProvider } from 'styled-components/native';
 import { Provider } from 'react-redux';
+import * as Analytics from 'expo-firebase-analytics';
 
 import StoryModal from 'components/StoryModal';
 import BottomTabNavigator from 'navigation/BottomTabNavigator';
@@ -15,7 +16,7 @@ import Colors from 'constants/Colors';
 import configureStore from 'store/configureStore';
 import { getAuthStateAction } from 'modules/auth/authActions';
 import { connectAppStore } from 'actions/paymentActions';
-import { checkSubscriptionStatus } from 'actions/userActions';
+import { checkSubscriptionStatus, updateUserProfile } from 'actions/userActions';
 import LoginScreen from 'screens/LoginScreen';
 import { IgUserNameContext, useCheckUserLoginIg } from 'modules/instagram/useCheckUserLoginIg';
 import Splash from 'components/Splash';
@@ -26,9 +27,13 @@ const Stack = createStackNavigator();
 const { store } = configureStore();
 
 export default function App() {
+  const routeNameRef = React.useRef();
+  const navigationRef = React.useRef();
+
   React.useEffect(() => {
     const init = async () => {
-      store.dispatch(getAuthStateAction());
+      const { user } = await store.dispatch(getAuthStateAction());
+      store.dispatch(updateUserProfile(user));
       await store.dispatch(connectAppStore());
       store.dispatch(checkSubscriptionStatus());
     };
@@ -46,7 +51,19 @@ export default function App() {
         <IgUserNameContext.Provider value={igUserNameContext}>
           <View style={styles.container}>
             <StatusBar style="auto" />
-            <NavigationContainer>
+            <NavigationContainer
+              ref={navigationRef}
+              onReady={() => (routeNameRef.current = navigationRef.current.getCurrentRoute().name)}
+              onStateChange={() => {
+                const previousRouteName = routeNameRef.current;
+                const currentRouteName = navigationRef.current.getCurrentRoute().name;
+
+                if (previousRouteName !== currentRouteName) {
+                  Analytics.setCurrentScreen(currentRouteName);
+                  console.log(currentRouteName);
+                }
+                routeNameRef.current = currentRouteName;
+              }}>
               <Stack.Navigator
                 screenOptions={{
                   headerStyle: {

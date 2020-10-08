@@ -1,8 +1,9 @@
 // @format
-import firebase from 'firebase/app';
+import firebase, { analytics } from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/auth';
+import * as Analytics from 'expo-firebase-analytics';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBai94b4Uf7XyvZXCXm2WDXTQmsLPHBKgo',
@@ -41,3 +42,14 @@ export const getAuthState = () =>
       }
     });
   });
+
+export const logEvent = ({ name }) => {
+  try {
+    console.log('firebase logevent');
+    Analytics.logEvent(name);
+  } catch (e) {
+    if (__DEV__) {
+      console.log('logEvent error:', e);
+    }
+  }
+};
