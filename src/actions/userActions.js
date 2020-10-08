@@ -116,17 +116,17 @@ export const newLogin = data => async (dispatch, getState, { apis }) => {
   }
 };
 
-export const newTap = data => async (dispatch, getState, { apis }) => {
+export const newTapPurchase = data => async (dispatch, getState, { apis }) => {
   try {
     const state = getState();
     const newUserInfo = {
       ...state?.user,
       ...data,
     };
-    apis.slack.newTap(newUserInfo);
-    apis.firebase.logEvent({ name: 'newTap' });
+    apis.slack.newTapPurchase(newUserInfo);
+    apis.firebase.logEvent({ name: 'newTapPurchase' });
   } catch (e) {
-    console.log('newTap error: ', e);
+    console.log('newTapPurchase error: ', e);
   }
 };
 

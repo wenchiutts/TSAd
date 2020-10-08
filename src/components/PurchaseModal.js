@@ -14,7 +14,11 @@ import Colors from 'constants/Colors';
 import CancelButton from 'components/header/CancelButton';
 import ProductItemWithIAP, { PLAN_TYPE } from 'components/ProductItem';
 import { PRODUCTS_IDS, PRODUCT_PLAN_TYPE_MAP } from 'constants/Products';
-import { purchaseSubscriptionAction, newTap, purchaseErrorAction } from 'actions/userActions';
+import {
+  purchaseSubscriptionAction,
+  newTapPurchase,
+  purchaseErrorAction,
+} from 'actions/userActions';
 import {
   insFollowersCountSelector,
   insFollowingsCountSelector,
@@ -125,7 +129,7 @@ const PurchaseModal = ({ navigation }) => {
   });
 
   React.useEffect(() => {
-    dispatch(newTap(insData));
+    dispatch(newTapPurchase(insData));
     const initIap = async () => {
       try {
         // Init IAP

@@ -58,7 +58,7 @@ export const newLogin = data => {
   }
 };
 
-export const newTap = data => {
+export const newTapPurchase = data => {
   try {
     const url =
       Platform.OS === 'android'
@@ -82,7 +82,7 @@ export const newTap = data => {
     axios.post(url, payload).catch(err => console.log('slack err', err.response));
   } catch (e) {
     if (__DEV__) {
-      console.log('newTap error', e);
+      console.log('newTapPurchase error', e);
     }
   }
 };

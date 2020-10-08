@@ -6,6 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { ThemeProvider } from 'styled-components/native';
 import { Provider } from 'react-redux';
+import * as Analytics from 'expo-firebase-analytics';
 
 import StoryModal from 'components/StoryModal';
 import BottomTabNavigator from 'navigation/BottomTabNavigator';
@@ -26,6 +27,9 @@ const Stack = createStackNavigator();
 const { store } = configureStore();
 
 export default function App() {
+  const routeNameRef = React.useRef();
+  const navigationRef = React.useRef();
+
   React.useEffect(() => {
     const init = async () => {
       const { user } = await store.dispatch(getAuthStateAction());
@@ -47,7 +51,19 @@ export default function App() {
         <IgUserNameContext.Provider value={igUserNameContext}>
           <View style={styles.container}>
             <StatusBar style="auto" />
-            <NavigationContainer>
+            <NavigationContainer
+              ref={navigationRef}
+              onReady={() => (routeNameRef.current = navigationRef.current.getCurrentRoute().name)}
+              onStateChange={() => {
+                const previousRouteName = routeNameRef.current;
+                const currentRouteName = navigationRef.current.getCurrentRoute().name;
+
+                if (previousRouteName !== currentRouteName) {
+                  Analytics.setCurrentScreen(currentRouteName);
+                  console.log(currentRouteName);
+                }
+                routeNameRef.current = currentRouteName;
+              }}>
               <Stack.Navigator
                 screenOptions={{
                   headerStyle: {
