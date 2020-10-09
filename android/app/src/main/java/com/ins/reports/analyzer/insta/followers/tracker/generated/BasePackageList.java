@@ -1,4 +1,4 @@
-package com.tikfans2.www.generated;
+package com.ins.reports.analyzer.insta.followers.tracker.generated;
 
 import java.util.Arrays;
 import java.util.List;

@@ -4993,12 +4993,14 @@ expo-av@~8.6.0:
     lodash "^4.17.15"
     nullthrows "^1.1.0"
 
-expo-blur@~8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-8.2.0.tgz#4f586b5019c70f93c9914b2ff6ecadda4a382d51"
-  integrity sha512-LXx8tyVMk1pE4Ug9fHNTIsZnUPewmWXyFhiEwUkeP5SKlg92CgWGbTiGkdhFiU5X0vDxgFKsVVilLcNQxWYSfQ==
+expo-blur@~8.1.2:
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-8.1.2.tgz#d8f12d6492f3df264a1eaae8a15c22b3a283375e"
+  integrity sha512-Z/NCe59rDR9D54FEZNisRybZwihfE9EQfolgchmra9wt89eryXMtxR9ciHn6n0F/BImOiS6UhzQZIE4SRs76Eg==
+  dependencies:
+    prop-types "^15.6.0"
 
-expo-constants@~9.2.0:
+expo-constants@^9.1.1, expo-constants@~9.2.0:
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-9.2.0.tgz#e86a38793deaff9018878afac65bce2543c80a4c"
   integrity sha512-WKwiEMvBgPrEPEyZKm21UUB2KWQux9OCWf6ZDORLTln7kO3rsbaJEprfWUWTP7AxyaLMYfN+/0WFHjZc25SZWQ==
@@ -5019,6 +5021,18 @@ expo-file-system@~9.2.0:
   integrity sha512-GsDf+E6e1WyYqyUiXbcWthLk7oVO+WDticnHUGAzb17hVCgxJhlUbRriwY3kBkQAX1mr+Hq9lkgJPIRbV197Fw==
   dependencies:
     uuid "^3.4.0"
+
+expo-firebase-analytics@~2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/expo-firebase-analytics/-/expo-firebase-analytics-2.4.1.tgz#cb8d96fd91583271aba36e0edce7e2eadea5dec3"
+  integrity sha512-Z9bYDHoqu0lRT1vG5d6vjQe/Wg9ioSWtJ4uHRJBX0kojQNB4ONuO/OCAeiJoDfwfId11bPeslGlnR2P6fh8zGA==
+  dependencies:
+    expo-firebase-core "~1.1.1"
+
+expo-firebase-core@~1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/expo-firebase-core/-/expo-firebase-core-1.1.1.tgz#9ee4b0118a5528c683ff5a676ee2594438e3f3b0"
+  integrity sha512-FCf9IsX30vLeMhIk/+QYZP6iRC4SVP3nite1CqjhL/pnDY0pFqHAfA4e5KKJQUaWw1nbtaHVlBcud/Zyaeu6xg==
 
 expo-font@~8.3.0:
   version "8.3.0"
@@ -5094,7 +5108,7 @@ expo-status-bar@~1.0.2:
   resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.0.2.tgz#2441a77c56be31597898337b0d086981f2adefd8"
   integrity sha512-5313u744GcLzCadxIPXyTkYw77++UXv1dXCuhYDxDbtsEf93iMra7WSvzyE8a7mRQLIIPRuGnBOdrL/V1C7EOQ==
 
-expo-updates@~0.3.3:
+expo-updates@~0.3.2:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/expo-updates/-/expo-updates-0.3.5.tgz#cd9aafeb5cbe16399df7d39243d00d330d99e674"
   integrity sha512-O+W0MfDZPhhCYKFtLL85ifd+YAm3rFKALWzmyKOSGBb/L+8CBPQsbbB3mdvji0V2NCqq0+jrBvSCmNa5LRD41w==
@@ -5103,7 +5117,7 @@ expo-updates@~0.3.3:
     fbemitter "^2.1.1"
     uuid "^3.4.0"
 
-expo@^39.0.0:
+expo@~39.0.0:
   version "39.0.3"
   resolved "https://registry.yarnpkg.com/expo/-/expo-39.0.3.tgz#55d10609b2df9b8d511acb4f3e72e4dc162e6b27"
   integrity sha512-pbLlkq43XDViEQpzgIW8hEPRibwjSml1uZQ3imPpCDfjMGlq7J6+IIN7q4kd+Hp+W0J6w6INYPR0E/dxdEBkSw==
@@ -9209,7 +9223,7 @@ react-native-webview@10.7.0:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
-react-native@0.63.3:
+react-native@~0.63.3:
   version "0.63.3"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.63.3.tgz#4a7f6540e049ff41810887bbd1125abc4672f3bf"
   integrity sha512-71wq13uNo5W8QVQnFlnzZ3AD+XgUBYGhpsxysQFW/hJ8GAt/J5o+Bvhy81FXichp6IBDJDh/JgfHH2gNji8dFA==
