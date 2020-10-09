@@ -30,6 +30,11 @@ const middlewares = [
   // loggerMiddleware,
 ];
 
+// if (__DEV__) {
+//   const createDebugger = require('redux-flipper').default;
+//   middlewares.push(createDebugger());
+// }
+
 const finalCreateStore = compose(applyMiddleware(...middlewares))(createStore);
 
 const persistConfig = {

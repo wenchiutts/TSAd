@@ -20,6 +20,8 @@ import {
   unFollowersCountSelector,
   blockerCountSelector,
   storyFeedSelector,
+  ghostFollowerCountSelector,
+  bestFollowerListCountSelector,
 } from 'modules/instagram/selector';
 import {
   fetchInsUserAllFollowing,
@@ -55,8 +57,8 @@ const userDataSelector = createStructuredSelector({
   notFollowingMeBack: notFollowingMeBackCountSelector,
   imNotFollowingBack: imNotFollowingBackCountSelector,
   mutualFollowing: mutualFollowingCountSelector,
-  bestFollowers: always(0),
-  ghostFollowers: always(0),
+  bestFollowers: bestFollowerListCountSelector,
+  ghostFollowers: ghostFollowerCountSelector,
   storyFeed: storyFeedSelector,
 });
 
