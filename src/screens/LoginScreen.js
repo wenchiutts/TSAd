@@ -97,7 +97,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <Container>
-      <BackgroundImage source={require('assets/images/splash.png')} />
+      <BackgroundImage source={require('assets/splash.png')} />
       <LoginButton onPress={onPressLogin} />
       <Modalize ref={modalizeRef} onLayout={handleLayout} modalTopOffset={15}>
         {isLoading && <StyledActivityIndicator size="large" color="black" />}
@@ -160,11 +160,10 @@ const GradientLayer = styled(View)`
 `;
 
 const LoginButtonWrapper = styled(TouchableOpacity)`
-  width: 60%;
-  max-width: 225;
-  height: 40;
+  width: 75%;
+  max-width: 300;
+  height: 60;
   border-radius: 12;
-
   margin-top: auto;
   margin-bottom: 40%;
   background-color: #32c5ff;
@@ -182,6 +181,10 @@ const LoginButton = ({ onPress }) => (
         locations={[0.1, 1]}
         start={[0.5, 0.4]}
         end={[1, 1]}>
+        <Image
+          source={require('assets/icons/instagramlogo.png')}
+          style={{ width: 28, height: 28, marginRight: 12 }}
+        />
         <Text
           style={{
             color: '#FFFFFF',
