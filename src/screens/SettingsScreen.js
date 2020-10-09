@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ScrollView, Text } from 'react-native';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
 import * as MailComposer from 'expo-mail-composer';
@@ -10,6 +11,8 @@ import CookieManager from '@react-native-community/cookies';
 import IconListItem from 'components/IconListItem';
 import PromotionCard from 'components/PromotionCard.js';
 import { getExpoBundleVersion } from 'utils/system';
+import { logoutInsAction } from 'modules/instagram/insAuthActions';
+import { IgUserNameContext } from 'modules/instagram/useCheckUserLoginIg';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -27,57 +30,63 @@ const IconListWithMargin = styled(IconListItem)`
   margin-top: ${pathOr(12, ['margin'])};
 `;
 
-const SettingsScreen = () => (
-  <StyledView>
-    <PromotionCard />
-    <IconListWithMargin
-      margin={24}
-      iconSource={require('assets/icons/settings_contactus.png')}
-      description="Contact Us"
-      onPress={() => {
-        // TODO: CHUCK change the recipients and subject
-        const options = {
-          recipients: ['tikfansapp@gmail.com'],
-          subject: 'TikFans issue',
-          body:
-            '\n\n\n\n\n\n\n' +
-            dedent`
+const SettingsScreen = () => {
+  const dispatch = useDispatch();
+  const { setUserName } = React.useContext(IgUserNameContext);
+  return (
+    <StyledView>
+      <PromotionCard />
+      <IconListWithMargin
+        margin={24}
+        iconSource={require('assets/icons/settings_contactus.png')}
+        description="Contact Us"
+        onPress={() => {
+          // TODO: CHUCK change the recipients and subject
+          const options = {
+            recipients: ['tikfansapp@gmail.com'],
+            subject: 'TikFans issue',
+            body:
+              '\n\n\n\n\n\n\n' +
+              dedent`
                         ------ Don't delete infos below ------
                         user: $user?.uid
                         platform: $user?.platform
                         country: $user?.countryCode
                         uniqueId: $user?.tiktok?.uniqueId
                         version: ${process.env?.APP_MANIFEST?.version || Updates.manifest.version
-              }`,
-        };
-        MailComposer.composeAsync(options);
-      }}
-    />
-    <IconListWithMargin
-      iconSource={require('assets/icons/settings_restore.png')}
-      description="Restore Purchase"
-    />
-    <IconListWithMargin
-      iconSource={require('assets/icons/followstatus_best.png')}
-      description="Rate Us"
-    />
-    <IconListWithMargin
-      iconSource={require('assets/icons/settings_termofuse.png')}
-      description="Term os Use"
-    />
-    <IconListWithMargin
-      iconSource={require('assets/icons/settings_logour.png')}
-      description="Log Out"
-      onPress={() => {
-        CookieManager.clearAll()
-          .then((success) => {
-            console.log('CookieManager.clearAll =>', success);
-          });
-      }}
-    />
-    <VersionText>Current version: {getExpoBundleVersion()}</VersionText>
-  </StyledView>
-);
+                }`,
+          };
+          MailComposer.composeAsync(options);
+        }}
+      />
+      <IconListWithMargin
+        iconSource={require('assets/icons/settings_restore.png')}
+        description="Restore Purchase"
+      />
+      <IconListWithMargin
+        iconSource={require('assets/icons/followstatus_best.png')}
+        description="Rate Us"
+      />
+      <IconListWithMargin
+        iconSource={require('assets/icons/settings_termofuse.png')}
+        description="Term os Use"
+      />
+      <IconListWithMargin
+        iconSource={require('assets/icons/settings_logour.png')}
+        description="Log Out"
+        onPress={() => {
+          CookieManager.clearAll()
+            .then((success) => {
+              console.log('CookieManager.clearAll =>', success);
+            });
+          dispatch(logoutInsAction());
+          setUserName(undefined);
+        }}
+      />
+      <VersionText>Current version: {getExpoBundleVersion()}</VersionText>
+    </StyledView>
+  );
+};
 
 SettingsScreen.propTypes = {};
 

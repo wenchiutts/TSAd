@@ -63,6 +63,7 @@ import {
   RECEIVE_USER_POSTS,
   REQUEST_STORY_VIEWER,
   RECEIVE_STORY_VIEWER,
+  LOG_OUT_INS,
 } from 'modules/instagram/insAuthActions';
 import { objFromListWith } from 'utils/ramdaUtils';
 import DEBUG from 'utils/logUtils';
@@ -383,5 +384,27 @@ export default createReducers(initialState, {
         ),
       ]),
     )(action),
+  }),
+  [LOG_OUT_INS]: (state, action) => ({
+    ...state,
+    cookies: undefined,
+    profile: undefined,
+    followings: undefined,
+    followers: undefined,
+    unFollowers: undefined,
+    blockers: undefined,
+    isFetching: false,
+    isFetchingFollowers: false,
+    isFetchingFollowings: false,
+    isFetchingUserPosts: false,
+    isPostingFollowUser: false,
+    isPostingUnFollowUser: false,
+    isCheckingBlocker: false,
+    isFetchingStoryReels: false,
+    isFetchingArchives: false,
+    followersTimeStamp: {},
+    unFollowersTimeStamp: {},
+    storyFeed: undefined,
+    storyArchvies: {},
   }),
 });

@@ -3,10 +3,10 @@ import { PRODUCTS_IDS, PRODUCT_PLAN_TYPE_MAP, IAP_PRODUCTS } from 'constants/Pro
 import { getCountryCode } from 'utils/location';
 
 export const UPDATE_PREMIUM = 'UPDATE_PREMIUM';
-export const updatePremium = makeActionCreator('UPDATE_PREMIUM', 'purchase');
+export const updatePremium = makeActionCreator(UPDATE_PREMIUM, 'purchase');
 
 export const RECEIVE_USER_PROFILE = 'RECEIVE_USER_PROFILE';
-export const receiveUserProfile = makeActionCreator('RECEIVE_USER_PROFILE', 'profile');
+export const receiveUserProfile = makeActionCreator(RECEIVE_USER_PROFILE, 'profile');
 
 export const purchaseSubscriptionAction = ({ purchaseTime, productId }, insData) => async (
   dispatch,
@@ -149,3 +149,4 @@ export const purchaseErrorAction = (errorMessage, insData) => async (
     }
   }
 };
+

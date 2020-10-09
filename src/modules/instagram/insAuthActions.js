@@ -33,6 +33,7 @@ export const REQUEST_STORY_VIEWER = 'REQUEST_STORY_VIEWER';
 export const RECEIVE_STORY_VIEWER = 'RECEIVE_STORY_VIEWER';
 export const REQUEST_USER_POSTS = 'REQUEST_USER_POSTS';
 export const RECEIVE_USER_POSTS = 'RECEIVE_USER_POSTS';
+export const LOG_OUT_INS = 'LOG_OUT_INS';
 
 export const receiveInsCookies = makeActionCreator(RECEIVE_INS_COOKIES, 'cookies');
 export const requestInsCookies = makeActionCreator(REQUEST_INS_COOKIES);
@@ -56,6 +57,7 @@ export const requestStoryViewer = makeActionCreator(REQUEST_STORY_VIEWER);
 export const receiveStoryViewer = makeActionCreator(RECEIVE_STORY_VIEWER, 'storyId', 'viewers');
 export const requestUserPosts = makeActionCreator(REQUEST_USER_POSTS);
 export const receiveUserPosts = makeActionCreator(RECEIVE_USER_POSTS, 'posts');
+export const logoutInsAction = makeActionCreator(LOG_OUT_INS);
 
 export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis }) => {
   try {
