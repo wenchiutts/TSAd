@@ -37,12 +37,12 @@ const LoginScreen = ({ navigation }) => {
     setHeight(layout.height);
   };
 
-  React.useEffect(() => {
-    CookieManager.clearAll()
-      .then((success) => {
-        console.log('CookieManager.clearAll =>', success);
-      });
-  }, []);
+  // React.useEffect(() => {
+  //   CookieManager.clearAll()
+  //     .then((success) => {
+  //       console.log('CookieManager.clearAll =>', success);
+  //     });
+  // }, []);
 
   const jsCode = 'window.ReactNativeWebView.postMessage(document.cookie)';
 
@@ -77,10 +77,11 @@ const LoginScreen = ({ navigation }) => {
       return obj;
     }, {});
 
-    CookieManager.getAll()
+    CookieManager.get('www.instagram.com')
       .then((cookies) => {
-        console.log('CookieManager.getAll =>', cookies);
+        console.log('CookieManager.get =>', cookies);
       });
+
     if (isExist(cookiesObj.ds_user_id)) {
       dispatch(receiveInsCookies(cookiesObj));
       // onSuccessfulLogin();
