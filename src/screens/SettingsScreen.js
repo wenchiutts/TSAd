@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { ScrollView, Text } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
 import * as MailComposer from 'expo-mail-composer';
 import dedent from 'dedent';
-import * as Updates from 'expo-updates';
 import CookieManager from '@react-native-community/cookies';
 
 import IconListItem from 'components/IconListItem';
@@ -33,6 +32,10 @@ const IconListWithMargin = styled(IconListItem)`
 const SettingsScreen = () => {
   const dispatch = useDispatch();
   const { setUserName } = React.useContext(IgUserNameContext);
+  const user = useSelector(state => state?.user);
+  const username = useSelector(state => state?.instagram?.profile?.username);
+
+
   return (
     <StyledView>
       <PromotionCard />
@@ -43,18 +46,17 @@ const SettingsScreen = () => {
         onPress={() => {
           // TODO: CHUCK change the recipients and subject
           const options = {
-            recipients: ['tikfansapp@gmail.com'],
-            subject: 'TikFans issue',
+            recipients: ['service.fypapp@gmail.com'],
+            subject: 'Ins Master issue',
             body:
               '\n\n\n\n\n\n\n' +
               dedent`
                         ------ Don't delete infos below ------
-                        user: $user?.uid
-                        platform: $user?.platform
-                        country: $user?.countryCode
-                        uniqueId: $user?.tiktok?.uniqueId
-                        version: ${process.env?.APP_MANIFEST?.version || Updates.manifest.version
-                }`,
+                        user: ${user?.uid}
+                        platform: ${user?.platform}
+                        country: ${user?.countryCode}
+                        username: ${username}
+                        version: ${getExpoBundleVersion()}`,
           };
           MailComposer.composeAsync(options);
         }}
