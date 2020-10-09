@@ -61,7 +61,7 @@ const SettingsScreen = () => {
           MailComposer.composeAsync(options);
         }}
       />
-      <IconListWithMargin
+      {/* <IconListWithMargin
         iconSource={require('assets/icons/settings_restore.png')}
         description="Restore Purchase"
       />
@@ -72,7 +72,7 @@ const SettingsScreen = () => {
       <IconListWithMargin
         iconSource={require('assets/icons/settings_termofuse.png')}
         description="Term os Use"
-      />
+      /> */}
       <IconListWithMargin
         iconSource={require('assets/icons/settings_logour.png')}
         description="Log Out"
