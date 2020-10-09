@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1043745726858",
+    "firebase_url": "https://ins-reports-prod.firebaseio.com",
+    "project_id": "ins-reports-prod",
+    "storage_bucket": "ins-reports-prod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043745726858:android:61a6e98af44ce846e12873",
+        "android_client_info": {
+          "package_name": "com.ins.reports.analyzer.insta.followers.tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043745726858-b84289s0k31pju5q6g3k8tfquf0sodms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyS9MrfT-OUbZfHaV-6CVa3EOByzDoNAY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1043745726858-b84289s0k31pju5q6g3k8tfquf0sodms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
