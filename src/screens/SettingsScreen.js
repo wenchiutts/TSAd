@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
 import * as MailComposer from 'expo-mail-composer';
@@ -7,10 +7,9 @@ import dedent from 'dedent';
 import * as Updates from 'expo-updates';
 import CookieManager from '@react-native-community/cookies';
 
-
 import IconListItem from 'components/IconListItem';
-
 import PromotionCard from 'components/PromotionCard.js';
+import { getExpoBundleVersion } from 'utils/system';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -76,9 +75,16 @@ const SettingsScreen = () => (
           });
       }}
     />
+    <VersionText>Current version: {getExpoBundleVersion()}</VersionText>
   </StyledView>
 );
 
 SettingsScreen.propTypes = {};
 
 export default SettingsScreen;
+
+const VersionText = styled(Text)`
+  margin-top: 10px;
+  color: ${path(['theme', 'primary', 'gray'])};
+  align-self: center;
+`;
