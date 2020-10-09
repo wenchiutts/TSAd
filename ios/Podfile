@@ -9,6 +9,7 @@ target 'InsReport' do
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
   use_unimodules!
+  pod 'Firebase/Analytics'
 
   # Enables Flipper.
   #
