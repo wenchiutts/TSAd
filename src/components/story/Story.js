@@ -11,6 +11,7 @@ import Image from 'react-native-image-progress';
 
 import CancelButton from 'components/header/CancelButton';
 import Spinner from 'components/Spinner';
+import StoryAvatar from 'components/story/StoryAvatar';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,7 +22,14 @@ const SpinnerWrapper = styled(View)`
   height: ${height};
 `;
 
+const StyledAvatar = styled(StoryAvatar)`
+  position: absolute;
+  top: 14;
+  left: 16;
+`;
+
 const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
+  require('utils/logUtils').default.log('CHUCK story', story);
   const navigation = useNavigation();
 
   const { onNextItem, onPrevItem, dismissCarousel, setBackOpacity } = functions;
@@ -43,6 +51,11 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
         {!isEmptyStories(story) && (
           <StyledImage source={{ uri: story?.items[story.idx].src }}>
             <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
+            <StyledAvatar
+              imgSrc={{ uri: story?.user?.profile_pic_url }}
+              username={story?.user?.username}
+              createTime={story?.items[story.idx].takenAt}
+            />
             <BackButton
               onPrevItem={onPrevItem}
               setBackOpacity={setBackOpacity}
