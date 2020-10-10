@@ -48,7 +48,7 @@ const ImageWrapper = styled(View)`
 const StyledImage = styled(Image)`
   flex: 1;
   width: 100%;
-  resize-mode: contain;
+  resize-mode: cover;
 `;
 
 const ButtonWrapper = styled(View)`
