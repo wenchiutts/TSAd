@@ -29,7 +29,6 @@ const StyledAvatar = styled(StoryAvatar)`
 `;
 
 const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
-  require('utils/logUtils').default.log('CHUCK story', story);
   const navigation = useNavigation();
 
   const { onNextItem, onPrevItem, dismissCarousel, setBackOpacity } = functions;
