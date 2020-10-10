@@ -17,11 +17,11 @@ import {
 } from 'modules/instagram/insAuthActions';
 import { IgUserNameContext } from 'modules/instagram/useCheckUserLoginIg';
 
-// import {
-//   newLogin,
-//   receiveInsCookies,
-//   fetchInsUserProfileAction
-// } from 'actions/userActions';
+import {
+  newLogin,
+  //   receiveInsCookies,
+  //   fetchInsUserProfileAction
+} from 'actions/userActions';
 
 const { height: initialHeight } = Dimensions.get('window');
 
@@ -74,7 +74,7 @@ const LoginScreen = ({ navigation }) => {
       // navigation.navigate('Home');
       const profile = await dispatch(fetchInsUserProfileAction());
       setUserName(profile?.username);
-      // dispatch(newLogin());
+      dispatch(newLogin(profile));
     }
   };
 
