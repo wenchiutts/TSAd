@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, Linking } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
@@ -61,18 +61,25 @@ const SettingsScreen = () => {
           MailComposer.composeAsync(options);
         }}
       />
-      {/* <IconListWithMargin
+      <IconListWithMargin
         iconSource={require('assets/icons/settings_restore.png')}
         description="Restore Purchase"
       />
-      <IconListWithMargin
+      {/* <IconListWithMargin
         iconSource={require('assets/icons/followstatus_best.png')}
         description="Rate Us"
-      />
+      /> */}
       <IconListWithMargin
         iconSource={require('assets/icons/settings_termofuse.png')}
-        description="Term os Use"
-      /> */}
+        description="Terms of Use"
+        onPress={async () => {
+          const url = 'https://www.generateprivacypolicy.com/live.php?token=FdpgJBqV5oaYbZm7xod9RfTkeEL6OKVS';
+          const supported = await Linking.canOpenURL(url);
+          if (supported) {
+            Linking.openURL(url);
+          }
+        }}
+      />
       <IconListWithMargin
         iconSource={require('assets/icons/settings_logour.png')}
         description="Log Out"
