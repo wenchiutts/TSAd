@@ -17,11 +17,11 @@ PODS:
   - EXFileSystem (9.2.0):
     - UMCore
     - UMFileSystemInterface
-  - EXFirebaseAnalytics (2.4.1):
+  - EXFirebaseAnalytics (2.5.1):
     - EXFirebaseCore
     - Firebase/Core (= 6.14.0)
     - UMCore
-  - EXFirebaseCore (1.1.1):
+  - EXFirebaseCore (1.2.0):
     - Firebase/Core (= 6.14.0)
     - UMCore
   - EXFont (8.3.0):
@@ -53,6 +53,8 @@ PODS:
   - EXSQLite (8.4.0):
     - UMCore
     - UMFileSystemInterface
+  - EXStoreReview (2.2.0):
+    - UMCore
   - EXUpdates (0.3.5):
     - React
     - UMCore
@@ -64,8 +66,6 @@ PODS:
     - React-Core (= 0.63.3)
     - React-jsi (= 0.63.3)
     - ReactCommon/turbomodule/core (= 0.63.3)
-  - Firebase/Analytics (6.14.0):
-    - Firebase/Core
   - Firebase/Core (6.14.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 6.1.7)
@@ -367,6 +367,8 @@ PODS:
   - React-jsinspector (0.63.3)
   - react-native-cookies (4.0.1):
     - React
+  - react-native-flipper (0.61.0):
+    - React
   - react-native-safe-area-context (3.1.4):
     - React
   - react-native-webview (10.7.0):
@@ -489,10 +491,10 @@ DEPENDENCIES:
   - EXPermissions (from `../node_modules/expo-permissions/ios`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - EXSQLite (from `../node_modules/expo-sqlite/ios`)
+  - EXStoreReview (from `../node_modules/expo-store-review/ios`)
   - EXUpdates (from `../node_modules/expo-updates/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
-  - Firebase/Analytics
   - Flipper (~> 0.54.0)
   - Flipper-DoubleConversion (= 1.1.7)
   - Flipper-Folly (~> 2.2)
@@ -527,6 +529,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-cookies (from `../node_modules/@react-native-community/cookies`)"
+  - react-native-flipper (from `../node_modules/react-native-flipper`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -626,6 +629,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-splash-screen/ios"
   EXSQLite:
     :path: "../node_modules/expo-sqlite/ios"
+  EXStoreReview:
+    :path: "../node_modules/expo-store-review/ios"
   EXUpdates:
     :path: "../node_modules/expo-updates/ios"
   FBLazyVector:
@@ -658,6 +663,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-cookies:
     :path: "../node_modules/@react-native-community/cookies"
+  react-native-flipper:
+    :path: "../node_modules/react-native-flipper"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-webview:
@@ -731,8 +738,8 @@ SPEC CHECKSUMS:
   EXConstants: f486f6b4a36b86e47ab258d4d2b7b2699786fdce
   EXErrorRecovery: 16696fe023fb46a32c3b09033abc361cfcf150a7
   EXFileSystem: afe9b1fd937d30270bf5108ba44e2f4a1d1ad694
-  EXFirebaseAnalytics: b502d650cb33c2d137cb19d639f8b315ee7e5ad3
-  EXFirebaseCore: 7e720f6f3725795b960b9e59dfcd46e674b30774
+  EXFirebaseAnalytics: 221c39fb16102fb61f8d5b835fc2cadc8a7aed31
+  EXFirebaseCore: d5befdb22015f9b71168ed89dda0b50dbb07fed1
   EXFont: a6a4353271395f3bb4ee528b52a5035b4b0e412a
   EXImageLoader: 7153fb1307ac643299a9072b71da0d276f4c7789
   EXInAppPurchases: c647953e5e1dad71bbda2e3bb92966dac440ede4
@@ -743,6 +750,7 @@ SPEC CHECKSUMS:
   EXPermissions: 30cbe5b72bd209b65c00884180ad058a60bb413d
   EXSplashScreen: 7ea40b8524f27e7444e3892411c8a4782ab6b4ce
   EXSQLite: d0d8677c13e60d5db2812387f059c697be27d3fb
+  EXStoreReview: e847ad9367e8d9ab0d856e6aa21e16c1d30f118e
   EXUpdates: 74b39409f68eca207075d87b0077bdf37865a8bf
   FBLazyVector: 878b59e31113e289e275165efbe4b54fa614d43d
   FBReactNativeSpec: 7da9338acfb98d4ef9e5536805a0704572d33c2f
@@ -780,6 +788,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: b56c03e61c0dd5f5801255f2160a815f4a53d451
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-cookies: ff2e6865dff2e5feeca8f1ed082ae7898e4fa912
+  react-native-flipper: 7936453fec474d5360a14cf6ac035bd689611ffd
   react-native-safe-area-context: eb91fe1fb3f7b87d9c30a7f0808407d8569d539d
   react-native-webview: 6edf4d6f71b9161fc3e96083726a538ee395304d
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
@@ -815,6 +824,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 447d135c39cdbe576a534442e6aacffa6fad39f1
+PODFILE CHECKSUM: 6fb89969be0423ed8b97ed77860d12d73f66bceb
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.3
