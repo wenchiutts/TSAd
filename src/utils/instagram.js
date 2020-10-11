@@ -1,4 +1,5 @@
 // @format
+
 export const normalizeInsProfileData = data => ({
   id: data?.id,
   username: data?.username,
@@ -13,6 +14,7 @@ export const normalizeInsProfileData = data => ({
   biography: data?.biography,
   phoneNumber: data?.phone_number,
   email: data?.email,
+  edge_owner_to_timeline_media: data?.edge_owner_to_timeline_media,
 });
 
 export const normalizeInsPostsData = data =>

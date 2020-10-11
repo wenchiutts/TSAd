@@ -4,15 +4,15 @@ import { useDispatch } from 'react-redux';
 
 import { fetchAllUserPosts } from 'modules/instagram/insAuthActions';
 
-const useFetchAllUserPosts = (props, dependency = []) => {
+const useFetchAllUserPosts = (endCursor, dependency = []) => {
   const dispatch = useDispatch();
 
-  const fetchAllUserPostsEffect = async () => {
-    await dispatch(fetchAllUserPosts());
+  const fetchAllUserPostsEffect = async after => {
+    await dispatch(fetchAllUserPosts(after));
   };
 
   useEffect(() => {
-    fetchAllUserPostsEffect();
+    fetchAllUserPostsEffect(endCursor);
   }, dependency);
 
   return { fetchAllUserPostsEffect };
