@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { View, Text, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { WebView } from 'react-native-webview';
-import { Ionicons } from '@expo/vector-icons';
 import { Modalize } from 'react-native-modalize';
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import CookieManager from '@react-native-community/cookies';
 import delay from 'delay';
+import messaging from '@react-native-firebase/messaging';
 
 import { isExist } from 'utils/ramdaUtils';
 import {
@@ -36,13 +36,6 @@ const LoginScreen = ({ navigation }) => {
   const handleLayout = ({ layout }) => {
     setHeight(layout.height);
   };
-
-  // React.useEffect(() => {
-  //   CookieManager.clearAll()
-  //     .then((success) => {
-  //       console.log('CookieManager.clearAll =>', success);
-  //     });
-  // }, []);
 
   const jsCode = 'window.ReactNativeWebView.postMessage(document.cookie)';
 
@@ -83,16 +76,21 @@ const LoginScreen = ({ navigation }) => {
       });
 
     if (isExist(cookiesObj.ds_user_id)) {
-      dispatch(receiveInsCookies(cookiesObj));
-      // onSuccessfulLogin();
-      // navigation.navigate('Home');
-      await delay(1000);
-      const profile = await dispatch(fetchInsUserProfileAction());
-      if (profile?.username === undefined || profile?.username === 'undefined') {
-        return;
+      try {
+        dispatch(receiveInsCookies(cookiesObj));
+        // onSuccessfulLogin();
+        // navigation.navigate('Home');
+        await delay(1100);
+        const profile = await dispatch(fetchInsUserProfileAction());
+        if (profile?.username === undefined || profile?.username === 'undefined') {
+          return;
+        }
+        setUserName(profile?.username);
+        dispatch(newLogin(profile));
+        messaging().requestPermission();
+      } catch (e) {
+        console.log('_onMessage error', e);
       }
-      setUserName(profile?.username);
-      dispatch(newLogin(profile));
     }
   };
 

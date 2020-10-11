@@ -113,12 +113,12 @@ export default function App() {
                     <Stack.Screen name="search" component={SearchModal} />
                   </>
                 ) : (
-                  <Stack.Screen
-                    name="Login"
-                    component={LoginScreen}
-                    options={{ headerShown: false }}
-                  />
-                )}
+                    <Stack.Screen
+                      name="Login"
+                      component={LoginScreen}
+                      options={{ headerShown: false }}
+                    />
+                  )}
               </Stack.Navigator>
             </NavigationContainer>
           </View>
