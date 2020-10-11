@@ -91,7 +91,7 @@ const StoryModal = ({ route, navigation }) => {
         if (!swipedHorizontally.current) {
           if (dy > VERTICAL_THRESHOLD) return leaveStories();
           playProgressIndicator();
-          // verticalSwipe.setValue(0);
+          verticalSwipe.setValue(0);
           // return resetVerticalSwipe();
           return;
         }

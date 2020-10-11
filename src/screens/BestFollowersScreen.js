@@ -1,22 +1,38 @@
 import * as React from 'react';
-import { View, Text, ScrollView, Image } from 'react-native';
+import { useSelector } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { View, Text, FlatList, Image } from 'react-native';
 import styled from 'styled-components/native';
-import { path } from 'ramda';
+import { compose, pathOr, length, path, pathEq, cond, sort, descend, propOr } from 'ramda';
 
 import UserListItem from 'components/UserListItem';
 import ActiveStateButton from 'components/ActiveStateButton';
+import { postsListSelector, bestFollowerListSelector } from 'modules/instagram/selector';
 
-const LocalUserListItem = ({ username, isFollower, isFollowing, likes, comments, activeIndex }) => (
+const LocalUserListItem = ({
+  username,
+  isFollower,
+  isFollowing,
+  likes = 0,
+  comments = 0,
+  activeIndex,
+  profilePicture,
+  userId,
+}) => (
   <UserListItem
     username={username}
     isFollower={isFollower}
     isFollowing={isFollowing}
     buttonHide
+    profilePicture={profilePicture}
+    userId={userId}
     descriptionElement={
-      <DescriptionWrapper
-        iconType={activeIndex === 0 ? 'like' : 'comment'}
-        value={activeIndex === 0 ? likes : comments}
-      />
+      activeIndex !== -1 ? (
+        <DescriptionWrapper
+          iconType={activeIndex === 0 ? 'like' : 'comment'}
+          value={activeIndex === 0 ? likes : comments}
+        />
+      ) : undefined
     }
   />
 );
@@ -27,6 +43,19 @@ const DescriptionWrapper = ({ iconType, value }) => (
     {iconType === 'comment' && <StyledImage source={require('assets/icons/comment_small.png')} />}
     <Description>{value}</Description>
   </View>
+);
+
+const ListItem = activeIndex => ({ item }) => (
+  <LocalUserListItem
+    username={item?.owner?.username}
+    isFollower={item?.isFollower}
+    isFollowing={item?.isFollowing}
+    likes={item?.likeOnCount}
+    comments={item?.commentOnCount}
+    activeIndex={activeIndex}
+    profilePicture={item?.owner?.profile_pic_url}
+    userId={item?.owner?.id}
+  />
 );
 
 const StyledImage = styled(Image)`
@@ -40,67 +69,15 @@ const Description = styled(Text)`
   font-size: 14;
 `;
 
-const BestFollowersScreen = () => {
-  const [activeIndex, setActiveIndex] = React.useState(0);
-  const users = [
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: true,
-      time: 'Today',
-      likes: 99,
-      comments: 88,
-    },
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: false,
-      time: '07-23-2020',
-      likes: 66,
-      comments: 33,
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: true,
-      time: 'Today',
-      likes: 444,
-      comments: 56,
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: false,
-      time: '07-23-2020',
-      likes: 8678,
-      comments: 123,
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: true,
-      time: 'Today',
-      likes: 444,
-      comments: 56,
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: false,
-      time: '07-23-2020',
-      likes: 8678,
-      comments: 123,
-    },
-  ];
+const selector = createStructuredSelector({
+  bestie: bestFollowerListSelector,
+});
 
-  const sortedUsers = (users, category) => {
-    if (category === 0) {
-      return users.sort((a, b) => b.likes - a.likes);
-    }
-    if (category === 1) {
-      return users.sort((a, b) => b.comments - a.comments);
-    }
-  };
+const byCount = (propName = 'count') => descend(propOr(0, propName));
+
+const BestFollowersScreen = () => {
+  const { bestie } = useSelector(selector);
+  const [activeIndex, setActiveIndex] = React.useState(-1);
 
   return (
     <StyledView>
@@ -108,19 +85,24 @@ const BestFollowersScreen = () => {
         <ActiveStateButton
           text="Like"
           isActive={activeIndex === 0}
-          onPress={() => setActiveIndex(0)}
+          onPress={() => setActiveIndex(prevState => (prevState === 0 ? -1 : 0))}
         />
         <ActiveStateButton
           text="Comment"
           isActive={activeIndex === 1}
-          onPress={() => setActiveIndex(1)}
+          onPress={() => setActiveIndex(prevState => (prevState === 1 ? -1 : 1))}
         />
       </ButtonWrapper>
-      <ListWrapper>
-        {sortedUsers(users, activeIndex).map((user, index) => (
-          <LocalUserListItem {...user} key={index} activeIndex={activeIndex} />
-        ))}
-      </ListWrapper>
+      <ListWrapper
+        data={cond([
+          [pathEq(['activeIndex'], -1), path(['bestie'])],
+          [pathEq(['activeIndex'], 0), compose(sort(byCount('likeOnCount')), path(['bestie']))],
+          [pathEq(['activeIndex'], 1), compose(sort(byCount('commentOnCount')), path(['bestie']))],
+        ])({ bestie, activeIndex })}
+        initialNumToRender={10}
+        renderItem={ListItem(activeIndex)}
+        keyExtractor={path(['owner', 'id'])}
+      />
     </StyledView>
   );
 };
@@ -142,6 +124,6 @@ const ButtonWrapper = styled(View)`
   margin-vertical: 3%;
 `;
 
-const ListWrapper = styled(ScrollView)`
+const ListWrapper = styled(FlatList)`
   width: 100%;
 `;

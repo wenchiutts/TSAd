@@ -279,3 +279,34 @@ export const getPosts = async ({ userId, perPage = 12, after = '' }) => {
     path(['data', 'data', 'user', 'edge_owner_to_timeline_media']),
   )(res);
 };
+
+export const getMediaComments = async shortCode => {
+  const res = await axios.get(`/p/${shortCode}/?__a=1`);
+  const commenter = compose(
+    evolve({
+      edges: map(path(['node'])),
+    }),
+    path(['data', 'graphql', 'shortcode_media', 'edge_media_to_parent_comment']),
+  )(res);
+
+  return commenter;
+};
+
+export const getMediaLikes = async (shortcode, first = 24, after = '') => {
+  const res = await axios.get('/graphql/query/', {
+    params: {
+      query_hash: 'd5d763b1e2acf209d62d22d184488e57',
+      variables: JSON.stringify({
+        shortcode,
+        first,
+        after,
+      }),
+    },
+  });
+  return compose(
+    evolve({
+      edge_liked_by: { edges: map(path(['node'])) },
+    }),
+    path(['data', 'data', 'shortcode_media']),
+  )(res);
+};

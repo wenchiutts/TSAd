@@ -296,6 +296,7 @@ export const storyViewersListByStoryIdSelector = createSelector(
 );
 
 export const postsSelector = createSelector(instagramSelector, path(['posts']));
+export const postsPageInfoSelector = createSelector(postsSelector, path(['page_info']));
 
 export const postsListSelector = createSelector(postsSelector, compose(values, path(['edges'])));
 export const postsDataLengthSelector = createSelector(postsListSelector, length);
@@ -309,3 +310,146 @@ export const postsByPopularitySelector = createSelector(postsListSelector, sort(
 export const postByLikedCountSelector = createSelector(postsListSelector, sort(byLikedCount));
 
 export const postByCommentCountSelector = createSelector(postsListSelector, sort(byCommentCount));
+
+export const recentPostDetailSelector = createSelector(
+  instagramSelector,
+  path(['recentPostDetail']),
+);
+
+export const recentPostKeysSelector = createSelector(recentPostDetailSelector, keys);
+
+const reduceToUserObj = (
+  postKey,
+  ownerIdSelector,
+  userListSelector,
+  userObjSelector,
+  postIdSelector,
+  followers,
+) =>
+  reduce((acc, c) => {
+    const user = compose(
+      reduce(
+        (userAcc, userC) =>
+          compose(
+            mergeDeepWithKey(
+              (k, l, r) => {
+                if (k === postKey) {
+                  return concat(l, r);
+                } else if (k === 'count' || k === `${postKey}Count`) {
+                  return add(l, r);
+                }
+                return r;
+              },
+              __,
+              userAcc,
+            ),
+            converge(objOf, [
+              ownerIdSelector,
+              applySpec({
+                owner: userObjSelector,
+                [postKey]: always([postIdSelector(c)]),
+                count: always(1),
+                [`${postKey}Count`]: always(1),
+                isFollower: compose(isExist, lookup(followers), String, ownerIdSelector),
+                isFollowing: compose(path(['followed_by_viewer']), userObjSelector),
+              }),
+            ]),
+          )(userC),
+        {},
+      ),
+      userListSelector,
+    )(c);
+
+    return mergeDeepWithKey(
+      (k, l, r) => {
+        if (k === postKey) {
+          return concat(l, r);
+        } else if (k === 'count' || k === `${postKey}Count`) {
+          return add(l, r);
+        }
+        return r;
+      },
+      user,
+      acc,
+    );
+  }, {});
+
+export const recentPostCommenterSelector = createSelector(
+  recentPostDetailSelector,
+  followersDataSelector,
+  (data, followers) =>
+    compose(
+      reduceToUserObj(
+        'commentOn',
+        path(['owner', 'id']),
+        path(['edges']),
+        path(['owner']),
+        path(['id']),
+        followers,
+      ),
+      values,
+    )(data),
+);
+
+export const recentPostLikersSelector = createSelector(
+  instagramSelector,
+  followersDataSelector,
+  (data, followers) =>
+    compose(
+      reduceToUserObj(
+        'likeOn',
+        path(['id']),
+        path(['edge_liked_by', 'edges']),
+        identity,
+        path(['shortcode']),
+        followers,
+      ),
+      values,
+      path(['recentPostLikers']),
+    )(data),
+);
+
+const byCount = descend(prop('count'));
+
+export const bestFollowerSelector = createSelector(
+  recentPostCommenterSelector,
+  recentPostLikersSelector,
+  (commenters, likers) =>
+    compose(
+      mergeDeepWithKey((k, l, r) => {
+        if (k === 'count') {
+          return add(l, r);
+        }
+        return r;
+      }),
+    )(commenters, likers),
+);
+
+export const recentPostCommenterDataSelector = createSelector(
+  recentPostCommenterSelector,
+  compose(sort(byCount), values),
+);
+
+export const recentPostLikersDataSelector = createSelector(
+  recentPostLikersSelector,
+  compose(sort(byCount), values),
+);
+
+export const bestFollowerListSelector = createSelector(
+  bestFollowerSelector,
+  compose(sort(byCount), values),
+);
+
+export const bestFollowerListCountSelector = createSelector(bestFollowerListSelector, length);
+
+export const ghostFollowerSelector = createSelector(
+  bestFollowerSelector,
+  followersDataSelector,
+  (best, followers) =>
+    compose(
+      values,
+      converge(omit, [compose(keys, path(['best'])), path(['followers'])]),
+    )({ best, followers }),
+);
+
+export const ghostFollowerCountSelector = createSelector(ghostFollowerSelector, length);

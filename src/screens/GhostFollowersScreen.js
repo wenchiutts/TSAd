@@ -1,95 +1,61 @@
 import * as React from 'react';
-import { View, ScrollView } from 'react-native';
+import { useSelector } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { View, FlatList } from 'react-native';
 import styled from 'styled-components/native';
+import { path } from 'ramda';
 
 import UserListItem from 'components/UserListItem';
 import ActiveStateButton from 'components/ActiveStateButton';
+import { ghostFollowerSelector } from '../modules/instagram/selector';
 
-const LocalUserListItem = ({ username, isFollower, isFollowing }) => (
-  <UserListItem username={username} isFollower={isFollower} isFollowing={isFollowing} />
+const LocalUserListItem = ({ username, isFollowing, profilePicture }) => (
+  <UserListItem
+    username={username}
+    isFollower
+    isFollowing={isFollowing}
+    profilePicture={profilePicture}
+  />
 );
 
-const GhostFollowersScreen = () => {
-  const [activeIndex, setActiveIndex] = React.useState(0);
-  const users = [
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: true,
-      time: 'Today',
-      likes: 99,
-      comments: 88,
-    },
-    {
-      username: 'gordon',
-      isFollower: true,
-      isFollowing: false,
-      time: '07-23-2020',
-      likes: 66,
-      comments: 33,
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: true,
-      time: 'Today',
-      likes: 444,
-      comments: 56,
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: false,
-      time: '07-23-2020',
-      likes: 8678,
-      comments: 123,
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: true,
-      time: 'Today',
-      likes: 444,
-      comments: 0,
-    },
-    {
-      username: 'gordon',
-      isFollower: false,
-      isFollowing: false,
-      time: '07-23-2020',
-      likes: 0,
-      comments: 123,
-    },
-  ];
+const selector = createStructuredSelector({
+  users: ghostFollowerSelector,
+});
 
-  const sortedUsers = (users, category) => {
-    if (category === 0) {
-      return users.filter(user => user.likes === 0);
-    }
-    if (category === 1) {
-      return users.filter(user => user.comments === 0);
-    }
-  };
+const ListItem = ({ item }) => (
+  <LocalUserListItem
+    username={item?.profile?.username}
+    profilePicture={item?.profile?.profile_pic_url}
+    userId={item?.profile?.id}
+    isFollowing={item?.profile?.followed_by_viewer}
+  />
+);
+const GhostFollowersScreen = () => {
+  // const [activeIndex, setActiveIndex] = React.useState(0);
+  const { users } = useSelector(selector);
 
   return (
     <StyledView>
-      <ButtonWrapper>
-        <ActiveStateButton
-          text="No Like"
-          isActive={activeIndex === 0}
-          onPress={() => setActiveIndex(0)}
-        />
-        <ActiveStateButton
-          text="No Comment"
-          isActive={activeIndex === 1}
-          onPress={() => setActiveIndex(1)}
-        />
-      </ButtonWrapper>
-      <ListWrapper>
-        {sortedUsers(users, activeIndex).map((user, index) => (
-          <LocalUserListItem {...user} key={index} />
-        ))}
-      </ListWrapper>
+      {false && (
+        <ButtonWrapper>
+          <ActiveStateButton
+            text="No Like"
+            isActive={activeIndex === 0}
+            onPress={() => setActiveIndex(0)}
+          />
+          <ActiveStateButton
+            text="No Comment"
+            isActive={activeIndex === 1}
+            onPress={() => setActiveIndex(1)}
+          />
+        </ButtonWrapper>
+      )}
+      <ListWrapper
+        data={users}
+        initialNumToRender={10}
+        renderItem={ListItem}
+        keyExtractor={path(['profile', 'id'])}
+      />
     </StyledView>
   );
 };
@@ -111,6 +77,6 @@ const ButtonWrapper = styled(View)`
   margin-vertical: 3%;
 `;
 
-const ListWrapper = styled(ScrollView)`
+const ListWrapper = styled(FlatList)`
   width: 100%;
 `;
