@@ -65,7 +65,7 @@ const userDataSelector = createStructuredSelector({
 
 const renderAvatarListItem = ({ item, index }, navigation, checkPremium) => {
   if (index === 0) {
-    return <SearchAvatar navigation={navigation} checkPremium={checkPremium}/>;
+    return <SearchAvatar navigation={navigation} checkPremium={checkPremium} />;
   }
   return (
     <AvatarWithUsername
@@ -127,7 +127,7 @@ const HomeScreen = ({ navigation }) => {
         profilePicture={profilePicture}
       />
       <StoriesWrapper>
-        <Title>Watch Stories Anonymously</Title>
+        <Title>Stories</Title>
         <AvatarsWrapper
           data={[
             1, // for search item
