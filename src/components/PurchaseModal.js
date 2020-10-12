@@ -6,7 +6,7 @@ import { ScrollView, View, Image, TouchableHighlight, FlatList, SafeAreaView } f
 import styled from 'styled-components/native';
 import ImageSlider from 'react-native-image-slider';
 import _ from 'lodash';
-import { ifElse, path, always } from 'ramda';
+import { ifElse, path, always, map } from 'ramda';
 import * as InAppPurchases from 'expo-in-app-purchases';
 import { createStructuredSelector } from 'reselect';
 
@@ -25,6 +25,7 @@ import {
   insProfilePictureSelector,
   insUsernameSelector,
 } from 'modules/instagram/selector';
+import { mapIndexed } from 'utils/ramdaUtils';
 
 const StyledView = styled(ScrollView).attrs({
   contentContainerStyle: {
@@ -223,21 +224,15 @@ const PurchaseModal = ({ navigation }) => {
       </ImageSliderWrapper>
       <ProductListWrapper>
         <ProductListWrapperView>
-          <FlatList
-            data={listContents}
-            renderItem={({ item }) => {
-              console.log('fuck item', item)
-              return (
-                <StyledProductItemWithIAP
-                  key={item.productId}
-                  productId={item.productId}
-                  price={item.price}
-                  planType={PRODUCT_PLAN_TYPE_MAP[item.productId]}
-                  setIsLoading={setIsLoading}
-                />
-              );
-            }}
-          />
+          {mapIndexed((product, idx) => (
+            <StyledProductItemWithIAP
+              key={product.productId || idx}
+              productId={product.productId}
+              price={product.price}
+              planType={PRODUCT_PLAN_TYPE_MAP[product.productId]}
+              setIsLoading={setIsLoading}
+            />
+          ))(listContents)}
         </ProductListWrapperView>
       </ProductListWrapper>
     </StyledView>
