@@ -12,7 +12,8 @@ import RecentStorySlider from 'modules/insights/components/RecentStorySlider';
 import useFetchArchiveStory from 'modules/insights/hooks/useFetchArchiveStory';
 import useFetchAllUserPosts from 'modules/insights/hooks/useFetchAllUserPosts';
 import { mapIndexed } from 'utils/ramdaUtils';
-import { recentStoriesListCountSelector } from 'modules/instagram/selector';
+import { recentStoriesListCountSelector, postsPageInfoSelector } from 'modules/instagram/selector';
+import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -101,13 +102,14 @@ const TwoColumnViewWrapper = styled(View)`
 
 const selector = createStructuredSelector({
   recentStoriesCount: recentStoriesListCountSelector,
+  postsPageInfo: postsPageInfoSelector,
 });
 
 const InsightScreen = ({ navigation }) => {
-  const { recentStoriesCount } = useSelector(selector);
+  const { recentStoriesCount, postsPageInfo } = useSelector(selector);
   const [refreshing, setRefreshing] = React.useState(false);
   const { effectAction, updatedAt: archiveUpdatedAt } = useFetchArchiveStory();
-  useFetchAllUserPosts();
+  useFetchAllUserPosts(postsPageInfo?.end_cursor);
   const onRefresh = React.useCallback(() => {
     const callbackAction = async () => {
       setRefreshing(true);
@@ -116,6 +118,7 @@ const InsightScreen = ({ navigation }) => {
     };
     callbackAction();
   }, []);
+  const { checkPremium } = useCheckPremium();
   return (
     <StyledView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       {recentStoriesCount !== 0 && (
@@ -131,7 +134,7 @@ const InsightScreen = ({ navigation }) => {
             <StyledIconList
               key={idx}
               {...item}
-              onPress={() => item.route && navigation.navigate(item.route)}
+              onPress={checkPremium(() => item.route && navigation.navigate(item.route))}
             />
           ))(storyInsightList)}
         </TwoColumnViewWrapper>
@@ -143,7 +146,7 @@ const InsightScreen = ({ navigation }) => {
             <StyledIconList
               key={idx}
               {...item}
-              onPress={() => item.route && navigation.navigate(item.route)}
+              onPress={checkPremium(() => item.route && navigation.navigate(item.route))}
             />
           ))(postInsightList)}
         </TwoColumnViewWrapper>

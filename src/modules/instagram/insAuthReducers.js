@@ -63,6 +63,10 @@ import {
   RECEIVE_USER_POSTS,
   REQUEST_STORY_VIEWER,
   RECEIVE_STORY_VIEWER,
+  REQUEST_POST_DETAIL,
+  RECEIVE_POST_DETAIL,
+  REQUEST_POST_LIKERS,
+  RECEIVE_POST_LIKERS,
 } from 'modules/instagram/insAuthActions';
 import { objFromListWith } from 'utils/ramdaUtils';
 import DEBUG from 'utils/logUtils';
@@ -83,10 +87,16 @@ const initialState = {
   isCheckingBlocker: false,
   isFetchingStoryReels: false,
   isFetchingArchives: false,
+  isFetchingStoryViewer: false,
+  isFetchingPostDetail: false,
+  isFetchingPostLiker: false,
   followersTimeStamp: {},
   unFollowersTimeStamp: {},
   storyFeed: undefined,
   storyArchvies: {},
+  recentPostDetail: {},
+  viewers: {},
+  recentPostLikers: {},
 };
 
 // const dataSelector = path(['data']);
@@ -383,5 +393,35 @@ export default createReducers(initialState, {
         ),
       ]),
     )(action),
+  }),
+  [REQUEST_POST_DETAIL]: (state, action) => ({
+    ...state,
+    isFetchingPostDetail: true,
+  }),
+  [RECEIVE_POST_DETAIL]: (state, action) => ({
+    ...state,
+    isFetchingPostDetail: false,
+    recentPostDetail: converge(mergeLeft, [
+      path(['state', 'recentPostDetail']),
+      converge(objOf, [
+        path(['action', 'id']),
+        converge(mergeRight, [path(['action', 'post']), compose(pick(['id']), path(['action']))]),
+      ]),
+    ])({ state, action }),
+  }),
+  [REQUEST_POST_LIKERS]: (state, action) => ({
+    ...state,
+    isFetchingPostLiker: true,
+  }),
+  [RECEIVE_POST_LIKERS]: (state, action) => ({
+    ...state,
+    isFetchingPostLiker: false,
+    recentPostLikers: converge(mergeLeft, [
+      path(['state', 'recentPostLikers']),
+      converge(objOf, [
+        path(['action', 'id']),
+        converge(mergeRight, [path(['action', 'likers']), compose(pick(['id']), path(['action']))]),
+      ]),
+    ])({ state, action }),
   }),
 });

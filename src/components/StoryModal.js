@@ -55,10 +55,7 @@ const StoryModal = ({ route, navigation }) => {
 
   const { carouselOpen, paused, backOpacity, deckIdx } = storyState;
 
-  const { setStoryIdx, stories, storyPosition, getDeckInfo, getWindowData } = useStoryData(
-    data,
-    deckIdx,
-  );
+  const { setStoryIdx, stories, storyPosition, getDeckInfo } = useStoryData(data, deckIdx);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -93,8 +90,10 @@ const StoryModal = ({ route, navigation }) => {
       onPanResponderRelease: (e, { dx, dy }) => {
         if (!swipedHorizontally.current) {
           if (dy > VERTICAL_THRESHOLD) return leaveStories();
-          // playProgressIndicator();
+          playProgressIndicator();
+          verticalSwipe.setValue(0);
           // return resetVerticalSwipe();
+          return;
         }
         horizontalSwipe.flattenOffset();
         // setStoryState(prev => {
@@ -261,7 +260,7 @@ const StoryModal = ({ route, navigation }) => {
     <StyledView>
       <CarouselWrap carouselOpen={carouselOpen}>
         <Stories
-          stories={compose(getWindowData(1, deckIdx), orderByList)(storyPosition, stories)}
+          stories={orderByList(storyPosition, stories)}
           storyState={storyState}
           setStoryState={setStoryState}
           panResponder={panResponder}

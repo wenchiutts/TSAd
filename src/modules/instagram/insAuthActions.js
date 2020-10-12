@@ -1,5 +1,21 @@
 // @format
-import { compose, when, path, concat, gt, filter, prop, map, into, __, allPass, lte } from 'ramda';
+import {
+  compose,
+  when,
+  path,
+  concat,
+  gt,
+  filter,
+  prop,
+  map,
+  into,
+  __,
+  allPass,
+  lte,
+  evolve,
+  pluck,
+  reduce,
+} from 'ramda';
 import dayjs from 'dayjs';
 
 import makeActionCreator from 'actions/makeActionCreator';
@@ -33,6 +49,10 @@ export const REQUEST_STORY_VIEWER = 'REQUEST_STORY_VIEWER';
 export const RECEIVE_STORY_VIEWER = 'RECEIVE_STORY_VIEWER';
 export const REQUEST_USER_POSTS = 'REQUEST_USER_POSTS';
 export const RECEIVE_USER_POSTS = 'RECEIVE_USER_POSTS';
+export const REQUEST_POST_DETAIL = 'REQUEST_POST_DETAIL';
+export const RECEIVE_POST_DETAIL = 'RECEIVE_POST_DETAIL';
+export const REQUEST_POST_LIKERS = 'REQUEST_POST_LIKERS';
+export const RECEIVE_POST_LIKERS = 'RECEIVE_POST_LIKERS';
 
 export const receiveInsCookies = makeActionCreator(RECEIVE_INS_COOKIES, 'cookies');
 export const requestInsCookies = makeActionCreator(REQUEST_INS_COOKIES);
@@ -56,6 +76,10 @@ export const requestStoryViewer = makeActionCreator(REQUEST_STORY_VIEWER);
 export const receiveStoryViewer = makeActionCreator(RECEIVE_STORY_VIEWER, 'storyId', 'viewers');
 export const requestUserPosts = makeActionCreator(REQUEST_USER_POSTS);
 export const receiveUserPosts = makeActionCreator(RECEIVE_USER_POSTS, 'posts');
+export const requestPostDetail = makeActionCreator(REQUEST_POST_DETAIL);
+export const receivePostDetail = makeActionCreator(RECEIVE_POST_DETAIL, 'id', 'post');
+export const requestPostLikers = makeActionCreator(REQUEST_POST_LIKERS);
+export const receivePostLikers = makeActionCreator(RECEIVE_POST_LIKERS, 'id', 'likers');
 
 export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis }) => {
   try {
@@ -66,8 +90,16 @@ export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis
       return;
     }
     dispatch(requestInsProfile());
-    const insProfile = await apis.instagram.getProfile({ csrftoken });
+    dispatch(requestUserPosts());
+    const { edge_owner_to_timeline_media, ...insProfile } = await apis.instagram.getProfile({
+      csrftoken,
+    });
     dispatch(receiveInsProfile(insProfile));
+    const posts = evolve({
+      edges: map(path(['node'])),
+    })(edge_owner_to_timeline_media);
+    dispatch(receiveUserPosts(posts));
+    dispatch(calculateBestFollowerAction(posts));
     return insProfile;
   } catch (e) {
     dispatch(receiveInsProfile());
@@ -75,6 +107,30 @@ export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis
       console.log('fetchInsUserProfileAction error: ', e, e.response);
     }
   }
+};
+
+export const fetchPostDetailAction = id => async (dispatch, getState, { apis }) => {
+  dispatch(requestPostDetail());
+  const res = await apis.instagram.getMediaComments(id);
+  dispatch(receivePostDetail(id, res));
+  dispatch(requestPostLikers());
+  const likeRes = await apis.instagram.getMediaLikes(id);
+  dispatch(receivePostLikers(id, likeRes));
+
+  return { commenter: res, likers: likeRes };
+};
+
+export const calculateBestFollowerAction = posts => async (dispatch, getState) => {
+  const ids = compose(pluck('shortcode'), path(['edges']))(posts);
+  // dispatch(fetchPostDetailAction(ids[0]));
+  return reduce(
+    async (acc, c) => {
+      await acc;
+      return dispatch(fetchPostDetailAction(c));
+    },
+    Promise.resolve(),
+    ids,
+  );
 };
 
 export const fetchInsUserFollowing = (after = '') => async (dispatch, getState, { apis }) => {

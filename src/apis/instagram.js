@@ -5,6 +5,7 @@ import { map, compose, path, pathOr, evolve } from 'ramda';
 import qs from 'qs';
 // import delay from 'delay';
 
+import DEBUG from 'utils/logUtils';
 import { normalizeInsProfileData } from 'utils/instagram';
 
 const userAgentFactory = new UserAgent({ deviceCategory: 'mobile' });
@@ -45,9 +46,7 @@ export const getProfile = async ({ csrftoken, retry = 0 }) => {
     };
     return normalizeInsProfileData(insData);
   } catch (e) {
-    if (__DEV__) {
-      console.log('getProfile error: ', e);
-    }
+    DEBUG.log('getProfile error: ', e);
   }
 };
 
@@ -278,5 +277,36 @@ export const getPosts = async ({ userId, perPage = 12, after = '' }) => {
       edges: map(path(['node'])),
     }),
     path(['data', 'data', 'user', 'edge_owner_to_timeline_media']),
+  )(res);
+};
+
+export const getMediaComments = async shortCode => {
+  const res = await axios.get(`/p/${shortCode}/?__a=1`);
+  const commenter = compose(
+    evolve({
+      edges: map(path(['node'])),
+    }),
+    path(['data', 'graphql', 'shortcode_media', 'edge_media_to_parent_comment']),
+  )(res);
+
+  return commenter;
+};
+
+export const getMediaLikes = async (shortcode, first = 24, after = '') => {
+  const res = await axios.get('/graphql/query/', {
+    params: {
+      query_hash: 'd5d763b1e2acf209d62d22d184488e57',
+      variables: JSON.stringify({
+        shortcode,
+        first,
+        after,
+      }),
+    },
+  });
+  return compose(
+    evolve({
+      edge_liked_by: { edges: map(path(['node'])) },
+    }),
+    path(['data', 'data', 'shortcode_media']),
   )(res);
 };

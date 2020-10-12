@@ -65,6 +65,7 @@ const serializeStoryData = reduce(
             src: path(['display_url']),
             isVideo: path(['is_video']),
             videoResources: compose(when(isExist, head), path(['video_resources'])),
+            takenAt: path(['taken_at_timestamp']),
           }),
         ),
       }),

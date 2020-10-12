@@ -98,13 +98,4 @@ const SearchUserInput = ({ onFocus, onChangeText, placeholder, onBlur, value, st
   </StyledInput>
 );
 
-SearchUserInput.propTypes = {
-  onFocus: PropTypes.func,
-  onChangeText: PropTypes.func,
-  placeholder: PropTypes.string,
-  onBlur: PropTypes.func,
-  value: PropTypes.string,
-  style: PropTypes.array,
-};
-
 export default React.forwardRef(SearchUserInput);

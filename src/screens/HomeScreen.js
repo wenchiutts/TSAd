@@ -20,6 +20,8 @@ import {
   unFollowersCountSelector,
   blockerCountSelector,
   storyFeedSelector,
+  ghostFollowerCountSelector,
+  bestFollowerListCountSelector,
 } from 'modules/instagram/selector';
 import {
   fetchInsUserAllFollowing,
@@ -29,6 +31,7 @@ import {
 } from 'modules/instagram/insAuthActions';
 import { Avatar, AvatarImage } from 'components/AvatarImage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -55,21 +58,21 @@ const userDataSelector = createStructuredSelector({
   notFollowingMeBack: notFollowingMeBackCountSelector,
   imNotFollowingBack: imNotFollowingBackCountSelector,
   mutualFollowing: mutualFollowingCountSelector,
-  bestFollowers: always(0),
-  ghostFollowers: always(0),
+  bestFollowers: bestFollowerListCountSelector,
+  ghostFollowers: ghostFollowerCountSelector,
   storyFeed: storyFeedSelector,
 });
 
-const renderAvatarListItem = ({ item, index }, navigation) => {
+const renderAvatarListItem = ({ item, index }, navigation, checkPremium) => {
   if (index === 0) {
-    return <SearchAvatar navigation={navigation} />;
+    return <SearchAvatar navigation={navigation} checkPremium={checkPremium}/>;
   }
   return (
     <AvatarWithUsername
-      username={item.user?.username}
-      userPicture={{ uri: item.user?.profile_pic_url }}
+      username={item?.user?.username}
+      userPicture={{ uri: item?.user?.profile_pic_url }}
       isExistStory
-      onPress={() => navigation.navigate('story', { deckIndex: index - 1 })}
+      onPress={checkPremium(() => navigation.navigate('story', { deckIndex: index - 1 }))}
     />
   );
 };
@@ -105,6 +108,8 @@ const HomeScreen = ({ navigation }) => {
 
   const [refreshing, setRefreshing] = React.useState(false);
 
+  const { checkPremium } = useCheckPremium();
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     effectAction();
@@ -131,7 +136,7 @@ const HomeScreen = ({ navigation }) => {
           initialNumToRender={10}
           keyExtractor={(item, index) => pathOr(String(index), ['id'], item)}
           horizontal
-          renderItem={item => renderAvatarListItem(item, navigation)}
+          renderItem={item => renderAvatarListItem(item, navigation, checkPremium)}
         />
       </StoriesWrapper>
       <ListWrapper>
@@ -161,7 +166,7 @@ const HomeScreen = ({ navigation }) => {
           iconSource={require('assets/icons/followstatus_block.png')}
           description="Who blocking me"
           value={blockers}
-          onPress={() => navigation.navigate('SearchBlocker')}
+          onPress={checkPremium(() => navigation.navigate('SearchBlocker'))}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_notfollowingme.png')}
@@ -185,13 +190,13 @@ const HomeScreen = ({ navigation }) => {
           iconSource={require('assets/icons/followstatus_best.png')}
           description="Best followers"
           value={bestFollowers}
-          onPress={() => navigation.navigate('BestFollowers')}
+          onPress={checkPremium(() => navigation.navigate('BestFollowers'))}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_ghost.png')}
           description="Ghost followers"
           value={ghostFollowers}
-          onPress={() => navigation.navigate('GhostFollowers')}
+          onPress={checkPremium(() => navigation.navigate('GhostFollowers'))}
         />
       </ListWrapper>
     </StyledView>
@@ -260,9 +265,9 @@ const AvatarUsername = styled(Text)`
   text-align: center;
 `;
 
-const SearchAvatar = ({ navigation, following }) => (
+const SearchAvatar = ({ navigation, following, checkPremium }) => (
   <SearchAvatarWrapper>
-    <Background onPress={() => navigation.navigate('search')}>
+    <Background onPress={checkPremium(() => navigation.navigate('search'))}>
       <AvatarImage source={require('assets/icons/search.png')} roundedWidth={30} />
     </Background>
     <AvatarUsername />
