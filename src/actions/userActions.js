@@ -44,10 +44,6 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
   const state = getState();
   const premium = state?.user?.premium;
 
-  if (premium?.status !== 'active') {
-    return;
-  }
-
   const purchaseHistory = state?.payment?.history;
   const latestPurchase = purchaseHistory.sort((a, b) => b?.purchaseTime - a?.purchaseTime)?.[0];
 
@@ -65,6 +61,16 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
         }),
       );
     }
+    if (dateDifference <= periodDays && premium?.status && premium?.status !== 'active') {
+      dispatch(
+        updatePremium({
+          status: 'active',
+          productId,
+          lastUpdatedAt: new Date().getTime(),
+        }),
+      );
+    }
+
     return;
   }
   if (premium?.status === 'active') {

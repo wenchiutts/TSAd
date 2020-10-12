@@ -64,6 +64,9 @@ const SettingsScreen = () => {
       <IconListWithMargin
         iconSource={require('assets/icons/settings_restore.png')}
         description="Restore Purchase"
+        onPress={() => {
+
+        }}
       />
       {/* <IconListWithMargin
         iconSource={require('assets/icons/followstatus_best.png')}
