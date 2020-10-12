@@ -25,6 +25,7 @@ import {
   insProfilePictureSelector,
   insUsernameSelector,
 } from 'modules/instagram/selector';
+import { mapIndexed } from 'utils/ramdaUtils';
 
 const StyledView = styled(ScrollView).attrs({
   contentContainerStyle: {
@@ -219,9 +220,9 @@ const PurchaseModal = ({ navigation }) => {
       </ImageSliderWrapper>
       <ProductListWrapper>
         <ProductListWrapperView>
-          {map(product => (
+          {mapIndexed((product, idx) => (
             <StyledProductItemWithIAP
-              key={product.productId}
+              key={product.productId || idx}
               productId={product.productId}
               price={product.price}
               planType={PRODUCT_PLAN_TYPE_MAP[product.description]}
