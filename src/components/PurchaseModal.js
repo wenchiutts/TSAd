@@ -6,7 +6,7 @@ import { ScrollView, View, Image, TouchableHighlight, FlatList, SafeAreaView } f
 import styled from 'styled-components/native';
 import ImageSlider from 'react-native-image-slider';
 import _ from 'lodash';
-import { ifElse, path, always } from 'ramda';
+import { ifElse, path, always, map } from 'ramda';
 import * as InAppPurchases from 'expo-in-app-purchases';
 import { createStructuredSelector } from 'reselect';
 
@@ -219,20 +219,15 @@ const PurchaseModal = ({ navigation }) => {
       </ImageSliderWrapper>
       <ProductListWrapper>
         <ProductListWrapperView>
-          <FlatList
-            data={listContents}
-            renderItem={({ item }) => {
-              return (
-                <StyledProductItemWithIAP
-                  key={item.productId}
-                  productId={item.productId}
-                  price={item.price}
-                  planType={PRODUCT_PLAN_TYPE_MAP[item.description]}
-                  setIsLoading={setIsLoading}
-                />
-              );
-            }}
-          />
+          {map(product => (
+            <StyledProductItemWithIAP
+              key={product.productId}
+              productId={product.productId}
+              price={product.price}
+              planType={PRODUCT_PLAN_TYPE_MAP[product.description]}
+              setIsLoading={setIsLoading}
+            />
+          ))(listContents)}
         </ProductListWrapperView>
       </ProductListWrapper>
     </StyledView>

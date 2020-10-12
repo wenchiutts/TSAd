@@ -3,8 +3,9 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
-import { path, cond, pathEq } from 'ramda';
+import { path, cond, equals, T, always } from 'ramda';
 import { purchaseItemAsync } from 'expo-in-app-purchases';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const PLAN_TYPE = {
   WEEK: 'WEEK',
@@ -14,8 +15,8 @@ export const PLAN_TYPE = {
 };
 
 const PLAN_TYPE_ICON_MAP = {
-  [PLAN_TYPE.WEEK]: require('assets/icons/pro_plan1.png'),
-  [PLAN_TYPE.MONTH]: require('assets/icons/pro_plan1.png'),
+  [PLAN_TYPE.WEEK]: require('assets/icons/pro_plan3.png'),
+  [PLAN_TYPE.MONTH]: require('assets/icons/pro_plan2.png'),
   // [PLAN_TYPE.HALF_YEAR]: require('assets/icons/pro_plan1.png'),
   [PLAN_TYPE.YEAR]: require('assets/icons/pro_plan1.png'),
 };
@@ -28,8 +29,8 @@ const PLAN_TYPE_NAME_MAP = {
 };
 
 const Container = styled(TouchableOpacity)`
-  background-color: ${path(['theme', 'primary', 'pink'])};
-
+  overflow: hidden;
+  position: relative;
   padding-vertical: 19;
   padding-right: 32;
   padding-left: 20;
@@ -76,8 +77,27 @@ const AvgPrice = styled(StyledText)`
   text-align: right;
 `;
 
+const StyledLinearGradient = styled(LinearGradient)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
+
 const ProductItem = ({ style, planType, price = '$29.99', avgPrice = '$2.49', onPress }) => (
   <Container style={style} type={planType} onPress={onPress}>
+    <StyledLinearGradient
+      colors={cond([
+        [equals(PLAN_TYPE.YEAR), always(['#FEA15A', '#FC5C7B'])],
+        [equals(PLAN_TYPE.MONTH), always(['#44D7B6', '#32C5FF'])],
+        [equals(PLAN_TYPE.WEEK), always(['#32C5FF', '#0091FF'])],
+        [T, always(['#FEA15A', '#FC5C7B'])],
+      ])(planType)}
+      locations={[0, 1]}
+      start={[0, 1]}
+      end={[1, 0]}
+    />
     <Icon source={PLAN_TYPE_ICON_MAP[planType]} />
     <PlanName>{PLAN_TYPE_NAME_MAP[planType]}</PlanName>
     <PriceWrapper>
