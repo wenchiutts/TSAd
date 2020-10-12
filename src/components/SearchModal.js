@@ -37,13 +37,15 @@ const LocalUserListItem = ({ fullName, isPrivate, onPress, ...props }) => (
 );
 
 const SearchModal = ({ navigation }) => {
-  navigation.setOptions({
-    cardStyle: {
-      backgroundColor: Colors.screenBackground,
-    },
-    title: 'Search Users',
-    headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
-  });
+  React.useEffect(() => {
+    navigation.setOptions({
+      cardStyle: {
+        backgroundColor: Colors.screenBackground,
+      },
+      title: 'Search Users',
+      headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
+    });
+  }, []);
 
   const {
     cleanSearchResult,
@@ -97,8 +99,8 @@ const SearchModal = ({ navigation }) => {
       ) : !searchUserInputOpt.value ? (
         <View></View>
       ) : (
-        <EmptyFoundView />
-      )}
+            <EmptyFoundView />
+          )}
     </StyledView>
   );
 };

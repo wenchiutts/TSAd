@@ -76,16 +76,19 @@ const AvgPrice = styled(StyledText)`
   text-align: right;
 `;
 
-const ProductItem = ({ style, planType, price = '$29.99', avgPrice = '$2.49', onPress }) => (
-  <Container style={style} type={planType} onPress={onPress}>
-    <Icon source={PLAN_TYPE_ICON_MAP[planType]} />
-    <PlanName>{PLAN_TYPE_NAME_MAP[planType]}</PlanName>
-    <PriceWrapper>
-      <Price>{price}</Price>
-      <AvgPrice>{avgPrice}/mo</AvgPrice>
-    </PriceWrapper>
-  </Container>
-);
+const ProductItem = ({ style, planType, price = '$29.99', avgPrice = '$2.49', onPress }) => {
+  console.log('PLAN_TYPE_ICON_MAP', planType)
+  return (
+    <Container style={style} type={planType} onPress={onPress}>
+      <Icon source={PLAN_TYPE_ICON_MAP[planType]} />
+      <PlanName>{PLAN_TYPE_NAME_MAP[planType]}</PlanName>
+      <PriceWrapper>
+        <Price>{price}</Price>
+        <AvgPrice>{avgPrice}/mo</AvgPrice>
+      </PriceWrapper>
+    </Container>
+  );
+};
 
 ProductItem.propTypes = {
   planType: PropTypes.string,

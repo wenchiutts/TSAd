@@ -17,18 +17,21 @@ const Tab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
 export default function BottomTabNavigator({ navigation, route }) {
-  navigation.setOptions({
-    headerTitle: getHeaderTitle(route),
-    // header: () => (
-    //   <>
-    //     <BlurView intensity={10}>
-    //       <View style={{ height: 60 }}>
-    //         <Text style={{ color: '#fff' }}>{headerTitle}</Text>
-    //       </View>
-    //     </BlurView>
-    //   </>
-    // ),
-  });
+  React.useEffect(() => {
+    navigation.setOptions({
+      headerTitle: getHeaderTitle(route),
+      // header: () => (
+      //   <>
+      //     <BlurView intensity={10}>
+      //       <View style={{ height: 60 }}>
+      //         <Text style={{ color: '#fff' }}>{headerTitle}</Text>
+      //       </View>
+      //     </BlurView>
+      //   </>
+      // ),
+    });
+
+  }, []);
 
   return (
     <Tab.Navigator

@@ -120,13 +120,17 @@ const PurchaseModal = ({ navigation }) => {
 
   console.log('setListContents', setListContents);
 
-  navigation.setOptions({
-    cardStyle: {
-      backgroundColor: Colors.screenBackground,
-    },
-    title: '',
-    headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
-  });
+  React.useEffect(() => {
+    navigation.setOptions({
+      cardStyle: {
+        backgroundColor: Colors.screenBackground,
+      },
+      headerTransparent: true,
+      title: '',
+      headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
+    });
+  }, []);
+
 
   React.useEffect(() => {
     dispatch(newTapPurchase(insData));
@@ -222,12 +226,13 @@ const PurchaseModal = ({ navigation }) => {
           <FlatList
             data={listContents}
             renderItem={({ item }) => {
+              console.log('fuck item', item)
               return (
                 <StyledProductItemWithIAP
                   key={item.productId}
                   productId={item.productId}
                   price={item.price}
-                  planType={PRODUCT_PLAN_TYPE_MAP[item.description]}
+                  planType={PRODUCT_PLAN_TYPE_MAP[item.productId]}
                   setIsLoading={setIsLoading}
                 />
               );
