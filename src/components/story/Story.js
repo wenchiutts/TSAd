@@ -51,7 +51,7 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
           <StyledImage source={{ uri: story?.items[story.idx].src }}>
             <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
             <StyledAvatar
-              imgSrc={{ uri: story?.user?.profile_pic_url }}
+              imgSrc={story?.user?.profile_pic_url}
               username={story?.user?.username}
               createTime={story?.items[story.idx].takenAt}
             />
