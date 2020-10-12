@@ -242,13 +242,13 @@ const AvatarsWrapper = styled(FlatList).attrs(props => ({
 const AvatarWithUsername = ({ username, userPicture, isExistStory, onPress }) => (
   <StyledAvatar onPress={onPress}>
     <Avatar isExistStory={isExistStory} source={userPicture} />
-    <AvatarUsername>@{username}</AvatarUsername>
+    <AvatarUsername ellipsizeMode="tail" numberOfLines={1}>@{username}</AvatarUsername>
   </StyledAvatar>
 );
 
 const StyledAvatar = styled(TouchableOpacity)`
-  margin-horizontal: 8;
   height: 100;
+  width: 74;
   flex-direction: column;
   justify-content: center;
   align-items: center;

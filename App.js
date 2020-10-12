@@ -6,6 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { ThemeProvider } from 'styled-components/native';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import * as Analytics from 'expo-firebase-analytics';
 
 import StoryModal from 'components/StoryModal';
@@ -24,9 +25,10 @@ import Splash from 'components/Splash';
 enableScreens();
 const Stack = createStackNavigator();
 
-const { store } = configureStore();
+const { store, persistor } = configureStore();
 
-export default function App() {
+const Root = () => {
+  const { igUserNameContext, igUserNameState } = useCheckUserLoginIg(store);
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
 
@@ -39,91 +41,93 @@ export default function App() {
     };
     init();
   }, []);
-  const { igUserNameContext, igUserNameState } = useCheckUserLoginIg(store);
 
   if (igUserNameState.isLoading) {
     return <Splash />;
   }
+  return (
+    <IgUserNameContext.Provider value={igUserNameContext}>
+      <View style={styles.container}>
+        <StatusBar style="auto" />
+        <NavigationContainer
+          ref={navigationRef}
+          onReady={() => (routeNameRef.current = navigationRef.current.getCurrentRoute().name)}
+          onStateChange={() => {
+            const previousRouteName = routeNameRef.current;
+            const currentRouteName = navigationRef.current.getCurrentRoute().name;
 
+            if (previousRouteName !== currentRouteName) {
+              Analytics.setCurrentScreen(currentRouteName);
+              console.log(currentRouteName);
+            }
+            routeNameRef.current = currentRouteName;
+          }}>
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: Colors.screenBackground,
+                borderBottomWidth: 0,
+                shadowRadius: 0,
+                shadowOffset: {
+                  height: 0,
+                },
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+                fontSize: 20,
+              },
+              headerTitleAlign: 'center',
+              headerHideShadow: true,
+            }}
+            mode="modal">
+            {igUserNameState?.isLogin ? (
+              <>
+                <Stack.Screen
+                  name="Root"
+                  component={BottomTabNavigator}
+                  options={({ route }) => {
+                    const routeName =
+                      route.state?.routes[route.state.index]?.name ||
+                      route.state?.routes[0]?.name ||
+                      'Home';
+                    if (routeName === 'Home' || routeName === 'Insight') {
+                      return { headerShown: false };
+                    }
+                    return { headerShown: true };
+                  }}
+                />
+                <Stack.Screen
+                  name="story"
+                  component={StoryModal}
+                  options={{
+                    headerShown: false,
+                    cardStyle: {
+                      backgroundColor: Colors.screenBackground,
+                    },
+                  }}
+                />
+                <Stack.Screen name="purchase" component={PurchaseModal} />
+                <Stack.Screen name="search" component={SearchModal} />
+              </>
+            ) : (
+                <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+              )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    </IgUserNameContext.Provider>
+  );
+};
+
+export default function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={Colors}>
-        <IgUserNameContext.Provider value={igUserNameContext}>
-          <View style={styles.container}>
-            <StatusBar style="auto" />
-            <NavigationContainer
-              ref={navigationRef}
-              onReady={() => (routeNameRef.current = navigationRef.current.getCurrentRoute().name)}
-              onStateChange={() => {
-                const previousRouteName = routeNameRef.current;
-                const currentRouteName = navigationRef.current.getCurrentRoute().name;
-
-                if (previousRouteName !== currentRouteName) {
-                  Analytics.setCurrentScreen(currentRouteName);
-                  console.log(currentRouteName);
-                }
-                routeNameRef.current = currentRouteName;
-              }}>
-              <Stack.Navigator
-                screenOptions={{
-                  headerStyle: {
-                    backgroundColor: Colors.screenBackground,
-                    borderBottomWidth: 0,
-                    shadowRadius: 0,
-                    shadowOffset: {
-                      height: 0,
-                    },
-                  },
-                  headerTintColor: '#fff',
-                  headerTitleStyle: {
-                    fontWeight: 'bold',
-                    fontSize: 20,
-                  },
-                  headerTitleAlign: 'center',
-                  headerHideShadow: true,
-                }}
-                mode="modal">
-                {igUserNameState?.isLogin ? (
-                  <>
-                    <Stack.Screen
-                      name="Root"
-                      component={BottomTabNavigator}
-                      options={({ route }) => {
-                        const routeName =
-                          route.state?.routes[route.state.index]?.name ||
-                          route.state?.routes[0]?.name ||
-                          'Home';
-                        if (routeName === 'Home' || routeName === 'Insight') {
-                          return { headerShown: false };
-                        }
-                        return { headerShown: true };
-                      }}
-                    />
-                    <Stack.Screen
-                      name="story"
-                      component={StoryModal}
-                      options={{
-                        headerShown: false,
-                        cardStyle: {
-                          backgroundColor: Colors.screenBackground,
-                        },
-                      }}
-                    />
-                    <Stack.Screen name="purchase" component={PurchaseModal} />
-                    <Stack.Screen name="search" component={SearchModal} />
-                  </>
-                ) : (
-                    <Stack.Screen
-                      name="Login"
-                      component={LoginScreen}
-                      options={{ headerShown: false }}
-                    />
-                  )}
-              </Stack.Navigator>
-            </NavigationContainer>
-          </View>
-        </IgUserNameContext.Provider>
-      </ThemeProvider>
+      <PersistGate loading={<Splash />} persistor={persistor}>
+        <ThemeProvider theme={Colors}>
+          <Root />
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   );
 }

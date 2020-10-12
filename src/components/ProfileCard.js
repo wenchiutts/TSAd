@@ -1,33 +1,43 @@
 // @format
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { Text, View, ImageBackground } from 'react-native';
 import styled from 'styled-components/native';
 import { path } from 'ramda';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { Avatar } from 'components/AvatarImage';
+import { isPremiumUserSelector } from 'modules/user/userSelector';
 
-const ProfileCard = ({ posts, followers, following, profilePicture }) => (
-  <StyledView>
-    <BackgroundWrapper />
-    <StyledAvatar profilePicture={profilePicture} />
-    <ContentWrapper>
-      <View>
-        <Value>{posts}</Value>
-        <StyledText>posts</StyledText>
-      </View>
-      <View>
-        <Value>{followers}</Value>
-        <StyledText>followers</StyledText>
-      </View>
-      <View>
-        <Value>{following}</Value>
-        <StyledText>following</StyledText>
-      </View>
-    </ContentWrapper>
-  </StyledView>
-);
+const selector = createStructuredSelector({
+  isPremium: isPremiumUserSelector,
+});
+
+const ProfileCard = ({ posts, followers, following, profilePicture }) => {
+  const { isPremium } = useSelector(selector);
+  return (
+    <StyledView>
+      <BackgroundWrapper />
+      <StyledAvatar profilePicture={profilePicture} isPremium={isPremium} />
+      <ContentWrapper>
+        <View>
+          <Value>{posts}</Value>
+          <StyledText>posts</StyledText>
+        </View>
+        <View>
+          <Value>{followers}</Value>
+          <StyledText>followers</StyledText>
+        </View>
+        <View>
+          <Value>{following}</Value>
+          <StyledText>following</StyledText>
+        </View>
+      </ContentWrapper>
+    </StyledView>
+  );
+};
 
 ProfileCard.propTypes = {
   posts: PropTypes.number,
@@ -45,14 +55,21 @@ const StyledView = styled(View)`
   flex-direction: row;
 `;
 
-const StyledAvatar = ({ profilePicture }) => (
+const StyledAvatar = ({ profilePicture, isPremium }) => (
   <View>
     <Avatar source={{ uri: profilePicture }} />
-    <Tag>
-      <TagText>PRO</TagText>
-    </Tag>
+    {isPremium && (
+      <Tag>
+        <TagText>PRO</TagText>
+      </Tag>
+    )}
   </View>
 );
+
+StyledAvatar.propTypes = {
+  profilePicture: PropTypes.string,
+  isPremium: PropTypes.bool,
+};
 
 const Tag = styled(View)`
   width: 44;
