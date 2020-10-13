@@ -8,7 +8,7 @@ import styled from 'styled-components/native';
 
 import Stories from 'components/story/Stories';
 import useIsMount from 'hooks/useIsMount';
-import { storyFeedListSelector } from 'modules/instagram/selector';
+import { storyFeedListSelector, storyFeedPositionSelector } from 'modules/instagram/selector';
 import useStoryData from 'hooks/useStoryData';
 
 const { width, height } = Dimensions.get('window');
@@ -24,12 +24,13 @@ const StyledView = styled(View)`
 
 const selector = createStructuredSelector({
   data: storyFeedListSelector,
+  deckPosition: storyFeedPositionSelector,
 });
 
 const orderByList = (orderList, object) => map(prop(__, object), orderList);
 
 const StoryModal = ({ route, navigation }) => {
-  const { data } = useSelector(selector);
+  const { data, deckPosition } = useSelector(selector);
   const { deckIndex } = route.params;
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const horizontalSwipe = useRef(new Animated.Value(0)).current;
@@ -45,6 +46,7 @@ const StoryModal = ({ route, navigation }) => {
     carouselOpen: false,
     offset: { top: height / 2, left: width / 2 },
     deckIdx: deckIndex,
+    isResetCurrentDeck: false,
     paused: false,
     backOpacity: 0,
     panResponder: null,
@@ -53,9 +55,13 @@ const StoryModal = ({ route, navigation }) => {
   const [storyState, setStoryState] = useState(initialState);
   const isMount = useIsMount();
 
-  const { carouselOpen, paused, backOpacity, deckIdx } = storyState;
+  const { carouselOpen, paused, backOpacity, deckIdx, isResetCurrentDeck } = storyState;
 
-  const { setStoryIdx, stories, storyPosition, getDeckInfo } = useStoryData(data, deckIdx);
+  const { setStoryIdx, stories, getDeckInfo, isFetchingStories } = useStoryData(
+    data,
+    deckIdx,
+    deckPosition,
+  );
 
   const panResponder = useRef(
     PanResponder.create({
@@ -108,7 +114,7 @@ const StoryModal = ({ route, navigation }) => {
           return onNextDeck();
         }
         playProgressIndicator();
-        animateDeck(width * deckIdx);
+        setRestCurrentDeck(true);
       },
     }),
   ).current;
@@ -126,7 +132,7 @@ const StoryModal = ({ route, navigation }) => {
     requestAnimationFrame(() => {
       LayoutAnimation.easeInEaseOut();
       setStoryState(prev => ({ ...prev, carouselOpen: true }));
-      animateIndicator();
+      // animateIndicator();
     });
   };
 
@@ -158,13 +164,11 @@ const StoryModal = ({ route, navigation }) => {
   // Toggle Indicator Animation
 
   const pauseIndicator = () => {
-    indicatorAnim.stopAnimation();
     setStoryState(prev => ({ ...prev, paused: true }));
   };
 
   const playProgressIndicator = () => {
     setStoryState(prev => ({ ...prev, paused: false }));
-    animateIndicator(false);
   };
 
   const animateIndicator = (reset = true) => {
@@ -213,30 +217,45 @@ const StoryModal = ({ route, navigation }) => {
 
   const animateDeck = (toValue, reset = false) => {
     if (reset) {
-      animateIndicator();
+      animateIndicator(reset);
     }
     Animated.spring(horizontalSwipe, {
       toValue,
       friction: 9,
       useNativeDriver: false,
-    }).start();
+    }).start(({ finished }) => {
+      if (finished) {
+        setRestCurrentDeck(false);
+      }
+    });
   };
+
+  const setRestCurrentDeck = tof => setStoryState(prev => ({ ...prev, isResetCurrentDeck: tof }));
+
+  useEffect(() => {
+    if (paused || isFetchingStories) {
+      indicatorAnim.stopAnimation();
+    } else {
+      animateIndicator(false);
+    }
+  }, [paused, isFetchingStories]);
 
   useEffect(() => {
     if (isMount) {
-      if (deckIdx < storyPosition.length && deckIdx >= 0) {
+      if (deckIdx < deckPosition.length && deckIdx >= 0) {
         if (paused) {
-          animateIndicator(false);
+          playProgressIndicator();
+          // animateIndicator(false);
         }
         animateDeck(deckIdx * width, true);
       } else {
         leaveStories();
       }
     }
-  }, [deckIdx]);
+  }, [deckIdx, isResetCurrentDeck]);
 
   useEffect(() => {
-    const isDeckInRange = deckIdx >= 0 && deckIdx < storyPosition.length;
+    const isDeckInRange = deckIdx >= 0 && deckIdx < deckPosition.length;
     if (isMount && isDeckInRange) {
       animateIndicator();
     }
@@ -252,7 +271,6 @@ const StoryModal = ({ route, navigation }) => {
     onPrevItem,
     onNextDeck,
     onPrevDeck,
-    animateDeck,
     // currentStory,
   };
 
@@ -260,7 +278,7 @@ const StoryModal = ({ route, navigation }) => {
     <StyledView>
       <CarouselWrap carouselOpen={carouselOpen}>
         <Stories
-          stories={orderByList(storyPosition, stories)}
+          stories={orderByList(deckPosition, stories)}
           storyState={storyState}
           setStoryState={setStoryState}
           panResponder={panResponder}

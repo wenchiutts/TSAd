@@ -48,12 +48,12 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
           </SpinnerWrapper>
         )}
         {!isEmptyStories(story) && (
-          <StyledImage source={{ uri: story?.items[story.idx].src }}>
+          <StyledImage source={{ uri: story?.items[story.idx]?.src }}>
             <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
             <StyledAvatar
               imgSrc={story?.user?.profile_pic_url}
               username={story?.user?.username}
-              createTime={story?.items[story.idx].takenAt}
+              createTime={story?.items[story.idx]?.takenAt}
             />
             <BackButton
               onPrevItem={onPrevItem}

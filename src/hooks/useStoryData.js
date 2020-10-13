@@ -1,6 +1,5 @@
 // @format
 import { useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import {
   cond,
@@ -44,12 +43,11 @@ import {
 // import useCompare from 'hooks/useCompare';
 import { getStoryDetails } from 'apis/instagram';
 import { isExist } from 'utils/ramdaUtils';
-import { storyFeedPositionSelector } from 'modules/instagram/selector';
 
 const isFirstDeck = pathEq(['deckIdx'], 0);
 const isLastDeck = converge(equals, [
   path(['deckIdx']),
-  compose(subtract(__, 1), length, path(['storyPosition'])),
+  compose(subtract(__, 1), length, path(['deckPosition'])),
 ]);
 
 const serializeStoryData = reduce(
@@ -73,30 +71,26 @@ const serializeStoryData = reduce(
   {},
 );
 
-const getFetchIdsByDeckIdx = ({ deckIdx, storyPosition }) =>
+const getFetchIdsByDeckIdx = ({ deckIdx, deckPosition }) =>
   cond([
-    [isFirstDeck, compose(take(3), path(['storyPosition']))],
-    [isLastDeck, compose(takeLast(3), path(['storyPosition']))],
-    [T, compose(slice(deckIdx - 1, deckIdx + 2), path(['storyPosition']))],
-  ])({ deckIdx, storyPosition });
+    [isFirstDeck, compose(take(3), path(['deckPosition']))],
+    [isLastDeck, compose(takeLast(3), path(['deckPosition']))],
+    [T, compose(slice(deckIdx - 1, deckIdx + 2), path(['deckPosition']))],
+  ])({ deckIdx, deckPosition });
 
 const rejectFetchedIds = fetchedIds => reject(includes(__, fetchedIds));
-const selector = createStructuredSelector({
-  storyPosition: storyFeedPositionSelector,
-});
 
-const useStoryData = (stories, deckIdx) => {
+const useStoryData = (stories, deckIdx, deckPosition) => {
   const [newStories, setNewStories] = useState(stories);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const fetchedIds = useRef([]);
-  const { storyPosition } = useSelector(selector);
   // const storiesHasChanged = useCompare(stories);
   useEffect(() => {
     const effectAction = async () => {
       const ids = compose(
         rejectFetchedIds(fetchedIds.current),
         getFetchIdsByDeckIdx,
-      )({ deckIdx, storyPosition });
+      )({ deckIdx, deckPosition });
       if (!isEmpty(ids)) {
         setIsFetching(true);
         const result = await getStoryDetails({ reelIds: ids });
@@ -111,29 +105,29 @@ const useStoryData = (stories, deckIdx) => {
   }, [stories, deckIdx]);
 
   const setStoryIdx = diff => {
-    const lensStory = lensPath([storyPosition[deckIdx]]);
+    const lensStory = lensPath([deckPosition[deckIdx]]);
     setNewStories(prevStories => over(lensStory, evolve({ idx: add(diff) }), prevStories));
   };
 
   const getDeckInfo = idx => {
-    const id = storyPosition[idx];
+    const id = deckPosition[idx];
     return newStories[id];
   };
 
   const getWindowData = curry((size, currentPosition, data) => {
+    const length = data.length;
     const head = ifElse(gte(__, 0), identity, always(0))(currentPosition - size);
     const tail =
       head === 0
         ? 2 * size
-        : ifElse(lt(__, data.length), identity, always(data.length - 1))(currentPosition + size);
-    const finalHead = tail === data.length - 1 ? tail - 2 * size : head;
+        : ifElse(lt(__, length), identity, always(length - 1))(currentPosition + size);
+    const finalHead = tail === length - 1 ? tail - 2 * size : head;
     return slice(finalHead, tail + 1)(data);
   });
 
   return {
     stories: newStories,
     isFetchingStories: isFetching,
-    storyPosition,
     setStoryIdx,
     getDeckInfo,
     getWindowData,
