@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { Avatar } from 'components/AvatarImage';
 import { isPremiumUserSelector } from 'modules/user/userSelector';
+import i18n from 'i18n';
 
 const selector = createStructuredSelector({
   isPremium: isPremiumUserSelector,
@@ -24,15 +25,15 @@ const ProfileCard = ({ posts, followers, following, profilePicture }) => {
       <ContentWrapper>
         <View>
           <Value>{posts}</Value>
-          <StyledText>posts</StyledText>
+          <StyledText>{i18n.t('profile_posts')}</StyledText>
         </View>
         <View>
           <Value>{followers}</Value>
-          <StyledText>followers</StyledText>
+          <StyledText>{i18n.t('profile_followers')}</StyledText>
         </View>
         <View>
           <Value>{following}</Value>
-          <StyledText>following</StyledText>
+          <StyledText>{i18n.t('profile_following')}</StyledText>
         </View>
       </ContentWrapper>
     </StyledView>
@@ -60,7 +61,7 @@ const StyledAvatar = ({ profilePicture, isPremium }) => (
     <Avatar source={{ uri: profilePicture }} />
     {isPremium && (
       <Tag>
-        <TagText>PRO</TagText>
+        <TagText>{i18n.t('profile_PRO')}</TagText>
       </Tag>
     )}
   </View>
