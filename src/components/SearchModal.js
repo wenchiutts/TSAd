@@ -58,8 +58,6 @@ const SearchModal = ({ navigation }) => {
     ...searchUserInputOpt
   } = useSearchUserInput(true, true);
 
-  console.log('searchUserInputOpt', searchUserInputOpt, 'searchResult', searchResult);
-
   const inputEle = React.useRef(null);
 
   const onPress = user => async () => {
