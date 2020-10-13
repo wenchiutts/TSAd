@@ -21,13 +21,16 @@ const Img = styled(FastImage)`
 `;
 
 const Mask = styled(View)`
-  width: ${(screenWidth - 4) / 3};
-  height: ${(screenWidth - 4) / 3};
-  flex: 1;
-  background-color: rgba(0, 0, 0, 0.25);
   padding-left: 6;
   padding-bottom: 6;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  flex: 1;
   justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.25);
 `;
 
 const InteractionWrapper = React.memo(({ iconType, value }) => (
@@ -48,7 +51,7 @@ const InteractionWrapper = React.memo(({ iconType, value }) => (
 ));
 
 const PostItem = ({ likes, comments, src, onPress }) => (
-  <TouchableOpacity onPress={onPress}>
+  <TouchableOpacity onPress={onPress} style={{ position: 'relative' }}>
     <Img
       source={{
         ...src,
