@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { View, Dimensions, LayoutAnimation, Animated, PanResponder } from 'react-native';
-import { values, compose, map, prop, __ } from 'ramda';
-import { useSelector } from 'react-redux';
+import { of, applySpec, path, compose, map, prop, __ } from 'ramda';
+import { connect } from 'react-redux';
+import { branch, withProps } from 'recompose';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
 
@@ -10,6 +11,7 @@ import Stories from 'components/story/Stories';
 import useIsMount from 'hooks/useIsMount';
 import { storyFeedListSelector, storyFeedPositionSelector } from 'modules/instagram/selector';
 import useStoryData from 'hooks/useStoryData';
+import { isExist } from 'utils/ramdaUtils';
 
 const { width, height } = Dimensions.get('window');
 const VERTICAL_THRESHOLD = 80;
@@ -29,8 +31,7 @@ const selector = createStructuredSelector({
 
 const orderByList = (orderList, object) => map(prop(__, object), orderList);
 
-const StoryModal = ({ route, navigation }) => {
-  const { data, deckPosition } = useSelector(selector);
+const StoryModal = ({ route, navigation, data, deckPosition }) => {
   const { deckIndex } = route.params;
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const horizontalSwipe = useRef(new Animated.Value(0)).current;
@@ -296,9 +297,22 @@ const StoryModal = ({ route, navigation }) => {
 StoryModal.propTypes = {
   route: PropTypes.object,
   navigation: PropTypes.object,
+  data: PropTypes.object,
+  deckPosition: PropTypes.array,
 };
 
-export default StoryModal;
+export default compose(
+  branch(
+    compose(isExist, path(['route', 'params', 'story'])),
+    withProps(
+      applySpec({
+        data: path(['route', 'params', 'story']),
+        deckPosition: compose(of, path(['route', 'params', 'userId'])),
+      }),
+    ),
+    connect(selector),
+  ),
+)(StoryModal);
 
 const CarouselWrap = styled(View)`
   overflow: hidden;

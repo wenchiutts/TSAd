@@ -1,16 +1,15 @@
 // @format
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { path, map, values } from 'ramda';
 import { View, Text } from 'react-native';
 import styled from 'styled-components/native';
-import { useDispatch } from 'react-redux';
 import { isExist } from 'utils/ramdaUtils';
 
 import Colors from 'constants/Colors';
 import CancelButton from 'components/header/CancelButton';
 import EmptyFoundView from 'components/EmptyFoundView';
 import UserListItem from 'components/UserListItem';
-import apis from 'apis';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SearchUserInput, { useSearchUserInput } from 'components/SearchUserInput';
 
@@ -36,6 +35,12 @@ const LocalUserListItem = ({ fullName, isPrivate, onPress, ...props }) => (
   </TouchableOpacity>
 );
 
+LocalUserListItem.propTypes = {
+  fullName: PropTypes.string,
+  isPrivate: PropTypes.bool,
+  onPress: PropTypes.func,
+};
+
 const SearchModal = ({ navigation }) => {
   navigation.setOptions({
     cardStyle: {
@@ -57,23 +62,26 @@ const SearchModal = ({ navigation }) => {
 
   const inputEle = React.useRef(null);
 
-  const dispatch = useDispatch();
-
   const onPress = user => async () => {
     if (user?.latest_reel_media === 0) {
       return;
     }
     inputEle.current.blur();
 
-    const userStory = await apis.instagram.getStoryDetails({
-      reelIds: user?.pk,
-    });
     setSearchUserInput(prev => ({
       ...prev,
       value: '',
     }));
     cleanSearchResult();
-    console.log(userStory[0].items);
+    const userId = String(user?.pk);
+    const story = {
+      [userId]: {
+        idx: 0,
+        id: userId,
+        items: [],
+      },
+    };
+    navigation.navigate('story', { story, deckIndex: 0, userId });
   };
 
   return (
@@ -102,4 +110,9 @@ const SearchModal = ({ navigation }) => {
     </StyledView>
   );
 };
+
+SearchModal.propTypes = {
+  navigation: PropTypes.object,
+};
+
 export default SearchModal;
