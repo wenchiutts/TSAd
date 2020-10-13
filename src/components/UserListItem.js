@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import { compose, path, prop } from 'ramda';
 
@@ -46,8 +46,19 @@ const UserListItem = ({
   const lookupFollowings = lookup(followings);
   const follow = () =>
     dispatch(followUserAction(userId, { followerCount, followingCount, profilePicHd, username }));
-  const unfollow = () =>
-    dispatch(unfollowUserAction(userId, { followerCount, followingCount, profilePicHd, username }));
+  const unfollow = username => {
+    Alert.alert('Unfollow', `Sure to unfollow @${username} ?`, [
+      { text: 'No' },
+      {
+        text: 'Yes',
+        onPress: () => {
+          dispatch(
+            unfollowUserAction(userId, { followerCount, followingCount, profilePicHd, username }),
+          );
+        },
+      },
+    ]);
+  };
   const localIsFollowing = isFollowing ?? compose(isExist, lookupFollowings)(userId);
   const localIsFollower = isFollower ?? compose(isExist, lookupFollowers)(userId);
   return (
@@ -66,7 +77,7 @@ const UserListItem = ({
       {!buttonHide ? (
         <FollowButton
           isFollowing={localIsFollowing}
-          onPress={localIsFollowing ? unfollow : follow}
+          onPress={localIsFollowing ? () => unfollow(username) : follow}
         />
       ) : (
         <></>

@@ -12,6 +12,7 @@ import InsightsStack from 'navigation/InsightsStack';
 import TabBarIcon from 'components/TabBarIcon';
 import styled from 'styled-components';
 import Colors from 'constants/Colors';
+import i18n from 'i18n';
 
 const Tab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -130,10 +131,10 @@ function getHeaderTitle(route) {
 
   switch (routeName) {
     case 'Home':
-      return 'Ins Reports';
+      return i18n.t('general_app_title');
     case 'Insight':
-      return 'Insight';
+      return i18n.t('insight_title');
     case 'Settings':
-      return 'Settings';
+      return i18n.t('settings_title');
   }
 }

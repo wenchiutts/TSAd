@@ -14,6 +14,7 @@ import Colors from 'constants/Colors';
 import MostViewedStoriesScreen from 'modules/insights/components/MostViewedStoriesScreen';
 import LeastViewedStoriesScreen from 'modules/insights/components/LeastViewedStoriesScreen';
 import StoryDetailInsightScreen from 'modules/insights/components/StoryDetailInsightScreen';
+import i18n from 'i18n';
 
 const Stack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Insight';
@@ -66,20 +67,24 @@ function getHeaderTitle(route) {
 
   switch (routeName) {
     case 'Insight':
-      return 'Insights';
-    case 'MostPopularPosts':
-      return 'Most Popular Posts';
-    case 'MostLikedPosts':
-      return 'Most Liked Posts';
-    case 'MostCommentedPosts':
-      return 'Most Commented Posts';
+      return i18n.t('insight_title');
     case 'StoryHistory':
-      return 'History';
+      return i18n.t('insight_history');
     case 'TopViewers':
-      return 'Top Viewers';
+      return i18n.t('insight_top_viewers');
     case 'LeastViewers':
-      return 'Least Viewers';
+      return i18n.t('insight_least_viewers');
+    case 'MostViewedStories':
+      return i18n.t('insight_most_viewed_stories');
+    case 'LeastViewedStories':
+      return i18n.t('insight_least_viewed_stories');
+    case 'MostPopularPosts':
+      return i18n.t('insight_most_popular_posts');
+    case 'MostLikedPosts':
+      return i18n.t('insight_most_liked_posts');
+    case 'MostCommentedPosts':
+      return i18n.t('insight_most_commented_posts');
     default:
-      return 'Insights';
+      return i18n.t('insight_title');
   }
 }

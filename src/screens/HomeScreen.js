@@ -32,6 +32,7 @@ import {
 import { Avatar, AvatarImage } from 'components/AvatarImage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
+import i18n from 'i18n';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -65,7 +66,7 @@ const userDataSelector = createStructuredSelector({
 
 const renderAvatarListItem = ({ item, index }, navigation, checkPremium) => {
   if (index === 0) {
-    return <SearchAvatar navigation={navigation} checkPremium={checkPremium}/>;
+    return <SearchAvatar navigation={navigation} checkPremium={checkPremium} />;
   }
   return (
     <AvatarWithUsername
@@ -127,7 +128,7 @@ const HomeScreen = ({ navigation }) => {
         profilePicture={profilePicture}
       />
       <StoriesWrapper>
-        <Title>Watch Stories Anonymously</Title>
+        <Title>{i18n.t('home_story_anonymously')}</Title>
         <AvatarsWrapper
           data={[
             1, // for search item
@@ -140,7 +141,7 @@ const HomeScreen = ({ navigation }) => {
         />
       </StoriesWrapper>
       <ListWrapper>
-        <Title>Follower Status</Title>
+        <Title>{i18n.t('home_follower_status')}</Title>
         {/*
         <IconListWithMargin
           margin={18}
@@ -152,49 +153,49 @@ const HomeScreen = ({ navigation }) => {
         */}
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_newfollow.png')}
-          description="New followers"
+          description={i18n.t('home_new_followers')}
           value={newFollowers}
           onPress={() => navigation.navigate('NewFollowers')}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_unfollow.png')}
-          description="Unfollowers"
+          description={i18n.t('home_unfollowers')}
           value={unfollowers}
           onPress={() => navigation.navigate('Unfollowers')}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_block.png')}
-          description="Who blocking me"
+          description={i18n.t('home_blocking_me')}
           value={blockers}
           onPress={checkPremium(() => navigation.navigate('SearchBlocker'))}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_notfollowingme.png')}
-          description="Not following me back"
+          description={i18n.t('home_not_following_back')}
           value={notFollowingMeBack}
           onPress={() => navigation.navigate('NotFollowingMeBack')}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_idontfollowback.png')}
-          description={`I'm Not following back`}
+          description={i18n.t('home_im_not_following_back')}
           value={imNotFollowingBack}
           onPress={() => navigation.navigate('ImNotFollowingBack')}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_mutual.png')}
-          description="Mutual following"
+          description={i18n.t('home_mutual_following')}
           value={mutualFollowing}
           onPress={() => navigation.navigate('MutualFollowing')}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_best.png')}
-          description="Best followers"
+          description={i18n.t('home_best_followers')}
           value={bestFollowers}
           onPress={checkPremium(() => navigation.navigate('BestFollowers'))}
         />
         <IconListWithMargin
           iconSource={require('assets/icons/followstatus_ghost.png')}
-          description="Ghost followers"
+          description={i18n.t('home_ghost_followers')}
           value={ghostFollowers}
           onPress={checkPremium(() => navigation.navigate('GhostFollowers'))}
         />

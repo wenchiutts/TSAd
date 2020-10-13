@@ -7,8 +7,8 @@ import dedent from 'dedent';
 import Constants from 'expo-constants';
 
 import IconListItem from 'components/IconListItem';
-
 import PromotionCard from 'components/PromotionCard.js';
+import i18n from 'i18n';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -32,7 +32,7 @@ const SettingsScreen = () => (
     <IconListWithMargin
       margin={24}
       iconSource={require('assets/icons/settings_contactus.png')}
-      description="Contact Us"
+      description={i18n.t('settings_contact')}
       onPress={() => {
         // TODO: CHUCK change the recipients and subject
         const options = {
@@ -55,19 +55,19 @@ const SettingsScreen = () => (
     />
     <IconListWithMargin
       iconSource={require('assets/icons/settings_restore.png')}
-      description="Restore Purchase"
+      description={i18n.t('settings_restore')}
     />
     <IconListWithMargin
       iconSource={require('assets/icons/followstatus_best.png')}
-      description="Rate Us"
+      description={i18n.t('settings_rate')}
     />
     <IconListWithMargin
       iconSource={require('assets/icons/settings_termofuse.png')}
-      description="Term os Use"
+      description={i18n.t('settings_term_of_use')}
     />
     <IconListWithMargin
       iconSource={require('assets/icons/settings_logour.png')}
-      description="Log Out"
+      description={i18n.t('settings_logout')}
     />
   </StyledView>
 );

@@ -16,6 +16,7 @@ import ViewMyProfileScreen from 'screens/ViewMyProfileScreen';
 import BackButton from 'components/header/BackButton';
 
 import Colors from 'constants/Colors';
+import i18n from 'i18n';
 
 const Stack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -68,26 +69,26 @@ function getHeaderTitle(route) {
 
   switch (routeName) {
     case 'Home':
-      return 'Ins Reports';
-    case 'SearchBlocker':
-      return 'Search Blockers';
-    case 'NewFollowers':
-      return 'New followers';
-    case 'Unfollowers':
-      return 'Unfollow';
-    case 'NotFollowingMeBack':
-      return 'Not Following Me Back';
-    case 'ImNotFollowingBack':
-      return `I'm Not Following Back`;
-    case 'MutualFollowing':
-      return 'Mutual Following';
-    case 'BestFollowers':
-      return 'Best Followers';
-    case 'GhostFollowers':
-      return 'Ghost Followers';
+      return i18n.t('general_app_title');
     case 'ViewMyProfile':
-      return 'Who Viewed My Profile';
+      return i18n.t('home_view_my_profile');
+    case 'NewFollowers':
+      return i18n.t('home_new_followers');
+    case 'Unfollowers':
+      return i18n.t('home_unfollowers');
+    case 'SearchBlocker':
+      return i18n.t('home_blocking_me');
+    case 'NotFollowingMeBack':
+      return i18n.t('home_not_following_back');
+    case 'ImNotFollowingBack':
+      return i18n.t('home_im_not_following_back');
+    case 'MutualFollowing':
+      return i18n.t('home_mutual_following');
+    case 'BestFollowers':
+      return i18n.t('home_best_followers');
+    case 'GhostFollowers':
+      return i18n.t('home_ghost_followers');
     default:
-      return 'Ins Reports';
+      return i18n.t('general_app_title');
   }
 }

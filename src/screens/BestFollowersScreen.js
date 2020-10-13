@@ -8,6 +8,7 @@ import { compose, pathOr, length, path, pathEq, cond, sort, descend, propOr } fr
 import UserListItem from 'components/UserListItem';
 import ActiveStateButton from 'components/ActiveStateButton';
 import { postsListSelector, bestFollowerListSelector } from 'modules/instagram/selector';
+import i18n from 'i18n';
 
 const LocalUserListItem = ({
   username,
@@ -83,12 +84,12 @@ const BestFollowersScreen = () => {
     <StyledView>
       <ButtonWrapper>
         <ActiveStateButton
-          text="Like"
+          text={i18n.t('active_state_button_like')}
           isActive={activeIndex === 0}
           onPress={() => setActiveIndex(prevState => (prevState === 0 ? -1 : 0))}
         />
         <ActiveStateButton
-          text="Comment"
+          text={i18n.t('active_state_button_comment')}
           isActive={activeIndex === 1}
           onPress={() => setActiveIndex(prevState => (prevState === 1 ? -1 : 1))}
         />

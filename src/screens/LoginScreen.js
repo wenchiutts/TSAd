@@ -22,6 +22,7 @@ import {
   //   receiveInsCookies,
   //   fetchInsUserProfileAction
 } from 'actions/userActions';
+import i18n from 'i18n';
 
 const { height: initialHeight } = Dimensions.get('window');
 
@@ -169,7 +170,7 @@ const LoginButton = ({ onPress }) => (
             fontSize: 20,
             fontWeight: 'bold',
           }}>
-          Login with Instagram
+          {i18n.t('general_login')}
         </Text>
       </StyledLinearGradient>
     </StyledLinearGradient>
