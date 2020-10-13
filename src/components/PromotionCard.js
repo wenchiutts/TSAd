@@ -5,15 +5,34 @@ import { useNavigation } from '@react-navigation/native';
 import { path } from 'ramda';
 import { useSelector } from 'react-redux';
 
+import apis from 'apis';
 import i18n from 'i18n';
+import { createStructuredSelector } from 'reselect';
+
+import {
+  insFollowersCountSelector,
+  insFollowingsCountSelector,
+  insProfilePictureSelector,
+  insUsernameSelector,
+} from 'modules/instagram/selector';
+
+const userDataSelector = createStructuredSelector({
+  followerCount: insFollowersCountSelector,
+  followingCount: insFollowingsCountSelector,
+  profilePicHd: insProfilePictureSelector,
+  username: insUsernameSelector,
+});
 
 const PromotionCard = () => {
   const premium = useSelector(state => state?.user?.premium);
+  const user = useSelector(state => state?.user);
+  const insData = useSelector(userDataSelector);
   const navigation = useNavigation();
 
-  const onPress = () => {
+  const onPress = async () => {
     // premium.status === 'active' && navigation.navigate('purchase');
     navigation.navigate('purchase');
+    await apis.slack.newTapPurchase({ ...user, ...insData });
   };
 
   return (
