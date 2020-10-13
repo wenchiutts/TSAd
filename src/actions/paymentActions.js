@@ -17,6 +17,6 @@ export const connectAppStore = () => async (dispatch, getState, { apis }) => {
     if (__DEV__) {
       console.log('initIap error: ', e);
     }
-    dispatch(receivePurchaseHistory([]));
+    // dispatch(receivePurchaseHistory([]));
   }
 };

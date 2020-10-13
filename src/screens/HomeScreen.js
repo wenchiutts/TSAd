@@ -106,6 +106,8 @@ const HomeScreen = ({ navigation }) => {
     effectAction();
   }, []);
 
+  const user = useSelector(state => state?.user);
+
   const [refreshing, setRefreshing] = React.useState(false);
 
   const { checkPremium } = useCheckPremium();

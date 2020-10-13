@@ -16,7 +16,7 @@ export const useCheckUserLoginIg = store => {
       ...state,
       username,
       isLoading: false,
-      isLogin: !!username,
+      isLogin: !!username && username !== 'undefined',
     }));
   }, []);
 
@@ -25,7 +25,7 @@ export const useCheckUserLoginIg = store => {
       setUserName: username => {
         setIgUserNameState({
           isLoading: false,
-          isLogin: !!username,
+          isLogin: !!username && username !== 'undefined',
           username,
         });
       },

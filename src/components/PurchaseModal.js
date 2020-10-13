@@ -2,7 +2,16 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { ScrollView, View, Image, TouchableHighlight, FlatList, SafeAreaView } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Image,
+  TouchableHighlight,
+  FlatList,
+  SafeAreaView,
+  ActivityIndicator,
+  Dimensions,
+} from 'react-native';
 import styled from 'styled-components/native';
 import ImageSlider from 'react-native-image-slider';
 import _ from 'lodash';
@@ -95,6 +104,16 @@ const StyledProductItemWithIAP = styled(ProductItemWithIAP)`
   margin-top: 16;
 `;
 
+const { height: screenHeight } = Dimensions.get('window');
+const StyledActivityIndicator = styled(ActivityIndicator)`
+  position: absolute;
+  top: ${screenHeight / 2.5};
+  left: 0;
+  right: 0;
+  z-index: 99;
+`;
+
+
 const images = [
   require('assets/images/pro_instro1.png'),
   require('assets/images/pro_instro2.png'),
@@ -167,6 +186,7 @@ const PurchaseModal = ({ navigation }) => {
                 purchaseTime: purchases[0]?.purchaseTime,
               };
               dispatch(purchaseSubscriptionAction(productInfoWithPurchaseTime, insData));
+              navigation.navigate('Root');
             }
           } else {
             if (responseCode === InAppPurchases.IAPResponseCode.USER_CANCELED) {
@@ -184,6 +204,7 @@ const PurchaseModal = ({ navigation }) => {
               dispatch(purchaseErrorAction(errorMessage, insData));
             }
           }
+          setIsLoading(false);
         });
       } catch (e) {
         console.log('initIap error:', e);
@@ -202,6 +223,9 @@ const PurchaseModal = ({ navigation }) => {
 
   return (
     <StyledView>
+      {
+        isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />
+      }
       <ImageSliderWrapper>
         <ImageSlider
           images={images}

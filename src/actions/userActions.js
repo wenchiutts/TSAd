@@ -45,13 +45,16 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
   const premium = state?.user?.premium;
 
   const purchaseHistory = state?.payment?.history;
+  // console.log('purchaseHistory', purchaseHistory)
+  // purchaseHistory.map((product, index) => console.log(index, 'product', product.productId));
   const latestPurchase = purchaseHistory.sort((a, b) => b?.purchaseTime - a?.purchaseTime)?.[0];
 
   if (latestPurchase) {
     const { purchaseTime, productId } = latestPurchase;
-    const periodDays = IAP_PRODUCTS[productId];
+    const periodDays = IAP_PRODUCTS[productId]?.periodDays;
     const currentTime = new Date().getTime();
     const dateDifference = Math.floor((currentTime - purchaseTime) / (1000 * 60 * 60 * 24));
+
     if (dateDifference > periodDays) {
       dispatch(
         updatePremium({
@@ -60,6 +63,7 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
           lastUpdatedAt: new Date().getTime(),
         }),
       );
+      return false;
     }
     if (dateDifference <= periodDays && premium?.status && premium?.status !== 'active') {
       dispatch(
@@ -69,10 +73,11 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
           lastUpdatedAt: new Date().getTime(),
         }),
       );
+      return true;
     }
-
-    return;
+    return true;
   }
+  console.log('fuck you');
   if (premium?.status === 'active') {
     dispatch(
       updatePremium({
@@ -83,6 +88,7 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
     );
     // Todo: Update user FireStore record, save the the whole premium structure
   }
+  return false;
 };
 
 export const updateUserProfile = user => async (dispatch, getState, { apis }) => {

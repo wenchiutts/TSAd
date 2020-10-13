@@ -3,6 +3,7 @@ import { ScrollView, Text, Linking } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components/native';
 import { path, pathOr } from 'ramda';
+import { createStructuredSelector } from 'reselect';
 import * as MailComposer from 'expo-mail-composer';
 import dedent from 'dedent';
 import CookieManager from '@react-native-community/cookies';
@@ -12,6 +13,9 @@ import PromotionCard from 'components/PromotionCard.js';
 import { getExpoBundleVersion } from 'utils/system';
 import { logoutInsAction } from 'modules/instagram/insAuthActions';
 import { IgUserNameContext } from 'modules/instagram/useCheckUserLoginIg';
+import { checkSubscriptionStatus } from 'actions/userActions';
+import { userSelector, isPremiumUserSelector } from 'modules/user/userSelector';
+import { insUsernameSelector } from 'modules/instagram/selector';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -29,16 +33,22 @@ const IconListWithMargin = styled(IconListItem)`
   margin-top: ${pathOr(12, ['margin'])};
 `;
 
+const selector = createStructuredSelector({
+  user: userSelector,
+  isPremium: isPremiumUserSelector,
+  username: insUsernameSelector,
+});
+
 const SettingsScreen = () => {
   const dispatch = useDispatch();
   const { setUserName } = React.useContext(IgUserNameContext);
-  const user = useSelector(state => state?.user);
-  const username = useSelector(state => state?.instagram?.profile?.username);
-
-
+  const { isPremium, username, user } = useSelector(selector);
   return (
     <StyledView>
-      <PromotionCard />
+      {
+        !isPremium &&
+        <PromotionCard />
+      }
       <IconListWithMargin
         margin={24}
         iconSource={require('assets/icons/settings_contactus.png')}
@@ -64,8 +74,8 @@ const SettingsScreen = () => {
       <IconListWithMargin
         iconSource={require('assets/icons/settings_restore.png')}
         description="Restore Purchase"
-        onPress={() => {
-
+        onPress={async () => {
+          dispatch(checkSubscriptionStatus());
         }}
       />
       {/* <IconListWithMargin
