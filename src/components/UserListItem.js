@@ -10,20 +10,11 @@ import DEBUG from 'utils/logUtils';
 import { Avatar } from 'components/AvatarImage';
 import { followUserAction, unfollowUserAction } from 'modules/instagram/insAuthActions';
 import { isExist, lookup } from 'utils/ramdaUtils';
-import {
-  followersDataSelector,
-  followingsDataSelector,
-  insFollowersCountSelector,
-  insFollowingsCountSelector,
-  insProfilePictureSelector,
-} from 'modules/instagram/selector';
+import { followersDataSelector, followingsDataSelector } from 'modules/instagram/selector';
 
 const selector = createStructuredSelector({
   followers: followersDataSelector,
   followings: followingsDataSelector,
-  followerCount: insFollowersCountSelector,
-  followingCount: insFollowingsCountSelector,
-  profilePicHd: insProfilePictureSelector,
 });
 
 const UserListItem = ({
@@ -39,22 +30,17 @@ const UserListItem = ({
   style,
 }) => {
   const dispatch = useDispatch();
-  const { followers, followings, followerCount, followingCount, profilePicHd } = useSelector(
-    selector,
-  );
+  const { followers, followings } = useSelector(selector);
   const lookupFollowers = lookup(followers);
   const lookupFollowings = lookup(followings);
-  const follow = () =>
-    dispatch(followUserAction(userId, { followerCount, followingCount, profilePicHd, username }));
+  const follow = () => dispatch(followUserAction(userId));
   const unfollow = username => {
     Alert.alert('Unfollow', `Sure to unfollow @${username} ?`, [
       { text: 'No' },
       {
         text: 'Yes',
         onPress: () => {
-          dispatch(
-            unfollowUserAction(userId, { followerCount, followingCount, profilePicHd, username }),
-          );
+          dispatch(unfollowUserAction(userId));
         },
       },
     ]);
