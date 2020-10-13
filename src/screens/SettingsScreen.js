@@ -16,6 +16,7 @@ import { IgUserNameContext } from 'modules/instagram/useCheckUserLoginIg';
 import { checkSubscriptionStatus } from 'actions/userActions';
 import { userSelector, isPremiumUserSelector } from 'modules/user/userSelector';
 import { insUsernameSelector } from 'modules/instagram/selector';
+import i18n from 'i18n';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -52,7 +53,7 @@ const SettingsScreen = () => {
       <IconListWithMargin
         margin={24}
         iconSource={require('assets/icons/settings_contactus.png')}
-        description="Contact Us"
+        description={i18n.t('settings_contact')}
         onPress={() => {
           // TODO: CHUCK change the recipients and subject
           const options = {
@@ -73,18 +74,18 @@ const SettingsScreen = () => {
       />
       <IconListWithMargin
         iconSource={require('assets/icons/settings_restore.png')}
-        description="Restore Purchase"
+        description={i18n.t('settings_restore')}
         onPress={async () => {
           dispatch(checkSubscriptionStatus());
         }}
       />
       {/* <IconListWithMargin
         iconSource={require('assets/icons/followstatus_best.png')}
-        description="Rate Us"
+        description={i18n.t('settings_rate')}
       /> */}
       <IconListWithMargin
         iconSource={require('assets/icons/settings_termofuse.png')}
-        description="Terms of Use"
+        description={i18n.t('settings_term_of_use')}
         onPress={async () => {
           const url = 'https://www.generateprivacypolicy.com/live.php?token=FdpgJBqV5oaYbZm7xod9RfTkeEL6OKVS';
           const supported = await Linking.canOpenURL(url);
@@ -95,7 +96,7 @@ const SettingsScreen = () => {
       />
       <IconListWithMargin
         iconSource={require('assets/icons/settings_logour.png')}
-        description="Log Out"
+        description={i18n.t('settings_logout')}
         onPress={() => {
           CookieManager.clearAll()
             .then((success) => {

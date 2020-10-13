@@ -58,7 +58,6 @@ const Root = () => {
 
             if (previousRouteName !== currentRouteName) {
               Analytics.setCurrentScreen(currentRouteName);
-              console.log(currentRouteName);
             }
             routeNameRef.current = currentRouteName;
           }}>

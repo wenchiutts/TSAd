@@ -8,6 +8,7 @@ import { path } from 'ramda';
 import UserListItem from 'components/UserListItem';
 import ActiveStateButton from 'components/ActiveStateButton';
 import { ghostFollowerSelector } from '../modules/instagram/selector';
+import i18n from 'i18n';
 
 const LocalUserListItem = ({ username, isFollowing, profilePicture }) => (
   <UserListItem
@@ -39,12 +40,12 @@ const GhostFollowersScreen = () => {
       {false && (
         <ButtonWrapper>
           <ActiveStateButton
-            text="No Like"
+            text={i18n.t('active_state_button_no_like')}
             isActive={activeIndex === 0}
             onPress={() => setActiveIndex(0)}
           />
           <ActiveStateButton
-            text="No Comment"
+            text={i18n.t('active_state_button_no_comment')}
             isActive={activeIndex === 1}
             onPress={() => setActiveIndex(1)}
           />

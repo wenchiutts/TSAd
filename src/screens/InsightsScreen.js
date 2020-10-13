@@ -14,6 +14,7 @@ import useFetchAllUserPosts from 'modules/insights/hooks/useFetchAllUserPosts';
 import { mapIndexed } from 'utils/ramdaUtils';
 import { recentStoriesListCountSelector, postsPageInfoSelector } from 'modules/instagram/selector';
 import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
+import i18n from 'i18n';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -51,27 +52,27 @@ const StyledRecentStoriesSlider = styled(RecentStorySlider)`
 const storyInsightList = [
   {
     iconSource: require('assets/icons/history.png'),
-    description: 'History',
+    description: i18n.t('insight_history'),
     route: 'StoryHistory',
   },
   {
     iconSource: require('assets/icons/followstatus_best.png'),
-    description: 'Top viewers',
+    description: i18n.t('insight_top_viewers'),
     route: 'TopViewers',
   },
   {
     iconSource: require('assets/icons/followstatus_ghost.png'),
-    description: 'Least viewers',
+    description: i18n.t('insight_least_viewers'),
     route: 'LeastViewers',
   },
   {
     iconSource: require('assets/icons/mostviewed.png'),
-    description: 'Most viewed storyies',
+    description: i18n.t('insight_most_viewed_stories'),
     route: 'MostViewedStories',
   },
   {
     iconSource: require('assets/icons/leastviewed.png'),
-    description: 'Least viewed storyies',
+    description: i18n.t('insight_least_viewed_stories'),
     route: 'LeastViewedStories',
   },
 ];
@@ -79,17 +80,17 @@ const storyInsightList = [
 const postInsightList = [
   {
     iconSource: require('assets/icons/popular.png'),
-    description: 'Most popular posts',
+    description: i18n.t('insight_most_popular_posts'),
     route: 'MostPopularPosts',
   },
   {
     iconSource: require('assets/icons/mostliked.png'),
-    description: 'Most liked posts',
+    description: i18n.t('insight_most_liked_posts'),
     route: 'MostLikedPosts',
   },
   {
     iconSource: require('assets/icons/mostcommend.png'),
-    description: 'Most commented posts',
+    description: i18n.t('insight_most_commented_posts'),
     route: 'MostCommentedPosts',
   },
 ];
@@ -123,12 +124,12 @@ const InsightScreen = ({ navigation }) => {
     <StyledView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       {recentStoriesCount !== 0 && (
         <ListWrapper>
-          <Title>Recent Stories</Title>
+          <Title>{i18n.t('insight_recent_stories')}</Title>
           <StyledRecentStoriesSlider updatedAt={archiveUpdatedAt} />
         </ListWrapper>
       )}
       <ListWrapper>
-        <Title>Story Insights</Title>
+        <Title>{i18n.t('insight_story_insight')}</Title>
         <TwoColumnViewWrapper>
           {mapIndexed((item, idx) => (
             <StyledIconList
@@ -140,7 +141,7 @@ const InsightScreen = ({ navigation }) => {
         </TwoColumnViewWrapper>
       </ListWrapper>
       <ListWrapper>
-        <Title>Post Insights</Title>
+        <Title>{i18n.t('insight_post_insight')}</Title>
         <TwoColumnViewWrapper>
           {mapIndexed((item, idx) => (
             <StyledIconList

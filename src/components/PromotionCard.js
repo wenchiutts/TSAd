@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { path } from 'ramda';
 import { useSelector } from 'react-redux';
 
+import i18n from 'i18n';
+
 const PromotionCard = () => {
   const premium = useSelector(state => state?.user?.premium);
   const navigation = useNavigation();
@@ -21,10 +23,10 @@ const PromotionCard = () => {
         style={{ width: '100%', height: 160 }}
         imageStyle={{ borderRadius: 12 }}>
         <ContentWrapper>
-          <StyledText>Upgrade to</StyledText>
-          <StyledStrongText>PRO account!</StyledStrongText>
+          <StyledText>{i18n.t('settings_promo_text_1')}</StyledText>
+          <StyledStrongText>{i18n.t('settings_promo_text_2')}</StyledStrongText>
           <TryButton title="Try it now">
-            <ButtonText>Try it now</ButtonText>
+            <ButtonText>{i18n.t('settings_promo_button')}</ButtonText>
           </TryButton>
         </ContentWrapper>
       </ImageBackground>

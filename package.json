@@ -34,6 +34,7 @@
     "expo-store-review": "~2.2.0",
     "expo-updates": "~0.3.2",
     "firebase": "7.9.0",
+    "i18n-js": "^3.7.1",
     "lodash": "^4.17.20",
     "pretty-format": "^26.4.2",
     "prop-types": "^15.7.2",
