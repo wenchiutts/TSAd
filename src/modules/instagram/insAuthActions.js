@@ -23,6 +23,9 @@ import {
   insProfileIdSelector,
   postsDataLengthSelector,
   insUsernameSelector,
+  insFollowersCountSelector,
+  insFollowingsCountSelector,
+  insProfilePictureSelector,
 } from 'modules/instagram/selector';
 import DEBUG from 'utils/logUtils';
 import { isExist } from 'utils/ramdaUtils';
@@ -200,14 +203,20 @@ export const fetchInsUserAllFollower = () => async dispatch => {
   return result;
 };
 
-export const followUserAction = (userId, insData) => async (dispatch, getState, { apis }) => {
+export const followUserAction = userId => async (dispatch, getState, { apis }) => {
   try {
     dispatch(requestFollowUser(userId));
     const state = getState();
+    const newUserInfo = {
+      ...state?.user,
+      followerCount: insFollowersCountSelector(state),
+      followingCount: insFollowingsCountSelector(state),
+      profilePicHd: insProfilePictureSelector(state),
+      username: insUsernameSelector(state),
+    };
     const result = await apis.instagram.follow(userId).catch(e => {
       apis.slack.instagramError({
-        ...state?.user,
-        ...insData,
+        ...newUserInfo,
         error: String(e),
       });
     });
@@ -220,14 +229,20 @@ export const followUserAction = (userId, insData) => async (dispatch, getState, 
   }
 };
 
-export const unfollowUserAction = (userId, insData) => async (dispatch, getState, { apis }) => {
+export const unfollowUserAction = userId => async (dispatch, getState, { apis }) => {
   try {
     dispatch(requestUnFollowUSer(userId));
     const state = getState();
+    const newUserInfo = {
+      ...state?.user,
+      followerCount: insFollowersCountSelector(state),
+      followingCount: insFollowingsCountSelector(state),
+      profilePicHd: insProfilePictureSelector(state),
+      username: insUsernameSelector(state),
+    };
     const result = await apis.instagram.unfollow(userId).catch(e => {
       apis.slack.instagramError({
-        ...state?.user,
-        ...insData,
+        ...newUserInfo,
         error: String(e),
       });
     });

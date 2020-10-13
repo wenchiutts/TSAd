@@ -2,19 +2,34 @@ import makeActionCreator from 'actions/makeActionCreator';
 import { PRODUCTS_IDS, PRODUCT_PLAN_TYPE_MAP, IAP_PRODUCTS } from 'constants/Products';
 import { getCountryCode } from 'utils/location';
 
+import {
+  insFollowersCountSelector,
+  insFollowingsCountSelector,
+  insProfilePictureSelector,
+  insUsernameSelector,
+} from 'modules/instagram/selector';
+
 export const UPDATE_PREMIUM = 'UPDATE_PREMIUM';
 export const updatePremium = makeActionCreator(UPDATE_PREMIUM, 'purchase');
 
 export const RECEIVE_USER_PROFILE = 'RECEIVE_USER_PROFILE';
 export const receiveUserProfile = makeActionCreator(RECEIVE_USER_PROFILE, 'profile');
 
-export const purchaseSubscriptionAction = ({ purchaseTime, productId }, insData) => async (
+export const purchaseSubscriptionAction = ({ purchaseTime, productId }) => async (
   dispatch,
   getState,
   { apis },
 ) => {
   try {
     const state = getState();
+    const newUserInfo = {
+      ...state?.user,
+      followerCount: insFollowersCountSelector(state),
+      followingCount: insFollowingsCountSelector(state),
+      profilePicHd: insProfilePictureSelector(state),
+      username: insUsernameSelector(state),
+    };
+
     if (state.user.premium?.status === 'inactive' || state.user.premium?.status === 'expired') {
       dispatch(
         updatePremium({
@@ -24,11 +39,10 @@ export const purchaseSubscriptionAction = ({ purchaseTime, productId }, insData)
         }),
       );
       apis.slack.newPurchase({
-        ...state?.user,
+        ...newUserInfo,
         productId,
-        ...insData,
       });
-      apis.firebase.logEvent({ name: `newPurchase_${productId}` });
+      apis.firebase.logEvent({ name: 'newPurchase' });
 
       // Todo: Update user FireStore record, save the the whole premium structure
     } else {
@@ -43,7 +57,6 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
   // Check if subscription expired
   const state = getState();
   const premium = state?.user?.premium;
-
   const purchaseHistory = state?.payment?.history;
   // console.log('purchaseHistory', purchaseHistory)
   // purchaseHistory.map((product, index) => console.log(index, 'product', product.productId));
@@ -128,30 +141,26 @@ export const newLogin = data => async (dispatch, getState, { apis }) => {
   }
 };
 
-export const newTapPurchase = data => async (dispatch, getState, { apis }) => {
+export const newTapPurchase = () => async (dispatch, getState, { apis }) => {
   try {
-    const state = getState();
-    const newUserInfo = {
-      ...state?.user,
-      ...data,
-    };
-    apis.slack.newTapPurchase(newUserInfo);
     apis.firebase.logEvent({ name: 'newTapPurchase' });
   } catch (e) {
     console.log('newTapPurchase error: ', e);
   }
 };
 
-export const purchaseErrorAction = (errorMessage, insData) => async (
-  dispatch,
-  getState,
-  { apis },
-) => {
+export const purchaseErrorAction = errorMessage => async (dispatch, getState, { apis }) => {
   try {
     const state = getState();
-    apis.slack.purchaseError({
+    const newUserInfo = {
       ...state?.user,
-      ...insData,
+      followerCount: insFollowersCountSelector(state),
+      followingCount: insFollowingsCountSelector(state),
+      profilePicHd: insProfilePictureSelector(state),
+      username: insUsernameSelector(state),
+    };
+    apis.slack.purchaseError({
+      ...newUserInfo,
       error: errorMessage,
     });
     apis.firebase.logEvent({ name: 'purchaseError' });
