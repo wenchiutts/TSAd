@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { View, Dimensions, LayoutAnimation, Animated, PanResponder } from 'react-native';
-import { values, compose, map, prop, __ } from 'ramda';
-import { useSelector } from 'react-redux';
+import { of, applySpec, path, compose, map, prop, __, into, filter } from 'ramda';
+import { connect } from 'react-redux';
+import { branch, withProps } from 'recompose';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
 
 import Stories from 'components/story/Stories';
 import useIsMount from 'hooks/useIsMount';
-import { storyFeedListSelector } from 'modules/instagram/selector';
+import { storyFeedListSelector, storyFeedPositionSelector } from 'modules/instagram/selector';
 import useStoryData from 'hooks/useStoryData';
+import { isExist } from 'utils/ramdaUtils';
 
 const { width, height } = Dimensions.get('window');
 const VERTICAL_THRESHOLD = 80;
@@ -24,12 +26,13 @@ const StyledView = styled(View)`
 
 const selector = createStructuredSelector({
   data: storyFeedListSelector,
+  deckPosition: storyFeedPositionSelector,
 });
 
-const orderByList = (orderList, object) => map(prop(__, object), orderList);
+const orderByList = (orderList, object) =>
+  into([], compose(map(prop(__, object)), filter(isExist)), orderList);
 
-const StoryModal = ({ route, navigation }) => {
-  const { data } = useSelector(selector);
+const StoryModal = ({ route, navigation, data, deckPosition }) => {
   const { deckIndex } = route.params;
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const horizontalSwipe = useRef(new Animated.Value(0)).current;
@@ -45,6 +48,7 @@ const StoryModal = ({ route, navigation }) => {
     carouselOpen: false,
     offset: { top: height / 2, left: width / 2 },
     deckIdx: deckIndex,
+    isPanRelease: false,
     paused: false,
     backOpacity: 0,
     panResponder: null,
@@ -53,9 +57,13 @@ const StoryModal = ({ route, navigation }) => {
   const [storyState, setStoryState] = useState(initialState);
   const isMount = useIsMount();
 
-  const { carouselOpen, paused, backOpacity, deckIdx } = storyState;
+  const { carouselOpen, paused, backOpacity, deckIdx, isPanRelease } = storyState;
 
-  const { setStoryIdx, stories, storyPosition, getDeckInfo } = useStoryData(data, deckIdx);
+  const { setStoryIdx, stories, getDeckInfo, isFetchingStories, getPartialList } = useStoryData(
+    data,
+    deckIdx,
+    deckPosition,
+  );
 
   const panResponder = useRef(
     PanResponder.create({
@@ -77,6 +85,7 @@ const StoryModal = ({ route, navigation }) => {
           horizontalSwipe.setOffset(horizontalSwipe._value);
           horizontalSwipe.setValue(0);
         }
+        setIsReleasePan(false);
         pauseIndicator();
         setBackOpacity(0);
       },
@@ -108,7 +117,7 @@ const StoryModal = ({ route, navigation }) => {
           return onNextDeck();
         }
         playProgressIndicator();
-        animateDeck(width * deckIdx);
+        setIsReleasePan(true);
       },
     }),
   ).current;
@@ -126,7 +135,7 @@ const StoryModal = ({ route, navigation }) => {
     requestAnimationFrame(() => {
       LayoutAnimation.easeInEaseOut();
       setStoryState(prev => ({ ...prev, carouselOpen: true }));
-      animateIndicator();
+      // animateIndicator();
     });
   };
 
@@ -158,13 +167,11 @@ const StoryModal = ({ route, navigation }) => {
   // Toggle Indicator Animation
 
   const pauseIndicator = () => {
-    indicatorAnim.stopAnimation();
     setStoryState(prev => ({ ...prev, paused: true }));
   };
 
   const playProgressIndicator = () => {
     setStoryState(prev => ({ ...prev, paused: false }));
-    animateIndicator(false);
   };
 
   const animateIndicator = (reset = true) => {
@@ -213,7 +220,7 @@ const StoryModal = ({ route, navigation }) => {
 
   const animateDeck = (toValue, reset = false) => {
     if (reset) {
-      animateIndicator();
+      animateIndicator(reset);
     }
     Animated.spring(horizontalSwipe, {
       toValue,
@@ -222,21 +229,33 @@ const StoryModal = ({ route, navigation }) => {
     }).start();
   };
 
+  const setIsReleasePan = tof => setStoryState(prev => ({ ...prev, isPanRelease: tof }));
+
   useEffect(() => {
-    if (isMount) {
-      if (deckIdx < storyPosition.length && deckIdx >= 0) {
+    if (paused || isFetchingStories) {
+      indicatorAnim.stopAnimation();
+    } else {
+      animateIndicator(false);
+    }
+  }, [paused, isFetchingStories]);
+
+  useEffect(() => {
+    if (isMount || isPanRelease) {
+      if (deckIdx < deckPosition.length && deckIdx >= 0) {
         if (paused) {
-          animateIndicator(false);
+          playProgressIndicator();
+          // animateIndicator(false);
         }
+        console.log('CHUCK', 'before animate deck');
         animateDeck(deckIdx * width, true);
       } else {
         leaveStories();
       }
     }
-  }, [deckIdx]);
+  }, [deckIdx, isPanRelease]);
 
   useEffect(() => {
-    const isDeckInRange = deckIdx >= 0 && deckIdx < storyPosition.length;
+    const isDeckInRange = deckIdx >= 0 && deckIdx < deckPosition.length;
     if (isMount && isDeckInRange) {
       animateIndicator();
     }
@@ -252,7 +271,6 @@ const StoryModal = ({ route, navigation }) => {
     onPrevItem,
     onNextDeck,
     onPrevDeck,
-    animateDeck,
     // currentStory,
   };
 
@@ -260,7 +278,7 @@ const StoryModal = ({ route, navigation }) => {
     <StyledView>
       <CarouselWrap carouselOpen={carouselOpen}>
         <Stories
-          stories={orderByList(storyPosition, stories)}
+          stories={orderByList(getPartialList(2, deckIdx, deckPosition), stories)}
           storyState={storyState}
           setStoryState={setStoryState}
           panResponder={panResponder}
@@ -278,9 +296,22 @@ const StoryModal = ({ route, navigation }) => {
 StoryModal.propTypes = {
   route: PropTypes.object,
   navigation: PropTypes.object,
+  data: PropTypes.object,
+  deckPosition: PropTypes.array,
 };
 
-export default StoryModal;
+export default compose(
+  branch(
+    compose(isExist, path(['route', 'params', 'story'])),
+    withProps(
+      applySpec({
+        data: path(['route', 'params', 'story']),
+        deckPosition: compose(of, path(['route', 'params', 'userId'])),
+      }),
+    ),
+    connect(selector),
+  ),
+)(StoryModal);
 
 const CarouselWrap = styled(View)`
   overflow: hidden;
