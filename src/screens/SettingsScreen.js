@@ -47,8 +47,8 @@ const SettingsScreen = () => {
   return (
     <StyledView>
       {
-        !isPremium &&
-        <PromotionCard />
+        !isPremium || true &&
+        < PromotionCard />
       }
       <IconListWithMargin
         margin={24}

@@ -6,11 +6,14 @@ import {
   ScrollView,
   View,
   Image,
+  TouchableOpacity,
   TouchableHighlight,
   FlatList,
+  Text,
   SafeAreaView,
   ActivityIndicator,
   Dimensions,
+  Linking,
 } from 'react-native';
 import styled from 'styled-components/native';
 import ImageSlider from 'react-native-image-slider';
@@ -105,6 +108,17 @@ const StyledActivityIndicator = styled(ActivityIndicator)`
   left: 0;
   right: 0;
   z-index: 99;
+`;
+
+const PrivacyText = styled(Text)`
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  text-decoration-line: underline;
+  font-size: 18;
+  font-weight: bold;
+`;
+
+const PrivacyTextWrapper = styled(TouchableOpacity)`
+  margin-top: 20;
 `;
 
 
@@ -245,6 +259,17 @@ const PurchaseModal = ({ navigation }) => {
           ))(listContents)}
         </ProductListWrapperView>
       </ProductListWrapper>
+      <PrivacyTextWrapper
+        onPress={async () => {
+          const url = 'https://www.generateprivacypolicy.com/live.php?token=FdpgJBqV5oaYbZm7xod9RfTkeEL6OKVS';
+          const supported = await Linking.canOpenURL(url);
+          if (supported) {
+            Linking.openURL(url);
+          }
+        }}
+      >
+        <PrivacyText> Privacy & Term</PrivacyText>
+      </PrivacyTextWrapper>
     </StyledView>
   );
 };
