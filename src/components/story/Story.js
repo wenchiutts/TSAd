@@ -5,6 +5,7 @@ import { View, Dimensions, TouchableWithoutFeedback, Animated } from 'react-nati
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import styled from 'styled-components/native';
+import { Video } from 'expo-av';
 
 import ProgressBar from 'components/story/ProgressBar';
 import Image from 'react-native-image-progress';
@@ -48,7 +49,22 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
           </SpinnerWrapper>
         )}
         {!isEmptyStories(story) && (
-          <StyledImage source={{ uri: story?.items[story.idx]?.src }}>
+          <View>
+            {story?.items[story.idx]?.isVideo ? (
+              <Video
+                source={{ uri: story?.items[story.idx].videoResources.src }}
+                rate={1.0}
+                volume={1.0}
+                isMuted={false}
+                resizeMode="cover"
+                shouldPlay
+                isLooping
+                style={{ width: width, height: height - 47 }}
+              />
+            ) : (
+              <StyledImage source={{ uri: story?.items[story.idx].src }} />
+            )}
+            {/*  */}
             <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
             <StyledAvatar
               imgSrc={story?.user?.profile_pic_url}
@@ -60,7 +76,7 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
               setBackOpacity={setBackOpacity}
               backOpacity={backOpacity}
             />
-          </StyledImage>
+          </View>
         )}
       </View>
     </TouchableWithoutFeedback>
@@ -125,7 +141,8 @@ const Indicators = styled(View)`
 
 const StyledImage = styled(Image)`
   width: ${width};
-  height: ${height};
+  height: ${height - 47};
+  resize-mode: cover;
 `;
 
 const BackButton = ({ onPrevItem, backOpacity, setBackOpacity }) => (

@@ -7,6 +7,8 @@ import { path, cond, equals, T, always } from 'ramda';
 import { purchaseItemAsync } from 'expo-in-app-purchases';
 import { LinearGradient } from 'expo-linear-gradient';
 
+import i18n from 'i18n';
+
 export const PLAN_TYPE = {
   WEEK: 'WEEK',
   MONTH: 'MONTH',
@@ -102,7 +104,10 @@ const ProductItem = ({ style, planType, price = '$29.99', avgPrice = '$2.49', on
     <PlanName>{PLAN_TYPE_NAME_MAP[planType]}</PlanName>
     <PriceWrapper>
       <Price>{price}</Price>
-      <AvgPrice>{avgPrice}/mo</AvgPrice>
+      <AvgPrice>
+        {avgPrice}
+        {i18n.t('purchase_button_average_unit')}
+      </AvgPrice>
     </PriceWrapper>
   </Container>
 );

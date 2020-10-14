@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import { compose, path, prop } from 'ramda';
 
@@ -10,20 +10,11 @@ import DEBUG from 'utils/logUtils';
 import { Avatar } from 'components/AvatarImage';
 import { followUserAction, unfollowUserAction } from 'modules/instagram/insAuthActions';
 import { isExist, lookup } from 'utils/ramdaUtils';
-import {
-  followersDataSelector,
-  followingsDataSelector,
-  insFollowersCountSelector,
-  insFollowingsCountSelector,
-  insProfilePictureSelector,
-} from 'modules/instagram/selector';
+import { followersDataSelector, followingsDataSelector } from 'modules/instagram/selector';
 
 const selector = createStructuredSelector({
   followers: followersDataSelector,
   followings: followingsDataSelector,
-  followerCount: insFollowersCountSelector,
-  followingCount: insFollowingsCountSelector,
-  profilePicHd: insProfilePictureSelector,
 });
 
 const UserListItem = ({
@@ -39,15 +30,21 @@ const UserListItem = ({
   style,
 }) => {
   const dispatch = useDispatch();
-  const { followers, followings, followerCount, followingCount, profilePicHd } = useSelector(
-    selector,
-  );
+  const { followers, followings } = useSelector(selector);
   const lookupFollowers = lookup(followers);
   const lookupFollowings = lookup(followings);
-  const follow = () =>
-    dispatch(followUserAction(userId, { followerCount, followingCount, profilePicHd, username }));
-  const unfollow = () =>
-    dispatch(unfollowUserAction(userId, { followerCount, followingCount, profilePicHd, username }));
+  const follow = () => dispatch(followUserAction(userId));
+  const unfollow = username => {
+    Alert.alert('Unfollow', `Sure to unfollow @${username} ?`, [
+      { text: 'No' },
+      {
+        text: 'Yes',
+        onPress: () => {
+          dispatch(unfollowUserAction(userId));
+        },
+      },
+    ]);
+  };
   const localIsFollowing = isFollowing ?? compose(isExist, lookupFollowings)(userId);
   const localIsFollower = isFollower ?? compose(isExist, lookupFollowers)(userId);
   return (
@@ -66,7 +63,7 @@ const UserListItem = ({
       {!buttonHide ? (
         <FollowButton
           isFollowing={localIsFollowing}
-          onPress={localIsFollowing ? unfollow : follow}
+          onPress={localIsFollowing ? () => unfollow(username) : follow}
         />
       ) : (
         <></>
