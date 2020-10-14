@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { View, Dimensions, LayoutAnimation, Animated, PanResponder } from 'react-native';
-import { of, applySpec, path, compose, map, prop, __ } from 'ramda';
+import { of, applySpec, path, compose, map, prop, __, into, filter } from 'ramda';
 import { connect } from 'react-redux';
 import { branch, withProps } from 'recompose';
 import { createStructuredSelector } from 'reselect';
@@ -29,7 +29,8 @@ const selector = createStructuredSelector({
   deckPosition: storyFeedPositionSelector,
 });
 
-const orderByList = (orderList, object) => map(prop(__, object), orderList);
+const orderByList = (orderList, object) =>
+  into([], compose(map(prop(__, object)), filter(isExist)), orderList);
 
 const StoryModal = ({ route, navigation, data, deckPosition }) => {
   const { deckIndex } = route.params;
@@ -47,7 +48,7 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
     carouselOpen: false,
     offset: { top: height / 2, left: width / 2 },
     deckIdx: deckIndex,
-    isResetCurrentDeck: false,
+    isPanRelease: false,
     paused: false,
     backOpacity: 0,
     panResponder: null,
@@ -56,9 +57,9 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
   const [storyState, setStoryState] = useState(initialState);
   const isMount = useIsMount();
 
-  const { carouselOpen, paused, backOpacity, deckIdx, isResetCurrentDeck } = storyState;
+  const { carouselOpen, paused, backOpacity, deckIdx, isPanRelease } = storyState;
 
-  const { setStoryIdx, stories, getDeckInfo, isFetchingStories } = useStoryData(
+  const { setStoryIdx, stories, getDeckInfo, isFetchingStories, getPartialList } = useStoryData(
     data,
     deckIdx,
     deckPosition,
@@ -84,6 +85,7 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
           horizontalSwipe.setOffset(horizontalSwipe._value);
           horizontalSwipe.setValue(0);
         }
+        setIsReleasePan(false);
         pauseIndicator();
         setBackOpacity(0);
       },
@@ -115,7 +117,7 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
           return onNextDeck();
         }
         playProgressIndicator();
-        setRestCurrentDeck(true);
+        setIsReleasePan(true);
       },
     }),
   ).current;
@@ -224,14 +226,10 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
       toValue,
       friction: 9,
       useNativeDriver: false,
-    }).start(({ finished }) => {
-      if (finished) {
-        setRestCurrentDeck(false);
-      }
-    });
+    }).start();
   };
 
-  const setRestCurrentDeck = tof => setStoryState(prev => ({ ...prev, isResetCurrentDeck: tof }));
+  const setIsReleasePan = tof => setStoryState(prev => ({ ...prev, isPanRelease: tof }));
 
   useEffect(() => {
     if (paused || isFetchingStories) {
@@ -242,18 +240,19 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
   }, [paused, isFetchingStories]);
 
   useEffect(() => {
-    if (isMount) {
+    if (isMount || isPanRelease) {
       if (deckIdx < deckPosition.length && deckIdx >= 0) {
         if (paused) {
           playProgressIndicator();
           // animateIndicator(false);
         }
+        console.log('CHUCK', 'before animate deck');
         animateDeck(deckIdx * width, true);
       } else {
         leaveStories();
       }
     }
-  }, [deckIdx, isResetCurrentDeck]);
+  }, [deckIdx, isPanRelease]);
 
   useEffect(() => {
     const isDeckInRange = deckIdx >= 0 && deckIdx < deckPosition.length;
@@ -279,7 +278,7 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
     <StyledView>
       <CarouselWrap carouselOpen={carouselOpen}>
         <Stories
-          stories={orderByList(deckPosition, stories)}
+          stories={orderByList(getPartialList(2, deckIdx, deckPosition), stories)}
           storyState={storyState}
           setStoryState={setStoryState}
           panResponder={panResponder}

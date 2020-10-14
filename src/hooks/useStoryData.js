@@ -125,12 +125,17 @@ const useStoryData = (stories, deckIdx, deckPosition) => {
     return slice(finalHead, tail + 1)(data);
   });
 
+  const getPartialList = curry((size, currentPosition, data) =>
+    slice(0, currentPosition + size + 1, data),
+  );
+
   return {
     stories: newStories,
     isFetchingStories: isFetching,
     setStoryIdx,
     getDeckInfo,
     getWindowData,
+    getPartialList,
   };
 };
 
