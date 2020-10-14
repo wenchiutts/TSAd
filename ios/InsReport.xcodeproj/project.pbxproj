@@ -14,6 +14,7 @@
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		7F4F2251253301AC00DADA05 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F4F2250253301AC00DADA05 /* AdSupport.framework */; };
 		7F4F22542533029000DADA05 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7F4F22532533029000DADA05 /* GoogleService-Info.plist */; };
+		7F4F23FF2536118600DADA05 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F4F23FE2536118600DADA05 /* StoreKit.framework */; };
 		96905EF65AED1B983A6B3ABC /* libPods-InsReport.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-InsReport.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 /* End PBXBuildFile section */
@@ -32,6 +33,7 @@
 		7A4D352CD337FB3A3BF06240 /* Pods-InsReport.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsReport.release.xcconfig"; path = "Target Support Files/Pods-InsReport/Pods-InsReport.release.xcconfig"; sourceTree = "<group>"; };
 		7F4F2250253301AC00DADA05 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		7F4F22532533029000DADA05 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info.plist"; path = "InsReport/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		7F4F23FE2536118600DADA05 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = InsReport/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -43,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F4F23FF2536118600DADA05 /* StoreKit.framework in Frameworks */,
 				96905EF65AED1B983A6B3ABC /* libPods-InsReport.a in Frameworks */,
 				7F4F2251253301AC00DADA05 /* AdSupport.framework in Frameworks */,
 			);
@@ -70,6 +73,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7F4F23FE2536118600DADA05 /* StoreKit.framework */,
 				7F4F2250253301AC00DADA05 /* AdSupport.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
@@ -316,7 +320,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = InsReport/tracker.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = ZU5FQW7WG6;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -347,7 +351,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = InsReport/tracker.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = ZU5FQW7WG6;
 				INFOPLIST_FILE = InsReport/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

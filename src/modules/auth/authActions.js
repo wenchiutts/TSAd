@@ -6,8 +6,13 @@ const requetFirebaseAuth = makeActionCreator(FIREBASE_REQUEST_AUTH);
 const receiveFirebaseAuth = makeActionCreator(FIREBASE_RECEIVE_AUTH, 'user');
 
 export const getAuthStateAction = () => async (dispatch, getState, { apis }) => {
-  dispatch(requetFirebaseAuth());
-  const user = await apis.firebase.getAuthState();
-  dispatch(receiveFirebaseAuth(user));
-  return user;
+  try {
+    dispatch(requetFirebaseAuth());
+    const user = await apis.firebase.getAuthState();
+    dispatch(receiveFirebaseAuth(user));
+    return user;
+  } catch (e) {
+    console.log('getAuthStateAction error', e);
+  }
+
 };

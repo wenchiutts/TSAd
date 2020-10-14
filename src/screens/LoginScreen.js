@@ -1,117 +1,30 @@
 // @format
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { WebView } from 'react-native-webview';
-import { Modalize } from 'react-native-modalize';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import CookieManager from '@react-native-community/cookies';
-import delay from 'delay';
-import messaging from '@react-native-firebase/messaging';
 
-import { isExist } from 'utils/ramdaUtils';
-import {
-  requestInsCookies,
-  receiveInsCookies,
-  fetchInsUserProfileAction,
-} from 'modules/instagram/insAuthActions';
-import { IgUserNameContext } from 'modules/instagram/useCheckUserLoginIg';
-
-import {
-  newLogin,
-  //   receiveInsCookies,
-  //   fetchInsUserProfileAction
-} from 'actions/userActions';
 import i18n from 'i18n';
 
-const { height: initialHeight, width: initialWidth } = Dimensions.get('window');
-
 const LoginScreen = ({ navigation }) => {
-  const { setUserName } = React.useContext(IgUserNameContext);
-  const dispatch = useDispatch();
-  const modalizeRef = React.useRef(null);
-  const [height, setHeight] = React.useState(initialHeight);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const handleLayout = ({ layout }) => {
-    setHeight(layout.height);
-  };
 
-  const jsCode = 'window.ReactNativeWebView.postMessage(document.cookie)';
+  React.useEffect(() => {
+    CookieManager.clearAll()
+      .then((success) => {
+        console.log('CookieManager.clearAll =>', success);
+      });
+  }, []);
 
   const onPressLogin = React.useCallback(() => {
-    modalizeRef.current?.open();
-    setIsLoading(true);
-    dispatch(requestInsCookies());
+    navigation.navigate('InsLogin');
   }, []);
-
-  const onSuccessfulLogin = React.useCallback(() => {
-    modalizeRef.current?.close();
-    setIsLoading(false);
-  }, []);
-
-  const onNavigationStateChange = webViewState => {
-    const { url } = webViewState;
-    // when WebView.onMessage called, there is not-http(s) url
-    if (url.includes('http')) {
-      console.log('webViewUrl', url);
-      setIsLoading(false);
-    }
-  };
-
-  const _onMessage = async event => {
-    const { data } = event.nativeEvent;
-    console.log('data', data);
-    const cookies = data.split(';'); // `csrftoken=...; rur=...; mid=...; somethingelse=...`
-    console.log('cookies', cookies);
-    const cookiesObj = cookies.reduce((obj, cookie) => {
-      const c = cookie.trim().split('=');
-      obj[c[0]] = c[1];
-      return obj;
-    }, {});
-
-    CookieManager.get('www.instagram.com')
-      .then((cookies) => {
-        console.log('CookieManager.get =>', cookies);
-      });
-
-    if (isExist(cookiesObj.ds_user_id)) {
-      try {
-        dispatch(receiveInsCookies(cookiesObj));
-        // onSuccessfulLogin();
-        // navigation.navigate('Home');
-        await delay(1100);
-        const profile = await dispatch(fetchInsUserProfileAction());
-        if (profile?.username === undefined || profile?.username === 'undefined') {
-          return;
-        }
-        setUserName(profile?.username);
-        dispatch(newLogin(profile));
-        messaging().requestPermission();
-      } catch (e) {
-        console.log('_onMessage error', e);
-      }
-    }
-  };
 
   return (
     <Container>
       <BackgroundImage source={require('assets/splash.png')} />
       <LoginButton onPress={onPressLogin} />
-      <Modalize ref={modalizeRef} onLayout={handleLayout} modalTopOffset={15}>
-        {isLoading && <StyledActivityIndicator size="large" color="black" />}
-        <WebView
-          style={{ height }}
-          source={{ uri: 'https://instagram.com/accounts/login/' }}
-          onNavigationStateChange={onNavigationStateChange}
-          onMessage={_onMessage}
-          injectedJavaScript={jsCode}
-          thirdPartyCookiesEnabled={true}
-          cacheMode="LOAD_NO_CACHE"
-        // incognito={true}
-        />
-      </Modalize>
     </Container>
   );
 };

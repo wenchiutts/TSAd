@@ -19,6 +19,7 @@ import { getAuthStateAction } from 'modules/auth/authActions';
 import { connectAppStore } from 'actions/paymentActions';
 import { checkSubscriptionStatus, updateUserProfile } from 'actions/userActions';
 import LoginScreen from 'screens/LoginScreen';
+import LoginStack from 'navigation/LoginStack';
 import { IgUserNameContext, useCheckUserLoginIg } from 'modules/instagram/useCheckUserLoginIg';
 import Splash from 'components/Splash';
 
@@ -110,7 +111,7 @@ const Root = () => {
                 <Stack.Screen name="search" component={SearchModal} />
               </>
             ) : (
-                <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
               )}
           </Stack.Navigator>
         </NavigationContainer>
