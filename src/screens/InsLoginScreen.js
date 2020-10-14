@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { WebView } from 'react-native-webview';
 import CookieManager from '@react-native-community/cookies';
 import messaging from '@react-native-firebase/messaging';
@@ -17,25 +17,36 @@ import {
 } from 'actions/userActions';
 import i18n from 'i18n';
 
+const jsCode = 'window.ReactNativeWebView.postMessage(document.cookie)';
 
-const InsLoginScreen = () => {
+const InsLoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { setUserName } = React.useContext(IgUserNameContext);
+  const sessionid = useSelector(state => state?.instagram?.cookies?.sessionid);
+
+  React.useEffect(() => {
+    console.log('init login');
+  }, []);
 
   const fetchCookies = async (retry = 0) => {
-    if (retry > 3) {
+    if (retry > 15 || !!sessionid) {
       return;
     }
-    await delay(500);
+    // const cookies = await CookieManager.get('https://www.instagram.com', true);
     const cookies = await CookieManager.get('https://www.instagram.com');
+    console.log('fuck cookies', cookies);
+    // alert('get Cookiesss' + cookies?.sessionid?.value);
     if (cookies?.csrftoken?.value && cookies?.sessionid?.value) {
       try {
+        // alert(cookies?.sessionid?.value + ': ' + retry);
         dispatch(receiveInsCookies({
-          csrftoken: cookies?.csrftoken?.value
+          csrftoken: cookies?.csrftoken?.value,
+          sessionid: cookies?.sessionid?.value
         }));
         const profile = await dispatch(fetchInsUserProfileAction());
         // console.log('profile', profile);
         if (profile?.username === undefined || profile?.username === 'undefined') {
+          // alert('no username')
           return;
         }
         setUserName(profile?.username);
@@ -44,14 +55,24 @@ const InsLoginScreen = () => {
       } catch (e) {
         console.log('_onMessage error', e);
       }
-    } else {
+    }
+    else {
+      await delay(800);
       fetchCookies(retry + 1);
     }
   };
 
   const onNavigationStateChange = async webViewState => {
-    console.log('webViewState', webViewState)
-    fetchCookies();
+    const { url } = webViewState;
+    // alert(url);
+    if (url?.indexOf('onetap') > 0) {
+      // alert(url);
+      fetchCookies();
+    }
+    if (url === 'https://www.instagram.com/') {
+      fetchCookies();
+      navigation.navigate('Login');
+    }
   };
 
   return (
@@ -59,12 +80,15 @@ const InsLoginScreen = () => {
       style={{ width: '100%', height: '100%' }}
       source={{ uri: 'https://instagram.com/accounts/login/' }}
       onNavigationStateChange={onNavigationStateChange}
-      // onMessage={_onMessage}
+      // onMessage={fetchCookies}
       // injectedJavaScript={jsCode}
       // thirdPartyCookiesEnabled={true}
       cacheMode="LOAD_NO_CACHE"
       cacheEnabled={false}
       sharedCookiesEnbaeld={true}
+    // onLoadEnd={async (syntheticEvent) => {
+    //   fetchCookies();
+    // }}
     // incognito={true}
     />
   );

@@ -96,9 +96,7 @@ export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis
     }
     dispatch(requestInsProfile());
     dispatch(requestUserPosts());
-    const { edge_owner_to_timeline_media, ...insProfile } = await apis.instagram.getProfile({
-      csrftoken,
-    });
+    const { edge_owner_to_timeline_media, ...insProfile } = await apis.instagram.getProfile();
     dispatch(receiveInsProfile(insProfile));
     const posts = evolve({
       edges: map(path(['node'])),
@@ -143,6 +141,9 @@ export const fetchInsUserFollowing = (after = '') => async (dispatch, getState, 
   try {
     const userIgId = insProfileIdSelector(state);
     const username = insUsernameSelector(state);
+    if (!username) {
+      return;
+    }
     dispatch(requestInsUserFollowing());
     const result = await apis.instagram.getFollowings({ userId: userIgId, after, username });
     dispatch(receiveInsUserFollowing(result));
@@ -172,6 +173,9 @@ export const fetchInsUserFollower = (after = '') => async (dispatch, getState, {
   try {
     const userIgId = insProfileIdSelector(state);
     const username = insUsernameSelector(state);
+    if (!username) {
+      return;
+    }
     const result = await apis.instagram.getFollowers({ userId: userIgId, after, username });
     return result;
   } catch (e) {

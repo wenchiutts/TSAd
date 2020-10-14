@@ -5,13 +5,15 @@ import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-na
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import CookieManager from '@react-native-community/cookies';
+import Colors from 'constants/Colors';
 
 import i18n from 'i18n';
 
 const LoginScreen = ({ navigation }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    CookieManager.clearAll()
+    CookieManager.clearAll(true)
       .then((success) => {
         console.log('CookieManager.clearAll =>', success);
       });
@@ -19,10 +21,14 @@ const LoginScreen = ({ navigation }) => {
 
   const onPressLogin = React.useCallback(() => {
     navigation.navigate('InsLogin');
+    setIsLoading(true);
   }, []);
 
   return (
     <Container>
+      {
+        isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />
+      }
       <BackgroundImage source={require('assets/splash.png')} />
       <LoginButton onPress={onPressLogin} />
     </Container>
