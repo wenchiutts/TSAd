@@ -67,9 +67,9 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
             {/*  */}
             <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
             <StyledAvatar
-              imgSrc={{ uri: story?.user?.profile_pic_url }}
+              imgSrc={story?.user?.profile_pic_url}
               username={story?.user?.username}
-              createTime={story?.items[story.idx].takenAt}
+              createTime={story?.items[story.idx]?.takenAt}
             />
             <BackButton
               onPrevItem={onPrevItem}

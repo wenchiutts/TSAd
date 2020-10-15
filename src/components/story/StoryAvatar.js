@@ -37,9 +37,9 @@ const InfoWrapper = styled(View)`
 
 const StoryAvatar = ({ style, imgSrc, username, createTime }) => (
   <StyledView style={style}>
-    <Avatar source={imgSrc} roundedWidth={44} />
+    <Avatar source={{ uri: imgSrc }} roundedWidth={44} />
     <InfoWrapper>
-      <Username>@aaaa{username}</Username>
+      <Username>@{username}</Username>
       <RelativeTime>{dayjs.unix(createTime).fromNow()}</RelativeTime>
     </InfoWrapper>
   </StyledView>
