@@ -141,9 +141,7 @@ export const fetchInsUserFollowing = (after = '') => async (dispatch, getState, 
   try {
     const userIgId = insProfileIdSelector(state);
     const username = insUsernameSelector(state);
-    dispatch(requestInsUserFollowing());
     const result = await apis.instagram.getFollowings({ userId: userIgId, after, username });
-    dispatch(receiveInsUserFollowing(result));
     return result;
   } catch (e) {
     if (__DEV__) {
@@ -152,17 +150,39 @@ export const fetchInsUserFollowing = (after = '') => async (dispatch, getState, 
   }
 };
 
-export const fetchInsUserAllFollowing = (after = '') => async dispatch => {
-  const result = await dispatch(fetchInsUserFollowing(after));
-  when(
-    path(['page_info', 'has_next_page']),
-    compose(
-      endCursor => setTimeout(() => dispatch(fetchInsUserAllFollowing(endCursor)), 2500),
-      path(['page_info', 'end_cursor']),
-    ),
-  )(result);
+const recursiveFetch = action => (after = '') => async dispatch => {
+  const result = await dispatch(action(after));
+  if (result?.page_info?.has_next_page) {
+    const anotherResult = await dispatch(recursiveFetch(action)(result?.page_info?.end_cursor));
+    return {
+      ...result,
+      ...anotherResult,
+      data: concat(result?.data || [], anotherResult?.data || []),
+    };
+  }
+  return result;
+};
 
-  return result?.count;
+const recursiveFetchUserFolloings = recursiveFetch(fetchInsUserFollowing);
+
+// export const fetchInsUserAllFollowing = (after = '') => async dispatch => {
+//   const result = await dispatch(fetchInsUserFollowing(after));
+//   when(
+//     path(['page_info', 'has_next_page']),
+//     compose(
+//       endCursor => setTimeout(() => dispatch(fetchInsUserAllFollowing(endCursor)), 500),
+//       path(['page_info', 'end_cursor']),
+//     ),
+//   )(result);
+//
+//   return result?.count;
+// };
+
+export const fetchInsUserAllFollowing = (after = '') => async dispatch => {
+  dispatch(requestInsUserFollowing());
+  const result = await dispatch(recursiveFetchUserFolloings());
+  dispatch(receiveInsUserFollowing(result));
+  return result;
 };
 
 export const fetchInsUserFollower = (after = '') => async (dispatch, getState, { apis }) => {
@@ -179,20 +199,22 @@ export const fetchInsUserFollower = (after = '') => async (dispatch, getState, {
   }
 };
 
-export const recursiveFetchUserFollowers = (after = '') => async dispatch => {
-  const result = await dispatch(fetchInsUserFollower(after));
-  if (result?.page_info?.has_next_page) {
-    const anotherResult = await dispatch(
-      recursiveFetchUserFollowers(result?.page_info?.end_cursor),
-    );
-    return {
-      ...result,
-      ...anotherResult,
-      data: concat(result?.data || [], anotherResult?.data || []),
-    };
-  }
-  return result;
-};
+// export const recursiveFetchUserFollowers = (after = '') => async dispatch => {
+//   const result = await dispatch(fetchInsUserFollower(after));
+//   if (result?.page_info?.has_next_page) {
+//     const anotherResult = await dispatch(
+//       recursiveFetchUserFollowers(result?.page_info?.end_cursor),
+//     );
+//     return {
+//       ...result,
+//       ...anotherResult,
+//       data: concat(result?.data || [], anotherResult?.data || []),
+//     };
+//   }
+//   return result;
+// };
+
+const recursiveFetchUserFollowers = recursiveFetch(fetchInsUserFollower);
 
 export const fetchInsUserAllFollower = () => async dispatch => {
   dispatch(requestInsUserFollower());
