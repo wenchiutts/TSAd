@@ -98,7 +98,7 @@ const SettingsScreen = () => {
         iconSource={require('assets/icons/settings_logour.png')}
         description={i18n.t('settings_logout')}
         onPress={() => {
-          CookieManager.clearAll()
+          CookieManager.clearAll(true)
             .then((success) => {
               console.log('CookieManager.clearAll =>', success);
             });

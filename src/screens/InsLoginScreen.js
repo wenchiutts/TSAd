@@ -26,6 +26,7 @@ const InsLoginScreen = ({ navigation }) => {
 
   React.useEffect(() => {
     console.log('init login');
+    // CookieManager.getAll(true).then(cookies => console.log('init cookies', cookies));
   }, []);
 
   const fetchCookies = async (retry = 0) => {
@@ -33,11 +34,15 @@ const InsLoginScreen = ({ navigation }) => {
     if (retry > 15 || !!sessionid) {
       return;
     }
-    // const cookies = await CookieManager.get('https://www.instagram.com', true);
-    const cookies = await CookieManager.get('https://www.instagram.com');
+    const cookies = await CookieManager.get('https://www.instagram.com', true);
+    // const cookies = await CookieManager.get('https://www.instagram.com');
     // console.log('fuck cookies', cookies);
     // alert('get Cookiesss' + cookies?.sessionid?.value);
     if (cookies?.csrftoken?.value && cookies?.sessionid?.value) {
+      await Promise.all(Object.keys(cookies).map(cookieName => {
+        return CookieManager.set('https://www.instagram.com', cookies[cookieName], false);
+      }));
+
       try {
         // alert(cookies?.sessionid?.value + ': ' + retry);
         dispatch(receiveInsCookies({
