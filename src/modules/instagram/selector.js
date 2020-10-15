@@ -46,12 +46,12 @@ export const insCookieSelector = createSelector(instagramSelector, path(['cookie
 
 export const insProfileSelector = createSelector(instagramSelector, path(['profile']));
 
-// export const insFollowingCountSelector = createSelector(
-//   insProfileSelector,
-//   path(['followingCount']),
-// );
+export const insFollowingCountSelector = createSelector(
+  insProfileSelector,
+  path(['followingCount']),
+);
 
-// export const insFollowerCountSelector = createSelector(insProfileSelector, path(['followerCount']));
+export const insFollowerCountSelector = createSelector(insProfileSelector, path(['followerCount']));
 
 export const insPostCountSelector = createSelector(insProfileSelector, path(['postCount']));
 
