@@ -29,12 +29,13 @@ const InsLoginScreen = ({ navigation }) => {
   }, []);
 
   const fetchCookies = async (retry = 0) => {
+    // console.log('sessionId', sessionid);
     if (retry > 15 || !!sessionid) {
       return;
     }
     // const cookies = await CookieManager.get('https://www.instagram.com', true);
     const cookies = await CookieManager.get('https://www.instagram.com');
-    console.log('fuck cookies', cookies);
+    // console.log('fuck cookies', cookies);
     // alert('get Cookiesss' + cookies?.sessionid?.value);
     if (cookies?.csrftoken?.value && cookies?.sessionid?.value) {
       try {
@@ -78,14 +79,14 @@ const InsLoginScreen = ({ navigation }) => {
   return (
     <WebView
       style={{ width: '100%', height: '100%' }}
-      source={{ uri: 'https://instagram.com/accounts/login/' }}
+      source={{ uri: 'https://www.instagram.com/accounts/login/' }}
       onNavigationStateChange={onNavigationStateChange}
       // onMessage={fetchCookies}
       // injectedJavaScript={jsCode}
       // thirdPartyCookiesEnabled={true}
       cacheMode="LOAD_NO_CACHE"
       cacheEnabled={false}
-      sharedCookiesEnbaeld={true}
+    // sharedCookiesEnabled
     // onLoadEnd={async (syntheticEvent) => {
     //   fetchCookies();
     // }}

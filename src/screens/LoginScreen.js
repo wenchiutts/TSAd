@@ -21,7 +21,6 @@ const LoginScreen = ({ navigation }) => {
 
   const onPressLogin = React.useCallback(() => {
     navigation.navigate('InsLogin');
-    setIsLoading(true);
   }, []);
 
   return (
