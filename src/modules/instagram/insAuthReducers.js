@@ -1,5 +1,6 @@
 // @format
 import createReducers from 'reducers/createReducers';
+import dayjs from 'dayjs';
 import {
   evolve,
   path,
@@ -37,7 +38,8 @@ import {
   max,
   T,
   pathEq,
-  tap,
+  filter,
+  lt,
 } from 'ramda';
 
 import {
@@ -57,6 +59,7 @@ import {
   RECEIVE_CHECK_BLOCKER,
   REQUEST_STORY_FEED,
   RECEIVE_STORY_FEED,
+  UPDATE_STORY_FEED_SEEN,
   REQUEST_USER_ARCHIVE_STORY,
   RECEIVE_USER_ARCHIVE_STORY,
   REQUEST_USER_POSTS,
@@ -69,7 +72,13 @@ import {
   RECEIVE_POST_LIKERS,
 } from 'modules/instagram/insAuthActions';
 import { objFromListWith } from 'utils/ramdaUtils';
-import DEBUG from 'utils/logUtils';
+
+const mergeWithMaxSeen = mergeDeepWithKey((k, l, r) => {
+  if (k === 'seen') {
+    return max(l, r);
+  }
+  return r;
+});
 
 const initialState = {
   cookies: undefined,
@@ -93,6 +102,7 @@ const initialState = {
   followersTimeStamp: {},
   unFollowersTimeStamp: {},
   storyFeed: undefined,
+  storyFeedObj: {},
   storyArchvies: {},
   recentPostDetail: {},
   viewers: {},
@@ -298,11 +308,20 @@ export default createReducers(initialState, {
   [REQUEST_STORY_FEED]: (state, actions) => ({
     ...state,
     isFetchingStoryReels: true,
+    storyFeed: [],
   }),
   [RECEIVE_STORY_FEED]: (state, actions) => ({
     ...state,
     isFetchingStoryReels: false,
-    storyFeed: actions.storyFeed,
+    storyFeedObj: compose(
+      filter(compose(lt(dayjs().unix()), path(['expiring_at']))),
+      mergeWithMaxSeen(state.storyFeedObj),
+      objFromListWith(path(['id'])),
+    )(actions.storyFeed),
+  }),
+  [UPDATE_STORY_FEED_SEEN]: (state, actions) => ({
+    ...state,
+    storyFeedObj: mergeWithMaxSeen(state.storyFeedObj, actions.seenStories),
   }),
   [REQUEST_USER_ARCHIVE_STORY]: (state, actions) => ({
     ...state,

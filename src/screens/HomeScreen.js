@@ -33,6 +33,7 @@ import { Avatar, AvatarImage } from 'components/AvatarImage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
 import i18n from 'i18n';
+import { isExistUnSeenStory } from 'utils/instagram';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -72,7 +73,7 @@ const renderAvatarListItem = ({ item, index }, navigation, checkPremium) => {
     <AvatarWithUsername
       username={item?.user?.username}
       userPicture={{ uri: item?.user?.profile_pic_url }}
-      isExistStory
+      isExistStory={isExistUnSeenStory(path(['seen']), path(['latest_reel_media']))(item)}
       onPress={checkPremium(() => navigation.navigate('story', { deckIndex: index - 1 }))}
     />
   );
@@ -243,7 +244,9 @@ const AvatarsWrapper = styled(FlatList).attrs(props => ({
 const AvatarWithUsername = ({ username, userPicture, isExistStory, onPress }) => (
   <StyledAvatar onPress={onPress}>
     <Avatar isExistStory={isExistStory} source={userPicture} />
-    <AvatarUsername ellipsizeMode="tail" numberOfLines={1}>@{username}</AvatarUsername>
+    <AvatarUsername ellipsizeMode="tail" numberOfLines={1}>
+      @{username}
+    </AvatarUsername>
   </StyledAvatar>
 );
 
