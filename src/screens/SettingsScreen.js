@@ -46,10 +46,11 @@ const SettingsScreen = () => {
   const { isPremium, username, user } = useSelector(selector);
   return (
     <StyledView>
-      {
+      < PromotionCard />
+      {/* {
         !isPremium &&
         < PromotionCard />
-      }
+      } */}
       <IconListWithMargin
         margin={24}
         iconSource={require('assets/icons/settings_contactus.png')}

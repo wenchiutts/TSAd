@@ -162,6 +162,7 @@ const PurchaseModal = ({ navigation }) => {
         const { responseCode, results: productResults } = await InAppPurchases.getProductsAsync(
           productIds,
         );
+
         setListContents(productResults);
 
         // Add Purchase Listener
@@ -253,7 +254,6 @@ const PurchaseModal = ({ navigation }) => {
               key={product.productId || idx}
               productId={product.productId}
               price={product.price}
-              planType={PRODUCT_PLAN_TYPE_MAP[product.productId]}
               setIsLoading={setIsLoading}
             />
           ))(listContents)}

@@ -15,11 +15,25 @@ export const PRODUCT_PLAN_TYPE_MAP = {
 export const IAP_PRODUCTS = {
   [PRODUCTS_IDS.PACKAGE_WEEKLY]: {
     periodDays: 7,
+    periodMonth: 0.25,
+    bgColors: ['#32C5FF', '#0091FF'],
+    icon: require('assets/icons/pro_plan3.png'),
+    title: '1 Week',
   },
   [PRODUCTS_IDS.PACKAGE_MONTHLY]: {
     periodDays: 31,
+    periodMonth: 1,
+    bgColors: ['#44D7B6', '#32C5FF'],
+    icon: require('assets/icons/pro_plan2.png'),
+    title: '1 Month',
+    discount: '40%',
   },
   [PRODUCTS_IDS.PACKAGE_ANNUALLY]: {
     periodDays: 365,
+    periodMonth: 12,
+    bgColors: ['#FEA15A', '#FC5C7B'],
+    icon: require('assets/icons/pro_plan1.png'),
+    title: '1 Year',
+    discount: '80%',
   }
 };

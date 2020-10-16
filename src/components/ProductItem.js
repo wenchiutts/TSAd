@@ -6,6 +6,7 @@ import styled from 'styled-components/native';
 import { path, cond, equals, T, always } from 'ramda';
 import { purchaseItemAsync } from 'expo-in-app-purchases';
 import { LinearGradient } from 'expo-linear-gradient';
+import { IAP_PRODUCTS } from 'constants/Products';
 
 import i18n from 'i18n';
 
@@ -14,20 +15,6 @@ export const PLAN_TYPE = {
   MONTH: 'MONTH',
   // HALF_YEAR: 'HALF_YEAR',
   YEAR: 'YEAR',
-};
-
-const PLAN_TYPE_ICON_MAP = {
-  [PLAN_TYPE.WEEK]: require('assets/icons/pro_plan3.png'),
-  [PLAN_TYPE.MONTH]: require('assets/icons/pro_plan2.png'),
-  // [PLAN_TYPE.HALF_YEAR]: require('assets/icons/pro_plan1.png'),
-  [PLAN_TYPE.YEAR]: require('assets/icons/pro_plan1.png'),
-};
-
-const PLAN_TYPE_NAME_MAP = {
-  [PLAN_TYPE.WEEK]: '1 week',
-  [PLAN_TYPE.MONTH]: '1 month',
-  // [PLAN_TYPE.HALF_YEAR]: '6 month',
-  [PLAN_TYPE.YEAR]: '1 Year',
 };
 
 const Container = styled(TouchableOpacity)`
@@ -87,33 +74,31 @@ const StyledLinearGradient = styled(LinearGradient)`
   bottom: 0;
 `;
 
-const ProductItem = ({ style, planType, price = '$29.99', avgPrice = '$2.49', onPress }) => (
-  <Container style={style} type={planType} onPress={onPress}>
-    <StyledLinearGradient
-      colors={cond([
-        [equals(PLAN_TYPE.YEAR), always(['#FEA15A', '#FC5C7B'])],
-        [equals(PLAN_TYPE.MONTH), always(['#44D7B6', '#32C5FF'])],
-        [equals(PLAN_TYPE.WEEK), always(['#32C5FF', '#0091FF'])],
-        [T, always(['#FEA15A', '#FC5C7B'])],
-      ])(planType)}
-      locations={[0, 1]}
-      start={[0, 1]}
-      end={[1, 0]}
-    />
-    <Icon source={PLAN_TYPE_ICON_MAP[planType]} />
-    <PlanName>{PLAN_TYPE_NAME_MAP[planType]}</PlanName>
-    <PriceWrapper>
-      <Price>{price}</Price>
-      <AvgPrice>
-        {avgPrice}
-        {i18n.t('purchase_button_average_unit')}
-      </AvgPrice>
-    </PriceWrapper>
-  </Container>
-);
+const ProductItem = ({ style, productId, price = '$9.99', avgPrice = '$2.49', onPress }) => {
+  const discount = IAP_PRODUCTS[productId].discount;
+  return (
+    <Container style={style} onPress={onPress}>
+      <StyledLinearGradient
+        colors={IAP_PRODUCTS[productId]?.bgColors ?? []}
+        locations={[0, 1]}
+        start={[0, 1]}
+        end={[1, 0]}
+      />
+      <Icon source={IAP_PRODUCTS[productId]?.icon} />
+      <PlanName>{IAP_PRODUCTS[productId]?.title}</PlanName>
+      <PriceWrapper>
+        <Price>{price}</Price>
+        {
+          discount &&
+          <AvgPrice>save {discount}</AvgPrice>
+        }
+      </PriceWrapper>
+    </Container>
+  );
+};
 
 ProductItem.propTypes = {
-  planType: PropTypes.string,
+  // planType: PropTypes.string,
   price: PropTypes.string,
   avgPrice: PropTypes.string,
   style: PropTypes.array,
