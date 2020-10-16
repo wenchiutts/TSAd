@@ -222,6 +222,7 @@ export default createReducers(initialState, {
     const lensFollowers = lensPath(['followers', 'data']);
     const lensUnFollowers = lensPath(['unFollowers'], 'data');
     const lensFollowing = lensPath(['followings']);
+    const lensFollowingCount = lensPath(['profile', 'followingCount'])
     const result = compose(
       data =>
         over(
@@ -234,6 +235,7 @@ export default createReducers(initialState, {
         ),
       over(lensFollowers, updateFollowedByUser(userId, true)),
       over(lensUnFollowers, updateFollowedByUser(userId, true)),
+      over(lensFollowingCount, add(1))
     )(state);
 
     return {
@@ -251,6 +253,7 @@ export default createReducers(initialState, {
     const lensFollowers = lensPath(['followers', 'data']);
     const lensUnFollowers = lensPath(['unFollowers'], 'data');
     const lensFollowing = lensPath(['followings']);
+    const lensFollowingCount = lensPath(['profile', 'followingCount'])
     const result = compose(
       over(
         lensFollowing,
@@ -261,6 +264,7 @@ export default createReducers(initialState, {
       ),
       over(lensFollowers, updateFollowedByUser(userId, false)),
       over(lensUnFollowers, updateFollowedByUser(userId, false)),
+      over(lensFollowingCount, subtract(__, 1))
     )(state);
 
     return {
