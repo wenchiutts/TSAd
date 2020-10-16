@@ -18,7 +18,7 @@ const Stories = ({
   swipedHorizontally,
   stories,
 }) => {
-  const { backOpacity, deckIdx } = storyState;
+  const { backOpacity, deckIdx, currentStoryIdx,audioOn } = storyState;
 
   const { dismissCarousel, setBackOpacity, onNextItem, onPrevItem } = functions;
 
@@ -70,6 +70,8 @@ const Stories = ({
               backOpacity={backOpacity}
               functions={functions}
               indicatorAnim={indicatorAnim}
+              currentStoryIdx={currentStoryIdx}
+              audioOn={audioOn}
             />
           </Animated.View>
         );

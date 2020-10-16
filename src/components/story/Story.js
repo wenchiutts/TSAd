@@ -29,7 +29,9 @@ const StyledAvatar = styled(StoryAvatar)`
   left: 16;
 `;
 
-const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
+
+
+const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim, currentStoryIdx, audioOn }) => {
   const navigation = useNavigation();
 
   const { onNextItem, onPrevItem, dismissCarousel, setBackOpacity } = functions;
@@ -55,16 +57,15 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim }) => {
                 source={{ uri: story?.items[story.idx].videoResources.src }}
                 rate={1.0}
                 volume={1.0}
-                isMuted={false}
                 resizeMode="cover"
-                shouldPlay
+                isMuted={!audioOn}
+                shouldPlay={isVisible && currentStoryIdx === story.idx}
                 isLooping
                 style={{ width: width, height: height - 47 }}
               />
             ) : (
               <StyledImage source={{ uri: story?.items[story.idx].src }} />
             )}
-            {/*  */}
             <StoryIndicator story={story} isVisible={isVisible} indicatorAnim={indicatorAnim} />
             <StyledAvatar
               imgSrc={story?.user?.profile_pic_url}
