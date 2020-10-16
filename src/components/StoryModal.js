@@ -267,9 +267,14 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
   }, [getDeckInfo(deckIdx)?.idx]);
 
   useEffect(() => {
-    SystemSetting.addVolumeListener(() => {
-      setStoryState(prev => ({ ...prev, audioOn: true }))
-    });
+    try {
+      const volumeListener = SystemSetting.addVolumeListener(() => {
+        setStoryState(prev => ({ ...prev, audioOn: true }))
+      });
+    } catch(e){
+      console.log('volumeListener error: ' , e);
+    }
+    return () => { SystemSetting.removeVolumeListener(volumeListener) }
   }, []);
 
   const functions = {
