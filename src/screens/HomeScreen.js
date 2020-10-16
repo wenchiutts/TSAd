@@ -9,8 +9,8 @@ import { path, pathOr, always } from 'ramda';
 import IconListItem from 'components/IconListItem';
 import ProfileCard from 'components/ProfileCard.js';
 import {
-  insFollowersCountSelector,
-  insFollowingsCountSelector,
+  insFollowerCountSelector,
+  insFollowingCountSelector,
   insPostCountSelector,
   insProfilePictureSelector,
   imNotFollowingBackCountSelector,
@@ -48,8 +48,8 @@ const IconListWithMargin = styled(IconListItem)`
 `;
 
 const userDataSelector = createStructuredSelector({
-  followers: insFollowersCountSelector,
-  following: insFollowingsCountSelector,
+  followers: insFollowerCountSelector,
+  following: insFollowingCountSelector,
   posts: insPostCountSelector,
   profilePicture: insProfilePictureSelector,
   viewMyProfile: always(0),
@@ -243,7 +243,9 @@ const AvatarsWrapper = styled(FlatList).attrs(props => ({
 const AvatarWithUsername = ({ username, userPicture, isExistStory, onPress }) => (
   <StyledAvatar onPress={onPress}>
     <Avatar isExistStory={isExistStory} source={userPicture} />
-    <AvatarUsername ellipsizeMode="tail" numberOfLines={1}>@{username}</AvatarUsername>
+    <AvatarUsername ellipsizeMode="tail" numberOfLines={1}>
+      @{username}
+    </AvatarUsername>
   </StyledAvatar>
 );
 
