@@ -75,7 +75,7 @@ const StyledLinearGradient = styled(LinearGradient)`
 `;
 
 const ProductItem = ({ style, productId, price = '$9.99', avgPrice = '$2.49', onPress }) => {
-  const discount = IAP_PRODUCTS[productId].discount;
+  const discount = IAP_PRODUCTS[productId]?.discount;
   return (
     <Container style={style} onPress={onPress}>
       <StyledLinearGradient
