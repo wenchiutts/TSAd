@@ -79,7 +79,7 @@ const ProductItem = ({ style, productId, price = '$9.99', avgPrice = '$2.49', on
   return (
     <Container style={style} onPress={onPress}>
       <StyledLinearGradient
-        colors={IAP_PRODUCTS[productId]?.bgColors ?? []}
+        colors={IAP_PRODUCTS[productId]?.bgColors ?? ['#32C5FF', '#0091FF']}
         locations={[0, 1]}
         start={[0, 1]}
         end={[1, 0]}
