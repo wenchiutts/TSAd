@@ -1,6 +1,5 @@
 // @format
 import { useEffect, useState, useRef } from 'react';
-import { createStructuredSelector } from 'reselect';
 import {
   cond,
   pathEq,
@@ -43,6 +42,7 @@ import {
 // import useCompare from 'hooks/useCompare';
 import { getStoryDetails } from 'apis/instagram';
 import { isExist } from 'utils/ramdaUtils';
+import DEBUG from 'utils/logUtils';
 
 const isFirstDeck = pathEq(['deckIdx'], 0);
 const isLastDeck = converge(equals, [
@@ -93,10 +93,14 @@ const useStoryData = (stories, deckIdx, deckPosition) => {
       )({ deckIdx, deckPosition });
       if (!isEmpty(ids)) {
         setIsFetching(true);
-        const result = await getStoryDetails({ reelIds: ids });
-        fetchedIds.current = concat(fetchedIds.current, ids);
-        const withStories = serializeStoryData(result);
-        setNewStories(prevStories => mergeDeepLeft(withStories, prevStories));
+        try {
+          const result = await getStoryDetails({ reelIds: ids });
+          fetchedIds.current = concat(fetchedIds.current, ids);
+          const withStories = serializeStoryData(result);
+          setNewStories(prevStories => mergeDeepLeft(withStories, prevStories));
+        } catch (e) {
+          DEBUG.log('fetch story failed', e, e.response);
+        }
         setIsFetching(false);
       }
     };
@@ -111,7 +115,7 @@ const useStoryData = (stories, deckIdx, deckPosition) => {
 
   const getDeckInfo = idx => {
     const id = deckPosition[idx];
-    return newStories[id];
+    return path([id], newStories);
   };
 
   const getWindowData = curry((size, currentPosition, data) => {

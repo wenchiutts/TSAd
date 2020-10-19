@@ -18,15 +18,11 @@ const Stories = ({
   swipedHorizontally,
   stories,
 }) => {
-  const { backOpacity, deckIdx } = storyState;
-
-  const { dismissCarousel, setBackOpacity, onNextItem, onPrevItem } = functions;
+  const { backOpacity, deckIdx, currentStoryIdx,audioOn } = storyState;
 
   useEffect(() => {
     StatusBar.setHidden(true);
   }, []);
-
-  functions = { onNextItem, onPrevItem, dismissCarousel, setBackOpacity };
 
   return (
     <Wrapper {...panResponder.panHandlers}>
@@ -70,6 +66,8 @@ const Stories = ({
               backOpacity={backOpacity}
               functions={functions}
               indicatorAnim={indicatorAnim}
+              currentStoryIdx={currentStoryIdx}
+              audioOn={audioOn}
             />
           </Animated.View>
         );

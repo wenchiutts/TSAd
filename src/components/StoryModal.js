@@ -1,17 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { View, Dimensions, LayoutAnimation, Animated, PanResponder } from 'react-native';
-import { of, applySpec, path, compose, map, prop, __, into, filter } from 'ramda';
+import { of, applySpec, path, compose, map, prop, __, into, filter, assocPath, is } from 'ramda';
 import { connect } from 'react-redux';
 import { branch, withProps } from 'recompose';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
+import SystemSetting from 'react-native-system-setting'
+
 
 import Stories from 'components/story/Stories';
 import useIsMount from 'hooks/useIsMount';
 import { storyFeedListSelector, storyFeedPositionSelector } from 'modules/instagram/selector';
 import useStoryData from 'hooks/useStoryData';
 import { isExist } from 'utils/ramdaUtils';
+import useRefState from 'hooks/useRefState';
+import { updateStoryFeedSeen } from 'modules/instagram/insAuthActions';
 
 const { width, height } = Dimensions.get('window');
 const VERTICAL_THRESHOLD = 80;
@@ -24,6 +28,8 @@ const StyledView = styled(View)`
   margin-top: 20;
 `;
 
+const isSingleStory = compose(isExist, path(['params', 'story']));
+
 const selector = createStructuredSelector({
   data: storyFeedListSelector,
   deckPosition: storyFeedPositionSelector,
@@ -32,12 +38,28 @@ const selector = createStructuredSelector({
 const orderByList = (orderList, object) =>
   into([], compose(map(prop(__, object)), filter(isExist)), orderList);
 
-const StoryModal = ({ route, navigation, data, deckPosition }) => {
+const StoryModal = ({ route, navigation, data, deckPosition, dispatch }) => {
   const { deckIndex } = route.params;
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const horizontalSwipe = useRef(new Animated.Value(0)).current;
   const verticalSwipe = useRef(new Animated.Value(0)).current;
   const swipedHorizontally = useRef(true);
+  const [seenStories, setSeenStories] = useState();
+
+  const onViewStories = (id, timestamp) => {
+    setSeenStories(prev => assocPath([id, 'seen'], timestamp, prev));
+  };
+
+  const currentSeenStories = useRefState(seenStories);
+
+  React.useEffect(
+    () => () => {
+      if (is(Function, dispatch)) {
+        dispatch(updateStoryFeedSeen(currentSeenStories.current));
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     const offset = { top: 30, left: 30 };
@@ -52,12 +74,14 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
     paused: false,
     backOpacity: 0,
     panResponder: null,
+    currentStoryIdx: null,
+    audioOn: false,
   };
 
   const [storyState, setStoryState] = useState(initialState);
   const isMount = useIsMount();
 
-  const { carouselOpen, paused, backOpacity, deckIdx, isPanRelease } = storyState;
+  const { carouselOpen, paused, backOpacity, deckIdx, isPanRelease, currentStoryIdx, audioOn } = storyState;
 
   const { setStoryIdx, stories, getDeckInfo, isFetchingStories, getPartialList } = useStoryData(
     data,
@@ -246,7 +270,6 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
           playProgressIndicator();
           // animateIndicator(false);
         }
-        console.log('CHUCK', 'before animate deck');
         animateDeck(deckIdx * width, true);
       } else {
         leaveStories();
@@ -258,8 +281,20 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
     const isDeckInRange = deckIdx >= 0 && deckIdx < deckPosition.length;
     if (isMount && isDeckInRange) {
       animateIndicator();
+      setStoryState(prev => ({ ...prev, currentStoryIdx: getDeckInfo(deckIdx)?.idx }));
     }
   }, [getDeckInfo(deckIdx)?.idx]);
+
+  useEffect(() => {
+    try {
+      const volumeListener = SystemSetting.addVolumeListener(() => {
+        setStoryState(prev => ({ ...prev, audioOn: true }))
+      });
+    } catch(e){
+      console.log('volumeListener error: ' , e);
+    }
+    return () => { SystemSetting.removeVolumeListener(volumeListener) }
+  }, []);
 
   const functions = {
     openCarousel,
@@ -272,6 +307,7 @@ const StoryModal = ({ route, navigation, data, deckPosition }) => {
     onNextDeck,
     onPrevDeck,
     // currentStory,
+    onViewStories: isSingleStory(route) ? undefined : onViewStories,
   };
 
   return (
@@ -298,11 +334,12 @@ StoryModal.propTypes = {
   navigation: PropTypes.object,
   data: PropTypes.object,
   deckPosition: PropTypes.array,
+  dispatch: PropTypes.func,
 };
 
 export default compose(
   branch(
-    compose(isExist, path(['route', 'params', 'story'])),
+    compose(isSingleStory, path(['route'])),
     withProps(
       applySpec({
         data: path(['route', 'params', 'story']),
