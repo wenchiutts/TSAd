@@ -11,8 +11,8 @@ export const newUser = data => {
         Platform.OS === 'android'
           ? webhookUrls.newAndroidUser
           : Platform.OS === 'ios'
-          ? webhookUrls.newIosUser
-          : '';
+            ? webhookUrls.newIosUser
+            : '';
       const payload = {
         text: dedent`uid: ${data?.uid}
                           countryCode: ${data?.countryCode}
@@ -23,9 +23,9 @@ export const newUser = data => {
                           version: ${process.env?.APP_MANIFEST?.version || getExpoBundleVersion()}`,
       };
       axios.post(url, payload).catch(err => console.log('slack err', err.response));
-    } 
+    }
   } catch (e) {
-      console.log('newUser error', e);
+    console.log('newUser error', e);
   }
 };
 
@@ -36,8 +36,8 @@ export const newLogin = data => {
         Platform.OS === 'android'
           ? webhookUrls.newAndroidLogin
           : Platform.OS === 'ios'
-          ? webhookUrls.newIosLogin
-          : '';
+            ? webhookUrls.newIosLogin
+            : '';
       const payload = {
         text: dedent`uid: ${data?.uid}
               countryCode: ${data?.countryCode}
@@ -54,7 +54,7 @@ export const newLogin = data => {
       axios.post(url, payload).catch(err => console.log('slack err', err.response));
     }
   } catch (e) {
-     console.log('newLogin error', e);
+    console.log('newLogin error', e);
   }
 };
 
@@ -65,8 +65,8 @@ export const newTapPurchase = data => {
         Platform.OS === 'android'
           ? webhookUrls.newAndriodTap
           : Platform.OS === 'ios'
-          ? webhookUrls.newIosTap
-          : '';
+            ? webhookUrls.newIosTap
+            : '';
       const payload = {
         text: dedent`uid: ${data?.uid}
                   countryCode: ${data?.countryCode}
@@ -94,8 +94,8 @@ export const newPurchase = data => {
         Platform.OS === 'android'
           ? webhookUrls.newAndroidPurchase
           : Platform.OS === 'ios'
-          ? webhookUrls.newIosPurchase
-          : '';
+            ? webhookUrls.newIosPurchase
+            : '';
       const payload = {
         text: dedent`uid: ${data?.uid}
           productId: ${data?.productId}
@@ -124,8 +124,8 @@ export const purchaseError = data => {
         Platform.OS === 'android'
           ? webhookUrls.androidPurchaseError
           : Platform.OS === 'ios'
-          ? webhookUrls.iosPurchaseError
-          : '';
+            ? webhookUrls.iosPurchaseError
+            : '';
       const payload = {
         text: dedent`uid: ${data?.uid}
           error: ${data?.error}

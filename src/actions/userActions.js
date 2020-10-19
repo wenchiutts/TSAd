@@ -10,10 +10,10 @@ import {
 } from 'modules/instagram/selector';
 
 export const UPDATE_PREMIUM = 'UPDATE_PREMIUM';
-export const updatePremium = makeActionCreator('UPDATE_PREMIUM', 'purchase');
+export const updatePremium = makeActionCreator(UPDATE_PREMIUM, 'purchase');
 
 export const RECEIVE_USER_PROFILE = 'RECEIVE_USER_PROFILE';
-export const receiveUserProfile = makeActionCreator('RECEIVE_USER_PROFILE', 'profile');
+export const receiveUserProfile = makeActionCreator(RECEIVE_USER_PROFILE, 'profile');
 
 export const purchaseSubscriptionAction = ({ purchaseTime, productId }) => async (
   dispatch,
@@ -57,17 +57,17 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
   // Check if subscription expired
   const state = getState();
   const premium = state?.user?.premium;
-  if (premium?.status !== 'active') {
-    return;
-  }
   const purchaseHistory = state?.payment?.history;
+  // console.log('purchaseHistory', purchaseHistory)
+  // purchaseHistory.map((product, index) => console.log(index, 'product', product.productId));
   const latestPurchase = purchaseHistory.sort((a, b) => b?.purchaseTime - a?.purchaseTime)?.[0];
 
   if (latestPurchase) {
     const { purchaseTime, productId } = latestPurchase;
-    const periodDays = IAP_PRODUCTS[productId];
+    const periodDays = IAP_PRODUCTS[productId]?.periodDays;
     const currentTime = new Date().getTime();
     const dateDifference = Math.floor((currentTime - purchaseTime) / (1000 * 60 * 60 * 24));
+
     if (dateDifference > periodDays) {
       dispatch(
         updatePremium({
@@ -76,9 +76,21 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
           lastUpdatedAt: new Date().getTime(),
         }),
       );
+      return false;
     }
-    return;
+    if (dateDifference <= periodDays && premium?.status && premium?.status !== 'active') {
+      dispatch(
+        updatePremium({
+          status: 'active',
+          productId,
+          lastUpdatedAt: new Date().getTime(),
+        }),
+      );
+      return true;
+    }
+    return true;
   }
+  console.log('fuck you');
   if (premium?.status === 'active') {
     dispatch(
       updatePremium({
@@ -89,6 +101,7 @@ export const checkSubscriptionStatus = () => async (dispatch, getState, { apis }
     );
     // Todo: Update user FireStore record, save the the whole premium structure
   }
+  return false;
 };
 
 export const updateUserProfile = user => async (dispatch, getState, { apis }) => {
@@ -157,3 +170,4 @@ export const purchaseErrorAction = errorMessage => async (dispatch, getState, { 
     }
   }
 };
+

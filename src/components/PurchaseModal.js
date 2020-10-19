@@ -2,7 +2,19 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { ScrollView, View, Image, TouchableHighlight, FlatList, SafeAreaView } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Image,
+  TouchableOpacity,
+  TouchableHighlight,
+  FlatList,
+  Text,
+  SafeAreaView,
+  ActivityIndicator,
+  Dimensions,
+  Linking,
+} from 'react-native';
 import styled from 'styled-components/native';
 import ImageSlider from 'react-native-image-slider';
 import _ from 'lodash';
@@ -89,6 +101,27 @@ const StyledProductItemWithIAP = styled(ProductItemWithIAP)`
   margin-top: 16;
 `;
 
+const { height: screenHeight } = Dimensions.get('window');
+const StyledActivityIndicator = styled(ActivityIndicator)`
+  position: absolute;
+  top: ${screenHeight / 2.5};
+  left: 0;
+  right: 0;
+  z-index: 99;
+`;
+
+const PrivacyText = styled(Text)`
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  text-decoration-line: underline;
+  font-size: 18;
+  font-weight: bold;
+`;
+
+const PrivacyTextWrapper = styled(TouchableOpacity)`
+  margin-top: 20;
+`;
+
+
 const images = [
   require('assets/images/pro_instro1.png'),
   require('assets/images/pro_instro2.png'),
@@ -107,13 +140,17 @@ const PurchaseModal = ({ navigation }) => {
 
   console.log('setListContents', setListContents);
 
-  navigation.setOptions({
-    cardStyle: {
-      backgroundColor: Colors.screenBackground,
-    },
-    title: '',
-    headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
-  });
+  React.useEffect(() => {
+    navigation.setOptions({
+      cardStyle: {
+        backgroundColor: Colors.screenBackground,
+      },
+      headerTransparent: true,
+      title: '',
+      headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
+    });
+  }, []);
+
 
   React.useEffect(() => {
     dispatch(newTapPurchase());
@@ -125,6 +162,7 @@ const PurchaseModal = ({ navigation }) => {
         const { responseCode, results: productResults } = await InAppPurchases.getProductsAsync(
           productIds,
         );
+
         setListContents(productResults);
 
         // Add Purchase Listener
@@ -149,6 +187,7 @@ const PurchaseModal = ({ navigation }) => {
                 purchaseTime: purchases[0]?.purchaseTime,
               };
               dispatch(purchaseSubscriptionAction(productInfoWithPurchaseTime));
+              navigation.navigate('Root');
             }
           } else {
             if (responseCode === InAppPurchases.IAPResponseCode.USER_CANCELED) {
@@ -166,6 +205,7 @@ const PurchaseModal = ({ navigation }) => {
               dispatch(purchaseErrorAction(errorMessage));
             }
           }
+          setIsLoading(false);
         });
       } catch (e) {
         console.log('initIap error:', e);
@@ -184,6 +224,9 @@ const PurchaseModal = ({ navigation }) => {
 
   return (
     <StyledView>
+      {
+        isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />
+      }
       <ImageSliderWrapper>
         <ImageSlider
           images={images}
@@ -211,12 +254,22 @@ const PurchaseModal = ({ navigation }) => {
               key={product.productId || idx}
               productId={product.productId}
               price={product.price}
-              planType={PRODUCT_PLAN_TYPE_MAP[product.description]}
               setIsLoading={setIsLoading}
             />
           ))(listContents)}
         </ProductListWrapperView>
       </ProductListWrapper>
+      <PrivacyTextWrapper
+        onPress={async () => {
+          const url = 'https://www.generateprivacypolicy.com/live.php?token=FdpgJBqV5oaYbZm7xod9RfTkeEL6OKVS';
+          const supported = await Linking.canOpenURL(url);
+          if (supported) {
+            Linking.openURL(url);
+          }
+        }}
+      >
+        <PrivacyText> Privacy & Term</PrivacyText>
+      </PrivacyTextWrapper>
     </StyledView>
   );
 };

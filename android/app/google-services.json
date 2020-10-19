@@ -1,42 +1,35 @@
 {
   "project_info": {
-    "project_number": "222094529171",
-    "firebase_url": "https://ins-reports-dev.firebaseio.com",
-    "project_id": "ins-reports-dev",
-    "storage_bucket": "ins-reports-dev.appspot.com"
+    "project_number": "1043745726858",
+    "firebase_url": "https://ins-reports-prod.firebaseio.com",
+    "project_id": "ins-reports-prod",
+    "storage_bucket": "ins-reports-prod.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:222094529171:android:50d9da1fad405463f3b366",
+        "mobilesdk_app_id": "1:1043745726858:android:61a6e98af44ce846e12873",
         "android_client_info": {
-          "package_name": "com.tikfans2.www"
+          "package_name": "com.ins.reports.analyzer.insta.followers.tracker"
         }
       },
       "oauth_client": [
         {
-          "client_id": "222094529171-dscdoa9qrdihjur2r5g7pj007q9psq3b.apps.googleusercontent.com",
+          "client_id": "1043745726858-b84289s0k31pju5q6g3k8tfquf0sodms.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAtF7SveeVgXd5hVAvoF7jCOqIl1hd_wh4"
+          "current_key": "AIzaSyAyS9MrfT-OUbZfHaV-6CVa3EOByzDoNAY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "222094529171-dscdoa9qrdihjur2r5g7pj007q9psq3b.apps.googleusercontent.com",
+              "client_id": "1043745726858-b84289s0k31pju5q6g3k8tfquf0sodms.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "222094529171-9oe9tmh4s2jhia9ap1e05dcukm7bj18j.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.ins.reports.analyzer.instagram.tracker"
-              }
             }
           ]
         }

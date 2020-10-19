@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, ScrollView, RefreshControl, FlatList } from 'react-native';
+import { Text, View, ScrollView, RefreshControl, FlatList, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
@@ -108,6 +108,8 @@ const HomeScreen = ({ navigation }) => {
     effectAction();
   }, []);
 
+  const user = useSelector(state => state?.user);
+
   const [refreshing, setRefreshing] = React.useState(false);
 
   const { checkPremium } = useCheckPremium();
@@ -128,19 +130,22 @@ const HomeScreen = ({ navigation }) => {
         following={following}
         profilePicture={profilePicture}
       />
-      <StoriesWrapper>
-        <Title>{i18n.t('home_story_anonymously')}</Title>
-        <AvatarsWrapper
-          data={[
-            1, // for search item
-            ...storyFeed,
-          ]}
-          initialNumToRender={10}
-          keyExtractor={(item, index) => pathOr(String(index), ['id'], item)}
-          horizontal
-          renderItem={item => renderAvatarListItem(item, navigation, checkPremium)}
-        />
-      </StoriesWrapper>
+      {
+        Platform.OS === 'android' &&
+        <StoriesWrapper>
+          <Title>{i18n.t('home_story_anonymously')}</Title>
+          <AvatarsWrapper
+            data={[
+              1, // for search item
+              ...storyFeed,
+            ]}
+            initialNumToRender={10}
+            keyExtractor={(item, index) => pathOr(String(index), ['id'], item)}
+            horizontal
+            renderItem={item => renderAvatarListItem(item, navigation, checkPremium)}
+          />
+        </StoriesWrapper>
+      }
       <ListWrapper>
         <Title>{i18n.t('home_follower_status')}</Title>
         {/*

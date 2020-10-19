@@ -25,9 +25,9 @@ const axios = Axios.create({
   },
 });
 
-export const getProfile = async ({ csrftoken, retry = 0 }) => {
+export const getProfile = async () => {
   try {
-    axios.defaults.headers.common['X-CSRFToken'] = csrftoken;
+    // axios.defaults.headers.common['X-CSRFToken'] = csrftoken;
     const res = await axios.get('/accounts/edit/?__a=1');
     const formData = res.data?.form_data;
     const username = formData?.username;
