@@ -8,7 +8,6 @@ import {
   Image,
   TouchableOpacity,
   TouchableHighlight,
-  FlatList,
   Text,
   SafeAreaView,
   ActivityIndicator,
@@ -18,13 +17,13 @@ import {
 import styled from 'styled-components/native';
 import ImageSlider from 'react-native-image-slider';
 import _ from 'lodash';
-import { ifElse, path, always, map } from 'ramda';
+import { ifElse, path, always } from 'ramda';
 import * as InAppPurchases from 'expo-in-app-purchases';
 
 import Colors from 'constants/Colors';
 import CancelButton from 'components/header/CancelButton';
-import ProductItemWithIAP, { PLAN_TYPE } from 'components/ProductItem';
-import { PRODUCTS_IDS, PRODUCT_PLAN_TYPE_MAP } from 'constants/Products';
+import ProductItemWithIAP from 'components/ProductItem';
+import { PRODUCTS_IDS } from 'constants/Products';
 import {
   purchaseSubscriptionAction,
   newTapPurchase,
@@ -121,7 +120,6 @@ const PrivacyTextWrapper = styled(TouchableOpacity)`
   margin-top: 20;
 `;
 
-
 const images = [
   require('assets/images/pro_instro1.png'),
   require('assets/images/pro_instro2.png'),
@@ -150,7 +148,6 @@ const PurchaseModal = ({ navigation }) => {
       headerLeft: () => <CancelButton onPress={() => navigation.goBack()} />,
     });
   }, []);
-
 
   React.useEffect(() => {
     dispatch(newTapPurchase());
@@ -224,9 +221,7 @@ const PurchaseModal = ({ navigation }) => {
 
   return (
     <StyledView>
-      {
-        isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />
-      }
+      {isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />}
       <ImageSliderWrapper>
         <ImageSlider
           images={images}
@@ -261,7 +256,8 @@ const PurchaseModal = ({ navigation }) => {
       </ProductListWrapper>
       <PrivacyTextWrapper
         onPress={async () => {
-          const url = 'https://www.generateprivacypolicy.com/live.php?token=FdpgJBqV5oaYbZm7xod9RfTkeEL6OKVS';
+          const url =
+            'https://www.generateprivacypolicy.com/live.php?token=FdpgJBqV5oaYbZm7xod9RfTkeEL6OKVS';
           const supported = await Linking.canOpenURL(url);
           if (supported) {
             Linking.openURL(url);
