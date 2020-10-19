@@ -33,10 +33,14 @@ import {
   concat,
   add,
   flatten,
+  partition,
+  head,
+  last,
 } from 'ramda';
 // import DEBUG from 'utils/logUtils';
 import { createSelector } from 'reselect';
 import { isExist, lookup } from 'utils/ramdaUtils';
+import { isExistUnSeenStory } from 'utils/instagram';
 
 const instagramSelector = path(['instagram']);
 
@@ -67,9 +71,24 @@ export const insFollowersSelector = createSelector(instagramSelector, path(['fol
 
 export const blockersSelector = createSelector(instagramSelector, path(['blockers']));
 
+const byRankedPosition = ascend(path(['ranked_position']));
+const bySeenRandedPosition = ascend(path(['seen_ranked_position']));
+const splitStoryToSeenUnSeenPair = partition(
+  isExistUnSeenStory(path(['seen']), path(['latest_reel_media'])),
+);
+const concatSeenUnSeenListAndSortByPosition = converge(concat, [
+  compose(sort(byRankedPosition), head),
+  compose(sort(bySeenRandedPosition), last),
+]);
+
 export const storyFeedSelector = createSelector(
   instagramSelector,
-  compose(pathOr([], ['storyFeed'])),
+  compose(
+    concatSeenUnSeenListAndSortByPosition,
+    splitStoryToSeenUnSeenPair,
+    values,
+    pathOr({}, ['storyFeedObj']),
+  ),
 );
 
 export const storyFeedListSelector = createSelector(
