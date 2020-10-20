@@ -10,13 +10,6 @@ import { IAP_PRODUCTS } from 'constants/Products';
 
 import i18n from 'i18n';
 
-export const PLAN_TYPE = {
-  WEEK: 'WEEK',
-  MONTH: 'MONTH',
-  // HALF_YEAR: 'HALF_YEAR',
-  YEAR: 'YEAR',
-};
-
 const Container = styled(TouchableOpacity)`
   overflow: hidden;
   position: relative;
@@ -88,10 +81,7 @@ const ProductItem = ({ style, productId, price = '$9.99', avgPrice = '$2.49', on
       <PlanName>{IAP_PRODUCTS[productId]?.title}</PlanName>
       <PriceWrapper>
         <Price>{price}</Price>
-        {
-          discount &&
-          <AvgPrice>save {discount}</AvgPrice>
-        }
+        {discount && <AvgPrice>save {discount}</AvgPrice>}
       </PriceWrapper>
     </Container>
   );
