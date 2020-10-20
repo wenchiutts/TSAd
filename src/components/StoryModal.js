@@ -6,8 +6,7 @@ import { connect } from 'react-redux';
 import { branch, withProps } from 'recompose';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
-import SystemSetting from 'react-native-system-setting'
-
+import SystemSetting from 'react-native-system-setting';
 
 import Stories from 'components/story/Stories';
 import useIsMount from 'hooks/useIsMount';
@@ -81,7 +80,15 @@ const StoryModal = ({ route, navigation, data, deckPosition, dispatch }) => {
   const [storyState, setStoryState] = useState(initialState);
   const isMount = useIsMount();
 
-  const { carouselOpen, paused, backOpacity, deckIdx, isPanRelease, currentStoryIdx, audioOn } = storyState;
+  const {
+    carouselOpen,
+    paused,
+    backOpacity,
+    deckIdx,
+    isPanRelease,
+    currentStoryIdx,
+    audioOn,
+  } = storyState;
 
   const { setStoryIdx, stories, getDeckInfo, isFetchingStories, getPartialList } = useStoryData(
     data,
@@ -288,12 +295,14 @@ const StoryModal = ({ route, navigation, data, deckPosition, dispatch }) => {
   useEffect(() => {
     try {
       const volumeListener = SystemSetting.addVolumeListener(() => {
-        setStoryState(prev => ({ ...prev, audioOn: true }))
+        setStoryState(prev => ({ ...prev, audioOn: true }));
       });
-    } catch(e){
-      console.log('volumeListener error: ' , e);
+      return () => {
+        SystemSetting.removeVolumeListener(volumeListener);
+      };
+    } catch (e) {
+      console.log('volumeListener error: ', e);
     }
-    return () => { SystemSetting.removeVolumeListener(volumeListener) }
   }, []);
 
   const functions = {
