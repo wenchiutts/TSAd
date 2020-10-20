@@ -10,12 +10,14 @@ import { postsByPopularitySelector } from 'modules/instagram/selector';
 const postImgSelector = path(['thumbnail_resources', 0, 'src']);
 const commentCountSelector = path(['edge_media_to_comment', 'count']);
 const likesSelector = path(['edge_media_preview_like', 'count']);
+const shortcodeSelector = path(['shortcode'])
 
 const GridItem = ({ item }) => (
   <PostItem
     likes={likesSelector(item)}
     comments={commentCountSelector(item)}
     src={{ uri: postImgSelector(item) }}
+    shortcode={shortcodeSelector(item)}
   />
 );
 
