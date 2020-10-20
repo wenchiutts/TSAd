@@ -20,13 +20,9 @@ const Stories = ({
 }) => {
   const { backOpacity, deckIdx, currentStoryIdx,audioOn } = storyState;
 
-  const { dismissCarousel, setBackOpacity, onNextItem, onPrevItem } = functions;
-
   useEffect(() => {
     StatusBar.setHidden(true);
   }, []);
-
-  functions = { onNextItem, onPrevItem, dismissCarousel, setBackOpacity };
 
   return (
     <Wrapper {...panResponder.panHandlers}>

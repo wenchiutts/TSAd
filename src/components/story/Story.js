@@ -34,12 +34,19 @@ const StyledAvatar = styled(StoryAvatar)`
 const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim, currentStoryIdx, audioOn }) => {
   const navigation = useNavigation();
 
-  const { onNextItem, onPrevItem, dismissCarousel, setBackOpacity } = functions;
+  const { onNextItem, onPrevItem, dismissCarousel, setBackOpacity, onViewStories } = functions;
 
   const onPress = () => {
     dismissCarousel();
     navigation.goBack();
   };
+
+  React.useEffect(() => {
+    const timestamp = story?.items[story.idx]?.takenAt;
+    if (onViewStories && timestamp && isVisible) {
+      onViewStories(story?.id, timestamp);
+    }
+  }, [story?.items[story.idx]?.takenAt, isVisible]);
 
   return (
     <TouchableWithoutFeedback onPress={onNextItem} delayPressIn={200}>

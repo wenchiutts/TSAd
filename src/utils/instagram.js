@@ -1,4 +1,5 @@
 // @format
+import { curry, converge, gt } from 'ramda';
 
 export const normalizeInsProfileData = data => ({
   id: data?.id,
@@ -24,3 +25,7 @@ export const normalizeInsPostsData = data =>
     isVideo: d?.node?.is_video,
     likeCount: d?.node?.edge_media_preview_like?.count,
   }));
+
+export const isExistUnSeenStory = curry((getSeenTimestamp, getLatestReelTimestamp) =>
+  converge(gt, [getLatestReelTimestamp, getSeenTimestamp]),
+);

@@ -1,5 +1,6 @@
 // @format
 import createReducers from 'reducers/createReducers';
+import dayjs from 'dayjs';
 import {
   evolve,
   path,
@@ -37,7 +38,8 @@ import {
   max,
   T,
   pathEq,
-  tap,
+  filter,
+  lt,
 } from 'ramda';
 
 import {
@@ -57,19 +59,27 @@ import {
   RECEIVE_CHECK_BLOCKER,
   REQUEST_STORY_FEED,
   RECEIVE_STORY_FEED,
+  UPDATE_STORY_FEED_SEEN,
   REQUEST_USER_ARCHIVE_STORY,
   RECEIVE_USER_ARCHIVE_STORY,
   REQUEST_USER_POSTS,
   RECEIVE_USER_POSTS,
   REQUEST_STORY_VIEWER,
   RECEIVE_STORY_VIEWER,
+  LOG_OUT_INS,
   REQUEST_POST_DETAIL,
   RECEIVE_POST_DETAIL,
   REQUEST_POST_LIKERS,
   RECEIVE_POST_LIKERS,
 } from 'modules/instagram/insAuthActions';
 import { objFromListWith } from 'utils/ramdaUtils';
-import DEBUG from 'utils/logUtils';
+
+const mergeWithMaxSeen = mergeDeepWithKey((k, l, r) => {
+  if (k === 'seen') {
+    return max(l, r);
+  }
+  return r;
+});
 
 const initialState = {
   cookies: undefined,
@@ -93,6 +103,7 @@ const initialState = {
   followersTimeStamp: {},
   unFollowersTimeStamp: {},
   storyFeed: undefined,
+  storyFeedObj: {},
   storyArchvies: {},
   recentPostDetail: {},
   viewers: {},
@@ -198,7 +209,7 @@ export default createReducers(initialState, {
     ...state,
     isFetchingFollowings: false,
     followings: evolve({
-      data: compose(mergeRight(state?.followings?.data || {}), objFromListWith(path(['id']))),
+      data: objFromListWith(path(['id'])),
     })(actions.followings),
   }),
   [REQUEST_FOLLOW_USER]: (state, actions) => ({
@@ -302,11 +313,20 @@ export default createReducers(initialState, {
   [REQUEST_STORY_FEED]: (state, actions) => ({
     ...state,
     isFetchingStoryReels: true,
+    storyFeed: [],
   }),
   [RECEIVE_STORY_FEED]: (state, actions) => ({
     ...state,
     isFetchingStoryReels: false,
-    storyFeed: actions.storyFeed,
+    storyFeedObj: compose(
+      filter(compose(lt(dayjs().unix()), path(['expiring_at']))),
+      mergeWithMaxSeen(state.storyFeedObj),
+      objFromListWith(path(['id'])),
+    )(actions.storyFeed),
+  }),
+  [UPDATE_STORY_FEED_SEEN]: (state, actions) => ({
+    ...state,
+    storyFeedObj: mergeWithMaxSeen(state.storyFeedObj, actions.seenStories),
   }),
   [REQUEST_USER_ARCHIVE_STORY]: (state, actions) => ({
     ...state,
@@ -397,6 +417,28 @@ export default createReducers(initialState, {
         ),
       ]),
     )(action),
+  }),
+  [LOG_OUT_INS]: (state, action) => ({
+    ...state,
+    cookies: undefined,
+    profile: undefined,
+    followings: undefined,
+    followers: undefined,
+    unFollowers: undefined,
+    blockers: undefined,
+    isFetching: false,
+    isFetchingFollowers: false,
+    isFetchingFollowings: false,
+    isFetchingUserPosts: false,
+    isPostingFollowUser: false,
+    isPostingUnFollowUser: false,
+    isCheckingBlocker: false,
+    isFetchingStoryReels: false,
+    isFetchingArchives: false,
+    followersTimeStamp: {},
+    unFollowersTimeStamp: {},
+    storyFeed: undefined,
+    storyArchvies: {},
   }),
   [REQUEST_POST_DETAIL]: (state, action) => ({
     ...state,

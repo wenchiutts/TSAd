@@ -1,4 +1,4 @@
-package com.tikfans2.www;
+package com.ins.reports.analyzer.insta.followers.tracker;
 
 import android.app.Application;
 import android.content.Context;
@@ -11,7 +11,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.tikfans2.www.generated.BasePackageList;
+import com.ins.reports.analyzer.insta.followers.tracker.generated.BasePackageList;
 
 import org.unimodules.adapters.react.ReactAdapterPackage;
 import org.unimodules.adapters.react.ModuleRegistryAdapter;

@@ -71,14 +71,14 @@ const BackgroundWrapper = ({ roundedWidth, isExistStory }) => (
   <GradientWrapper>
     <StyledImageBackground roundedWidth={roundedWidth} />
     <StyledLinearGradient
-      roundedWidth={roundedWidth}
+      // roundedWidth={roundedWidth}
       colors={['transparent', 'rgba(182,32,224, 1)']}
       locations={[0.1, 1]}
       start={[1, 0]}
       end={[0.5, 0.5]}
     />
     <StyledLinearGradient
-      roundedWidth={roundedWidth}
+      // roundedWidth={roundedWidth}
       colors={['transparent', 'rgba(255,222,67, 1)']}
       locations={[0.1, 0.8]}
       start={[0.6, 0.4]}

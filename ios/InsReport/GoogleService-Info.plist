@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>222094529171-9oe9tmh4s2jhia9ap1e05dcukm7bj18j.apps.googleusercontent.com</string>
+	<string>1043745726858-aem9s3freu0hfio66mui2mu8ofrqhqrf.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.222094529171-9oe9tmh4s2jhia9ap1e05dcukm7bj18j</string>
+	<string>com.googleusercontent.apps.1043745726858-aem9s3freu0hfio66mui2mu8ofrqhqrf</string>
 	<key>API_KEY</key>
-	<string>AIzaSyD2SPBuYIJsAhTZgJ45V3NcKftRGxZy4VY</string>
+	<string>AIzaSyAil8at4zCO5cZfil4Cg11X3i5_xUy1qV0</string>
 	<key>GCM_SENDER_ID</key>
-	<string>222094529171</string>
+	<string>1043745726858</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.ins.reports.analyzer.instagram.tracker</string>
+	<string>com.ins.reports.analyzer.insta.followers.tracker</string>
 	<key>PROJECT_ID</key>
-	<string>ins-reports-dev</string>
+	<string>ins-reports-prod</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ins-reports-dev.appspot.com</string>
+	<string>ins-reports-prod.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:222094529171:ios:eacae246fc6a52f2f3b366</string>
+	<string>1:1043745726858:ios:7126b9bedce5f00ee12873</string>
 	<key>DATABASE_URL</key>
-	<string>https://ins-reports-dev.firebaseio.com</string>
+	<string>https://ins-reports-prod.firebaseio.com</string>
 </dict>
 </plist>

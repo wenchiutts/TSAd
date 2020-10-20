@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, ScrollView, RefreshControl, FlatList } from 'react-native';
+import { Text, View, ScrollView, RefreshControl, FlatList, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
@@ -33,6 +33,7 @@ import { Avatar, AvatarImage } from 'components/AvatarImage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
 import i18n from 'i18n';
+import { isExistUnSeenStory } from 'utils/instagram';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -72,7 +73,7 @@ const renderAvatarListItem = ({ item, index }, navigation, checkPremium) => {
     <AvatarWithUsername
       username={item?.user?.username}
       userPicture={{ uri: item?.user?.profile_pic_url }}
-      isExistStory
+      isExistStory={isExistUnSeenStory(path(['seen']), path(['latest_reel_media']))(item)}
       onPress={checkPremium(() => navigation.navigate('story', { deckIndex: index - 1 }))}
     />
   );
@@ -107,6 +108,8 @@ const HomeScreen = ({ navigation }) => {
     effectAction();
   }, []);
 
+  const user = useSelector(state => state?.user);
+
   const [refreshing, setRefreshing] = React.useState(false);
 
   const { checkPremium } = useCheckPremium();
@@ -127,19 +130,22 @@ const HomeScreen = ({ navigation }) => {
         following={following}
         profilePicture={profilePicture}
       />
-      <StoriesWrapper>
-        <Title>{i18n.t('home_story_anonymously')}</Title>
-        <AvatarsWrapper
-          data={[
-            1, // for search item
-            ...storyFeed,
-          ]}
-          initialNumToRender={10}
-          keyExtractor={(item, index) => pathOr(String(index), ['id'], item)}
-          horizontal
-          renderItem={item => renderAvatarListItem(item, navigation, checkPremium)}
-        />
-      </StoriesWrapper>
+      {
+        Platform.OS === 'android' &&
+        <StoriesWrapper>
+          <Title>{i18n.t('home_story_anonymously')}</Title>
+          <AvatarsWrapper
+            data={[
+              1, // for search item
+              ...storyFeed,
+            ]}
+            initialNumToRender={10}
+            keyExtractor={(item, index) => pathOr(String(index), ['id'], item)}
+            horizontal
+            renderItem={item => renderAvatarListItem(item, navigation, checkPremium)}
+          />
+        </StoriesWrapper>
+      }
       <ListWrapper>
         <Title>{i18n.t('home_follower_status')}</Title>
         {/*
