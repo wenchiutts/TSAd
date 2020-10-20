@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
-import { TouchableOpacity, Dimensions, View } from 'react-native';
+import { TouchableOpacity, Dimensions, View, Linking } from 'react-native';
 import { isExist } from 'utils/ramdaUtils';
 import FastImage from 'react-native-fast-image';
 import {
@@ -50,8 +50,20 @@ const InteractionWrapper = React.memo(({ iconType, value }) => (
   </View>
 ));
 
-const PostItem = ({ likes, comments, src, onPress }) => (
-  <TouchableOpacity onPress={onPress} style={{ position: 'relative' }}>
+const onPress = async (shortcode)=> {
+  const url = `https://www.instagram.com/p/${shortcode}/`;
+  const canOpenUrl = await Linking.canOpenURL(url);
+  if(canOpenUrl){
+    try {
+      Linking.openURL(url);
+    } catch(e){
+      console.log('linking error: ', e);
+    }
+  }
+};
+
+const PostItem = ({ likes, comments, src, shortcode }) => (
+  <TouchableOpacity onPress={()=>{onPress(shortcode)}} style={{ position: 'relative' }}>
     <Img
       source={{
         ...src,

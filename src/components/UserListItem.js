@@ -11,6 +11,7 @@ import { Avatar } from 'components/AvatarImage';
 import { followUserAction, unfollowUserAction } from 'modules/instagram/insAuthActions';
 import { isExist, lookup } from 'utils/ramdaUtils';
 import { followersDataSelector, followingsDataSelector } from 'modules/instagram/selector';
+import i18n from 'i18n';
 
 const selector = createStructuredSelector({
   followers: followersDataSelector,
@@ -35,10 +36,10 @@ const UserListItem = ({
   const lookupFollowings = lookup(followings);
   const follow = () => dispatch(followUserAction(userId));
   const unfollow = username => {
-    Alert.alert('Unfollow', `Sure to unfollow @${username} ?`, [
-      { text: 'No' },
+    Alert.alert(i18n.t('user_list_item_button_unfollow'), `${i18n.t('general_unfollow_alert')}} @${username} ?`, [
+      { text: i18n.t('general_no') },
       {
-        text: 'Yes',
+        text:  i18n.t('general_yes'),
         onPress: () => {
           dispatch(unfollowUserAction(userId));
         },
@@ -110,7 +111,7 @@ const Username = styled(Text)`
 
 const FollowButton = ({ isFollowing, onPress }) => (
   <ButtonWrapper isFollowing={isFollowing} onPress={onPress}>
-    <ButtonText>{isFollowing ? 'Unfollow' : 'Follow'}</ButtonText>
+    <ButtonText>{isFollowing ? i18n.t('user_list_item_button_unfollow') : i18n.t('user_list_item_button_follow')}</ButtonText>
   </ButtonWrapper>
 );
 
