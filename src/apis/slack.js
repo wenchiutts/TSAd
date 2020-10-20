@@ -162,6 +162,8 @@ export const instagramError = data => {
           followerCount: ${data?.followerCount}
           avatar: ${data?.profilePicHd}
           error: ${data?.error}
+          errorType: ${data?.errorType}
+          errorResponse: ${data?.errorResponse}
           version: ${process.env?.APP_MANIFEST?.version || getExpoBundleVersion()}`,
       };
       axios
