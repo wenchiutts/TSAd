@@ -246,6 +246,8 @@ export const followUserAction = userId => async (dispatch, getState, { apis }) =
       apis.slack.instagramError({
         ...newUserInfo,
         error: String(e),
+        errorType: 'follow user',
+        errorResponse: String(e?.response),
       });
     });
     dispatch(endFollowUser(userId));
@@ -272,6 +274,8 @@ export const unfollowUserAction = userId => async (dispatch, getState, { apis })
       apis.slack.instagramError({
         ...newUserInfo,
         error: String(e),
+        errorType: 'unfollow user',
+        errorResponse: String(e?.response),
       });
     });
     dispatch(endUnFollowUser(userId));
