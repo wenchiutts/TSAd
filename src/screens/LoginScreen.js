@@ -79,7 +79,7 @@ const GradientLayer = styled(View)`
 
 const LoginButtonWrapper = styled(TouchableOpacity)`
   width: 75%;
-  max-width: 300;
+  max-width: 400;
   height: 60;
   border-radius: 12;
   margin-top: auto;
