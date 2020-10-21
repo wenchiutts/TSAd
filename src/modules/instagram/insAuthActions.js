@@ -98,7 +98,9 @@ export const fetchInsUserProfileAction = () => async (dispatch, getState, { apis
     }
     dispatch(requestInsProfile());
     dispatch(requestUserPosts());
-    const { edge_owner_to_timeline_media, ...insProfile } = await apis.instagram.getProfile();
+    const { edge_owner_to_timeline_media, ...insProfile } = await apis.instagram.getProfile(
+      csrftoken,
+    );
     dispatch(receiveInsProfile(insProfile));
     const posts = evolve({
       edges: map(path(['node'])),
@@ -247,8 +249,9 @@ export const followUserAction = userId => async (dispatch, getState, { apis }) =
         ...newUserInfo,
         error: String(e),
         errorType: 'follow user',
-        errorResponse: String(e?.response),
+        errorResponse: String(e?.response?.message),
       });
+      DEBUG.log('follow user error', e, e.response);
     });
     dispatch(endFollowUser(userId));
     return result;
@@ -275,8 +278,9 @@ export const unfollowUserAction = userId => async (dispatch, getState, { apis })
         ...newUserInfo,
         error: String(e),
         errorType: 'unfollow user',
-        errorResponse: String(e?.response),
+        errorResponse: String(e?.response?.message),
       });
+      DEBUG.log('unfollower user error', e, e.response);
     });
     dispatch(endUnFollowUser(userId));
     return result;
