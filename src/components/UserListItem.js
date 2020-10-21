@@ -36,7 +36,7 @@ const UserListItem = ({
   const lookupFollowings = lookup(followings);
   const follow = () => dispatch(followUserAction(userId));
   const unfollow = username => {
-    Alert.alert(i18n.t('user_list_item_button_unfollow'), `${i18n.t('general_unfollow_alert')}} @${username} ?`, [
+    Alert.alert(i18n.t('user_list_item_button_unfollow'), `${i18n.t('general_unfollow_alert')} @${username} ?`, [
       { text: i18n.t('general_no') },
       {
         text:  i18n.t('general_yes'),

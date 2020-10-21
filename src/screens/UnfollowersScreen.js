@@ -37,7 +37,6 @@ const ListItem = ({ item }) => (
     profilePicture={item?.profile?.profile_pic_url}
     timestamp={item?.updatedAt}
     username={item?.profile?.username}
-    isFollowing={item?.profile?.followed_by_viewer}
     userId={item?.profile?.id}
     key={item?.profile?.id}
   />
@@ -51,7 +50,7 @@ const UnfollowersScreen = () => {
       data={users}
       initialNumToRender={10}
       renderItem={ListItem}
-      keyExtractor={path(['id'])}
+      keyExtractor={path(['profile', 'id'])}
     />
   );
 };
