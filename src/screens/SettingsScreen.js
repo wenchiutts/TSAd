@@ -46,7 +46,7 @@ const SettingsScreen = () => {
   const { isPremium, username, user } = useSelector(selector);
   return (
     <StyledView>
-      < PromotionCard />
+      <PromotionCard />
       {/* {
         !isPremium &&
         < PromotionCard />
@@ -88,7 +88,8 @@ const SettingsScreen = () => {
         iconSource={require('assets/icons/settings_termofuse.png')}
         description={i18n.t('settings_term_of_use')}
         onPress={async () => {
-          const url = 'https://www.generateprivacypolicy.com/live.php?token=FdpgJBqV5oaYbZm7xod9RfTkeEL6OKVS';
+          const url =
+            'https://www.generateprivacypolicy.com/live.php?token=FdpgJBqV5oaYbZm7xod9RfTkeEL6OKVS';
           const supported = await Linking.canOpenURL(url);
           if (supported) {
             Linking.openURL(url);
@@ -99,10 +100,9 @@ const SettingsScreen = () => {
         iconSource={require('assets/icons/settings_logour.png')}
         description={i18n.t('settings_logout')}
         onPress={() => {
-          CookieManager.clearAll(true)
-            .then((success) => {
-              console.log('CookieManager.clearAll =>', success);
-            });
+          CookieManager.clearAll(true).then(success => {
+            console.log('CookieManager.clearAll =>', success);
+          });
           dispatch(logoutInsAction());
           setUserName(undefined);
         }}
