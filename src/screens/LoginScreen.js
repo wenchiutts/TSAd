@@ -3,6 +3,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import CookieManager from '@react-native-community/cookies';
 import Colors from 'constants/Colors';
@@ -30,6 +31,7 @@ const LoginScreen = ({ navigation }) => {
       }
       <BackgroundImage source={require('assets/splash.png')} />
       <LoginButton onPress={onPressLogin} />
+      <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage>
     </Container>
   );
 };
@@ -82,9 +84,8 @@ const LoginButtonWrapper = styled(TouchableOpacity)`
   max-width: 400;
   height: 60;
   border-radius: 12;
-  margin-top: auto;
-  margin-bottom: 40%;
   background-color: #32c5ff;
+  margin-top: 70%;
 `;
 
 const LoginButton = ({ onPress }) => (
@@ -136,4 +137,10 @@ const StyledLinearGradient = styled(LinearGradient)`
   align-items: center;
   justify-content: center;
   border-radius: 12;
+`;
+
+const WarningMessage = styled(Text)`
+  color: #FFFFFF;
+  max-width: 80%;
+  margin-top: 20;
 `;
