@@ -32,7 +32,7 @@ const LoginScreen = ({ navigation }) => {
       <BackgroundImage source={require('assets/splash.png')} />
       <LoginButton onPress={onPressLogin} />
       {/* <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage> */}
-      <Text style={{ color: '#FFFFFF' }}>Fuck</Text>
+      <Text style={{ color: '#FFFFFF' }}>Fuck you</Text>
     </Container>
   );
 };
