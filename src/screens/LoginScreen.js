@@ -13,19 +13,19 @@ import Colors from 'constants/Colors';
 import i18n from 'i18n';
 
 const images = [
-  { 
+  {
     uri: require('assets/images/onboarding_01.png'),
     text: i18n.t('login_slogan_1'),
   },
-  { 
+  {
     uri: require('assets/images/onboarding_02.png'),
     text: i18n.t('login_slogan_2'),
   },
-  { 
+  {
     uri: require('assets/images/onboarding_03.png'),
     text: i18n.t('login_slogan_3'),
   },
-  { 
+  {
     uri: require('assets/images/onboarding_04.png'),
     text: i18n.t('login_slogan_4'),
   },
@@ -50,7 +50,10 @@ const LoginScreen = ({ navigation }) => {
     <Container>
       {isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />}
       <ImageSliderWrapper>
-        <ImageSlider 
+        <ImageSlider
+          loop
+          loopBothSides
+          autoPlayWithInterval={1500}
           images={images}
           customSlide={({ index, item, style, width }) => (
             // It's important to put style here because it's got offset inside
@@ -70,8 +73,15 @@ const LoginScreen = ({ navigation }) => {
           )}
         />
       </ImageSliderWrapper>
-      <LoginButton onPress={onPressLogin} />
-      <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage>
+      <View style={{
+        flex: 1,
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'center',
+      }}>
+        <LoginButton onPress={onPressLogin} />
+        <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage>
+      </View>
     </Container>
   );
 };
@@ -88,11 +98,11 @@ font-size: 20;
 font-weight: bold;
 text-align: center;
 padding-top: 25;
-background-color: ${path(['theme','screenBackground'])};
+background-color: ${path(['theme', 'screenBackground'])};
 `
 
 const ImageSliderWrapper = styled(View)`
-  flex: none;
+  flex: 1;
   height: 440;
 `;
 
@@ -104,7 +114,7 @@ const StyledImage = styled(Image)`
   flex: 1;
   width: 100%;
   resize-mode: cover;
-`; 
+`;
 
 const ButtonWrapper = styled(View)`
   position: absolute;
