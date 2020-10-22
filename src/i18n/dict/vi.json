@@ -6,9 +6,9 @@
   "general_no": "Hủy",
   "general_unfollow_alert": "Bỏ theo dõi",
   "active_state_button_like": "thích",
-"active_state_button_comment": "Nhận xét",
-"active_state_button_no_like": "Không thích",
-"active_state_button_no_comment": "Không có bình luận",
+  "active_state_button_comment": "Nhận xét",
+  "active_state_button_no_like": "Không thích",
+  "active_state_button_no_comment": "Không có bình luận",
   "profile_PRO": "PRO",
   "profile_posts": "Bài viết",
   "profile_followers": " Người theo dõi",
@@ -60,5 +60,9 @@
   "buy_button_plan_2": "6 Tháng",
   "buy_button_tag_2": "Phổ biến nhất: Tiết kiệm 20%",
   "buy_button_plan_3": "1 Tháng",
-  "purchase_button_average_unit": "/Tháng"
+  "purchase_button_average_unit": "/Tháng",
+  "login_slogan_1": "Theo dõi ai đang chặn bạn",
+  "login_slogan_2": "Xem tin ẩn danh",
+  "login_slogan_3": "Bỏ theo dõi những người không theo dõi lại bạn",
+  "login_slogan_4": "Tìm những người ngưỡng mộ bí mật của bạn",
 }
