@@ -13,10 +13,9 @@ const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    CookieManager.clearAll(true)
-      .then((success) => {
-        console.log('CookieManager.clearAll =>', success);
-      });
+    CookieManager.clearAll(true).then(success => {
+      console.log('CookieManager.clearAll =>', success);
+    });
   }, []);
 
   const onPressLogin = React.useCallback(() => {
@@ -25,9 +24,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <Container>
-      {
-        isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />
-      }
+      {isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />}
       <BackgroundImage source={require('assets/splash.png')} />
       <LoginButton onPress={onPressLogin} />
     </Container>
@@ -93,12 +90,14 @@ const LoginButton = ({ onPress }) => (
       colors={['transparent', '#B620E0']}
       locations={[0.1, 1]}
       start={[0.7, 0.4]}
-      end={[0, 1]}>
+      end={[0, 1]}
+    >
       <StyledLinearGradient
         colors={['transparent', 'rgba(182,32,224, 0.7)']}
         locations={[0.1, 1]}
         start={[0.5, 0.4]}
-        end={[1, 1]}>
+        end={[1, 1]}
+      >
         <Image
           source={require('assets/icons/instagramlogo.png')}
           style={{ width: 28, height: 28, marginRight: 12 }}
@@ -108,7 +107,8 @@ const LoginButton = ({ onPress }) => (
             color: '#FFFFFF',
             fontSize: 20,
             fontWeight: 'bold',
-          }}>
+          }}
+        >
           {i18n.t('general_login')}
         </Text>
       </StyledLinearGradient>

@@ -1,4 +1,11 @@
-import { PLAN_TYPE } from 'components/ProductItem';
+// @format
+
+export const PLAN_TYPE = {
+  WEEK: 'WEEK',
+  MONTH: 'MONTH',
+  // HALF_YEAR: 'HALF_YEAR',
+  YEAR: 'YEAR',
+};
 
 export const PRODUCTS_IDS = {
   PACKAGE_WEEKLY: 'com.ins.reports.analyzer.insta.followers.tracker.weekly',
@@ -35,5 +42,5 @@ export const IAP_PRODUCTS = {
     icon: require('assets/icons/pro_plan1.png'),
     title: '1 Year',
     discount: '80%',
-  }
+  },
 };
