@@ -185,13 +185,13 @@ export default createReducers(initialState, {
           ogUnFollowersTimeStamp: state?.unFollowers?.data || {},
         },
       ),
-    )(actions.followers.data);
+    )(actions.followers?.data);
     return {
       ...state,
       isFetchingFollowings: false,
       followers: {
-        count: actions.followers.count,
-        page_info: actions.followers.page_info,
+        count: actions.followers?.count,
+        page_info: actions.followers?.page_info,
         data: analyze.followersTimeStamp,
       },
       unFollowers: {

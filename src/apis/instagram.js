@@ -1,6 +1,6 @@
 // @format
 import Axios from 'axios';
-import UserAgent from 'user-agents';
+// import UserAgent from 'user-agents';
 import { map, compose, path, pathOr, evolve } from 'ramda';
 import qs from 'qs';
 // import delay from 'delay';
@@ -8,8 +8,8 @@ import qs from 'qs';
 import DEBUG from 'utils/logUtils';
 import { normalizeInsProfileData } from 'utils/instagram';
 
-const userAgentFactory = new UserAgent({ deviceCategory: 'mobile' });
-const userAgent = userAgentFactory.toString();
+// const userAgentFactory = new UserAgent({ deviceCategory: 'mobile' });
+// const userAgent = userAgentFactory.toString();
 
 const baseURL = 'https://www.instagram.com';
 
@@ -17,7 +17,7 @@ const axios = Axios.create({
   baseURL,
   withCredentials: true,
   headers: {
-    'User-Agent': userAgent,
+    // 'User-Agent': userAgent,
     'Accept-Language': 'en-US',
     'X-Instagram-AJAX': 1,
     'X-Requested-With': 'XMLHttpRequest',
