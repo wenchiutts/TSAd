@@ -31,6 +31,7 @@ import {
 } from 'actions/userActions';
 
 import { mapIndexed } from 'utils/ramdaUtils';
+import i18n from 'i18n';
 
 const StyledView = styled(ScrollView).attrs({
   contentContainerStyle: {
@@ -62,7 +63,7 @@ const ButtonWrapper = styled(View)`
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  bottom: 75;
+  bottom: 50;
   right: 0;
   left: 0;
   margin-horizontal: auto;
@@ -100,7 +101,8 @@ const StyledProductItemWithIAP = styled(ProductItemWithIAP)`
   margin-top: 16;
 `;
 
-const { height: screenHeight } = Dimensions.get('window');
+const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
+
 const StyledActivityIndicator = styled(ActivityIndicator)`
   position: absolute;
   top: ${screenHeight / 2.5};
@@ -120,11 +122,50 @@ const PrivacyTextWrapper = styled(TouchableOpacity)`
   margin-top: 20;
 `;
 
+const Title = styled(Text)`
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  font-size: 28;
+  font-weight: bold;
+  text-align: center;
+`;
+
+const Description = styled(Text)`
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  font-size: 14;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 10;
+`; 
+
+const TextWrapper = styled(View)`
+  background-color: transparent;
+  position: absolute;
+  top: 255;
+  left: 50%;
+  width: ${screenWidth * 0.8}
+  `;
+
 const images = [
-  require('assets/images/pro_instro1.png'),
-  require('assets/images/pro_instro2.png'),
-  require('assets/images/pro_instro3.png'),
-  require('assets/images/pro_instro4.png'),
+  { 
+    uri: require('assets/images/pro_instro1.png'),
+    text1: i18n.t('purchase_promo_title_1'),
+    text2: i18n.t('purchase_promo_text_1'),
+  },
+  { 
+    uri: require('assets/images/pro_instro2.png'),
+    text1: i18n.t('purchase_promo_title_2'),
+    text2: i18n.t('purchase_promo_text_2'),  
+  },
+  { 
+    uri: require('assets/images/pro_instro3.png'),
+    text1: i18n.t('purchase_promo_title_3'),
+    text2: i18n.t('purchase_promo_text_3'),  
+  },
+  { 
+    uri: require('assets/images/pro_instro4.png'),
+    text1: i18n.t('purchase_promo_title_4'),
+    text2: i18n.t('purchase_promo_text_4'),  
+  },
 ];
 
 const initialListContents = Object.values(PRODUCTS_IDS);
@@ -228,7 +269,11 @@ const PurchaseModal = ({ navigation }) => {
           customSlide={({ index, item, style, width }) => (
             // It's important to put style here because it's got offset inside
             <ImageWrapper key={index} style={style} index={index}>
-              <StyledImage source={item} />
+              <StyledImage source={item.uri} />
+              <TextWrapper style={{ transform: [{ translateX: -screenWidth * 0.8 / 2 }] }}>
+                <Title>{item.text1}</Title>
+                <Description>{item.text2}</Description>
+              </TextWrapper>
             </ImageWrapper>
           )}
           customButtons={(position, move) => (

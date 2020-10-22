@@ -1,14 +1,37 @@
 // @format
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, TouchableHighlight, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import CookieManager from '@react-native-community/cookies';
-import Colors from 'constants/Colors';
+import { ifElse, path, always } from 'ramda';
+import ImageSlider from 'react-native-image-slider';
 
+import Colors from 'constants/Colors';
 import i18n from 'i18n';
+
+const images = [
+  {
+    uri: require('assets/images/onboarding_01.png'),
+    text: i18n.t('login_slogan_1'),
+  },
+  {
+    uri: require('assets/images/onboarding_02.png'),
+    text: i18n.t('login_slogan_2'),
+  },
+  {
+    uri: require('assets/images/onboarding_03.png'),
+    text: i18n.t('login_slogan_3'),
+  },
+  {
+    uri: require('assets/images/onboarding_04.png'),
+    text: i18n.t('login_slogan_4'),
+  },
+]
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -26,9 +49,39 @@ const LoginScreen = ({ navigation }) => {
   return (
     <Container>
       {isLoading && <StyledActivityIndicator size="large" color={Colors.primary.lightGray} />}
-      <BackgroundImage source={require('assets/splash.png')} />
-      <LoginButton onPress={onPressLogin} />
-      <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage>
+      <ImageSliderWrapper>
+        <ImageSlider
+          loop
+          loopBothSides
+          autoPlayWithInterval={1500}
+          images={images}
+          customSlide={({ index, item, style, width }) => (
+            // It's important to put style here because it's got offset inside
+            <ImageWrapper key={index} style={style} index={index}>
+              <StyledImage source={item.uri} />
+              <StyledText>{item.text}</StyledText>
+            </ImageWrapper>
+          )}
+          customButtons={(position, move) => (
+            <ButtonWrapper>
+              {images.map((image, index) => (
+                <Button key={index} onPress={() => move(index)} selected={position === index}>
+                  <View />
+                </Button>
+              ))}
+            </ButtonWrapper>
+          )}
+        />
+      </ImageSliderWrapper>
+      <View style={{
+        flex: 1,
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'center',
+      }}>
+        <LoginButton onPress={onPressLogin} />
+        <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage>
+      </View>
     </Container>
   );
 };
@@ -39,10 +92,58 @@ LoginScreen.propTypes = {
 
 export default LoginScreen;
 
-const Container = styled(View)`
+const StyledText = styled(Text)`
+color: ${path(['theme', 'primary', 'lightBlue'])};
+font-size: 20;
+font-weight: bold;
+text-align: center;
+padding-top: 25;
+background-color: ${path(['theme', 'screenBackground'])};
+`
+
+const ImageSliderWrapper = styled(View)`
   flex: 1;
+  height: 440;
+`;
+
+const ImageWrapper = styled(View)`
+  display: flex;
+`;
+
+const StyledImage = styled(Image)`
+  flex: 1;
+  width: 100%;
+  resize-mode: cover;
+`;
+
+const ButtonWrapper = styled(View)`
+  position: absolute;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
+  bottom: -50;
+  right: 0;
+  left: 0;
+  margin-horizontal: auto;
+`;
+
+const Button = styled(TouchableHighlight)`
+  margin-vertical: 3;
+  margin-horizontal: 3;
+  width: ${ifElse(path(['selected']), always(20), always(14))};
+  height: ${ifElse(path(['selected']), always(20), always(14))};
+  border-radius: ${ifElse(path(['selected']), always(10), always(7))};
+  background-color: ${ifElse(path(['selected']), always('#6236FF'), always('#6952BE'))};
+  opacity: ${ifElse(path(['selected']), always(1), always(0.9))};
+`;
+
+const Container = styled(View)`
+  width: ${screenWidth};
+  height: ${screenHeight};
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: ${path(['theme', 'screenBackground'])};
 `;
 
 const StyledActivityIndicator = styled(ActivityIndicator)`
@@ -82,7 +183,7 @@ const LoginButtonWrapper = styled(TouchableOpacity)`
   height: 60;
   border-radius: 12;
   background-color: #32c5ff;
-  margin-top: 70%;
+  margin-top: 25%;
 `;
 
 const LoginButton = ({ onPress }) => (

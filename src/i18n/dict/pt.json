@@ -5,7 +5,7 @@
   "general_yes": "Não seguir",
   "general_no": "Cancelar",
   "general_unfollow_alert": "Não seguir",
-  "active_state_button_like": "gosto",     
+  "active_state_button_like": "gosto",
   "active_state_button_comment": "comentário",
   "active_state_button_no_like": "Sem gosto",
   "active_state_button_no_comment": "Sem comentário",
@@ -30,8 +30,8 @@
   "insight_history": "História",
   "insight_top_viewers": "Principais espectadores",
   "insight_least_viewers": "Menos espectadores",
-  "insight_most_viewed_stories": "Histórias mais vistas",  
-  "insight_least_viewed_stories": "Histórias menos vistas", 
+  "insight_most_viewed_stories": "Histórias mais vistas",
+  "insight_least_viewed_stories": "Histórias menos vistas",
   "insight_most_popular_posts": "Publicações mais populares",
   "insight_most_liked_posts": "Publicações mais amado",
   "insight_most_commented_posts": "Publicações mais comentadas",
@@ -60,5 +60,9 @@
   "purchase_button_plan_2": "6 meses",
   "purchase_button_tag_2": "Mais popular: Economize 20%",
   "purchase_button_plan_3": "1 mês",
-  "purchase_button_average_unit": "/mês"
+  "purchase_button_average_unit": "/mês",
+  "login_slogan_1": "Rastreie quem está bloqueando você",
+  "login_slogan_2": "Assistir histórias anonimamente",
+  "login_slogan_3": "Pare de seguir quem não te segue de volta",
+  "login_slogan_4": "Encontre seus admiradores secretos"
 }

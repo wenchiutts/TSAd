@@ -28,7 +28,7 @@
   "user_list_item_button_unfollow": "Takibi Bırak",
   "insight_title": "İçgörüler",
   "insight_history": "Tarih",
-  "insight_top_viewers": "En çok görüntüleyenler", 
+  "insight_top_viewers": "En çok görüntüleyenler",
   "insight_least_viewers": "En az görüntüleyenler",
   "insight_most_viewed_stories": "En çok görüntülenen hikayeler",
   "insight_least_viewed_stories": "En az görüntülenen hikayeler",
@@ -56,9 +56,13 @@
   "purchase_promo_title_4": "Takipçi Raporları",
   "purchase_promo_text_4": "Kimin takip etmeyi bıraktığını ve gerçek zamanlı olarak sizi engellediğini bilin.",
   "purchase_button_plan_1": "1 Yıl",
-  "satın alma_button_tag_1": "En iyi değer:% 50 tasarruf edin",
-  "buy_button_plan_2": "6 Ay",
+  "purchase_button_tag_1": "En iyi değer:% 50 tasarruf edin",
+  "purchase_button_plan_2": "6 Ay",
   "purchase_button_tag_2": "En popüler:% 20 tasarruf edin",
   "purchase_button_plan_3": "1 Ay",
-  "purchase_button_average_unit": "/Ay"
+  "purchase_button_average_unit": "/Ay",
+  "login_slogan_1": "Sizi kimin engellediğini izleyin",
+  "login_slogan_2": "Hikayeleri Anonim Olarak İzle",
+  "login_slogan_3": "Sizi takip etmeyenlerin takibini bırakın",
+  "login_slogan_4": "Gizli hayranlarınızı bulun"
 }

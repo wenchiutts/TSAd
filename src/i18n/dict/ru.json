@@ -5,7 +5,7 @@
   "general_yes": "Отменить подписку",
   "general_no": "Отмена",
   "general_unfollow_alert": "Отменить подписку на обновления",
-  "active_state_button_like": "Нравится",     
+  "active_state_button_like": "Нравится",
   "active_state_button_comment": "Комментарий",
   "active_state_button_no_like": "Без нравится",
   "active_state_button_no_comment": "Без комментариев",
@@ -17,23 +17,23 @@
   "home_follower_status": "Статус подписчика",
   "home_view_my_profile": "Кто просматривал мой профиль",
   "home_new_followers": "Новые подписчики",
-  "home_unfollowers": "перестали подписываться на меня",  //stopped following me
-  "home_blocking_me": "которые меня блокируют", // people who is blocking me
-  "home_not_following_back": "которые не подписываются на меня", //people who do not subscribe me
+  "home_unfollowers": "перестали подписываться на меня",
+  "home_blocking_me": "которые меня блокируют",
+  "home_not_following_back": "которые не подписываются на меня",
   "home_im_not_following_back": "Я не подписываюсь на ответ",
   "home_mutual_following": "Взаимное Подписки",
   "home_best_followers": "Лучшие подписчики",
   "home_ghost_followers": "Призрачные последователи",
   "user_list_item_button_follow": "Подписаться",
-  "user_list_item_button_unfollow": "Отменить подписку", //stopped following you
+  "user_list_item_button_unfollow": "Отменить подписку",
   "insight_title": "понимание",
   "insight_history": "История",
-  "insight_top_viewers": "Самые частые зрители", //最常來的觀看者
+  "insight_top_viewers": "Самые частые зрители",
   "insight_least_viewers": "Наименьшее количество зрителей",
   "insight_most_viewed_stories": "Самые просматриваемые истории",
   "insight_least_viewed_stories": "Наименее просматриваемые истории",
   "insight_most_popular_posts": "Самые популярные Публикации",
-  "insight_most_liked_posts": "Самые популярные Публикации", // 最多人喜愛的
+  "insight_most_liked_posts": "Самые популярные Публикации",
   "insight_most_commented_posts": "Самые комментируемые Публикации",
   "insight_recent_stories": " Недавние истории",
   "insight_story_insight": "понимание истории",
@@ -57,8 +57,12 @@
   "Purchase_promo_text_4": "Узнавайте, кто прекратил подписываться и заблокировал вас в режиме реального времени.",
   "Purchase_button_plan_1": "1 год",
   "Purchase_button_tag_1": "Лучшая цена: сэкономьте 50%",
-  "buy_button_plan_2": "6 месяцев",
+  "Purchase_button_plan_2": "6 месяцев",
   "Purchase_button_tag_2": "Самый популярный: сэкономьте 20%",
-  "buy_button_plan_3": "1 месяц",
-  "purchase_button_average_unit": "/месяц"
+  "Purchase_button_plan_3": "1 месяц",
+  "purchase_button_average_unit": "/месяц",
+  "login_slogan_1": "Отслеживайте, кто вас блокирует",
+  "login_slogan_2": "Смотрите истории анонимно",
+  "login_slogan_3": "Отписаться от тех, кто не подписывается на вас в ответ",
+  "login_slogan_4": "Найдите своих тайных поклонников"
 }
