@@ -12,7 +12,7 @@
   "profile_PRO": "PRO",
   "profile_posts": "Posty",
   "profile_followers": "Obserwujący",
-  "profile_following": "obserwujących",
+  "profile_following": "Obserwujących",
   "home_story_anonymously": "Oglądaj relacja anonimowo",
   "home_follower_status": "Obserwujący Status",
   "home_view_my_profile": "Kto oglądał mój profil",
@@ -60,5 +60,9 @@
   "purchase_button_plan_2": "6 miesięcy",
   "purchase_button_tag_2": "Najbardziej popularny: Zaoszczędź 20%",
   "purchase_button_plan_3": "1 miesiąc",
-  "purchase_button_average_unit": "/miesiąc"
+  "purchase_button_average_unit": "/miesiąc",
+  "login_slogan_1": "Śledź, kto Cię blokuje",
+  "login_slogan_2": "Oglądaj relacja anonimowo",
+  "login_slogan_3": "Przestań obserwować, którzy nie obserwują Cię z powrotem",
+  "login_slogan_4": "Znajdź swoich tajemniczych wielbicieli"
 }

@@ -5,7 +5,7 @@
   "general_yes": "Yes",
   "general_no": "No",
   "general_unfollow_alert": "Sure to unfollow",
-  "active_state_button_like": "like",     
+  "active_state_button_like": "like",
   "active_state_button_comment": "Comment",
   "active_state_button_no_like": "No Like",
   "active_state_button_no_comment": "No Comment",
@@ -17,23 +17,23 @@
   "home_follower_status": "Follower Status",
   "home_view_my_profile": "Who viewed my profile",
   "home_new_followers": "New followers",
-  "home_unfollowers": "Unfollowers",  //stopped following you
-  "home_blocking_me": "Who blocked me", // people who is blocking me
-  "home_not_following_back": "Not following me back", //people who do not subscribe me
+  "home_unfollowers": "Unfollowers",
+  "home_blocking_me": "Who blocked me",
+  "home_not_following_back": "Not following me back",
   "home_im_not_following_back": "I'm Not following back",
   "home_mutual_following": "Mutual following",
   "home_best_followers": "Best followers",
   "home_ghost_followers": "Ghost followers",
   "user_list_item_button_follow": "Follow",
-  "user_list_item_button_unfollow": "Unfollow", //stopped following you
+  "user_list_item_button_unfollow": "Unfollow",
   "insight_title": "Insights",
   "insight_history": "History",
-  "insight_top_viewers": "Top viewers", //最常來的觀看者
-  "insight_least_viewers": "Least viewers", //最少來的觀看者
-  "insight_most_viewed_stories": "Most viewed stories",  
-  "insight_least_viewed_stories": "Least viewed stories", 
+  "insight_top_viewers": "Top viewers",
+  "insight_least_viewers": "Least viewers",
+  "insight_most_viewed_stories": "Most viewed stories",
+  "insight_least_viewed_stories": "Least viewed stories",
   "insight_most_popular_posts": "Most popular posts",
-  "insight_most_liked_posts": "Most liked posts", // 最多人喜愛的
+  "insight_most_liked_posts": "Most liked posts",
   "insight_most_commented_posts": "Most commented posts",
   "insight_recent_stories": "Recent Stories",
   "insight_story_insight": "Story Insights",
