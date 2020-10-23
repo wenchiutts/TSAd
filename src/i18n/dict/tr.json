@@ -28,7 +28,7 @@
   "user_list_item_button_unfollow": "Takibi Bırak",
   "insight_title": "İçgörüler",
   "insight_history": "Tarih",
-  "insight_top_viewers": "En çok görüntüleyenler", 
+  "insight_top_viewers": "En çok görüntüleyenler",
   "insight_least_viewers": "En az görüntüleyenler",
   "insight_most_viewed_stories": "En çok görüntülenen hikayeler",
   "insight_least_viewed_stories": "En az görüntülenen hikayeler",
@@ -64,5 +64,5 @@
   "login_slogan_1": "Sizi kimin engellediğini izleyin",
   "login_slogan_2": "Hikayeleri Anonim Olarak İzle",
   "login_slogan_3": "Sizi takip etmeyenlerin takibini bırakın",
-  "login_slogan_4": "Gizli hayranlarınızı bulun",
+  "login_slogan_4": "Gizli hayranlarınızı bulun"
 }
