@@ -15,6 +15,7 @@ import {
 import styled from 'styled-components/native';
 
 import EmptyStatusView from 'components/EmptyStatusView';
+import SearchingGuideView from 'components/SearchingGuideView';
 import UserListItem from 'components/UserListItem';
 import { checkBlockerAction } from 'modules/instagram/insAuthActions';
 import { isExist, isNilOrEmpty } from 'utils/ramdaUtils';
@@ -179,6 +180,13 @@ const SearchBlockerScreen = () => {
           ),
         ],
         [
+          allPass([
+            compose(not, path(['isFocus'])),
+            compose(isNilOrEmpty, path(['searchUserInputOpt', 'value'])),
+          ]),
+          always(<SearchingGuideView />),
+        ],
+        [
           allPass([path(['isEmpty']), compose(not, path(['isFocus']))]),
           always(<EmptyStatusView text="blocker" />),
         ],
@@ -198,6 +206,7 @@ const SearchBlockerScreen = () => {
         isEmpty,
         searchResult,
         blockers,
+        searchUserInputOpt,
       })}
       <BlockerModal
         visible={resultModal.isShowing}
