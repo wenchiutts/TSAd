@@ -35,7 +35,7 @@
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="11000"/>
-    <meta-data android:name="expo.modules.updates.EXPO_RELEASE_CHANNEL" android:value="test" />
+    <meta-data android:name="expo.modules.updates.EXPO_RELEASE_CHANNEL" android:value="prod-v1.3.0" />
 
   <activity
     android:name=".MainActivity"
