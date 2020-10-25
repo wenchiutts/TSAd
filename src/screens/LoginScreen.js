@@ -80,7 +80,7 @@ const LoginScreen = ({ navigation }) => {
         justifyContent: 'center',
       }}>
         <LoginButton onPress={onPressLogin} />
-        <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage>
+        {/* <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage> */}
       </View>
     </Container>
   );
