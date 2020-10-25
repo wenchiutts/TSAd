@@ -11,16 +11,38 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Avatar } from 'components/AvatarImage';
 import { isPremiumUserSelector } from 'modules/user/userSelector';
 import i18n from 'i18n';
+import ProgressCircle from 'components/ProgressCircle';
 
 const selector = createStructuredSelector({
   isPremium: isPremiumUserSelector,
 });
 
-const ProfileCard = ({ posts, followers, following, profilePicture }) => {
+const ProfileCard = ({
+  posts,
+  followers,
+  following,
+  profilePicture,
+  fetchingProgress,
+  showProgress,
+}) => {
   const { isPremium } = useSelector(selector);
+
   return (
     <StyledView>
       <BackgroundWrapper />
+      {showProgress && (
+        <ProgressCircle
+          style={{
+            position: 'absolute',
+            zIndex: 99,
+            left: '50%',
+            transform: [{ translateX: -34 }],
+            top: 30,
+          }}
+          fetchingProgress={fetchingProgress}
+        />
+      )}
+
       <StyledAvatar profilePicture={profilePicture} isPremium={isPremium} />
       <ContentWrapper>
         <View>
