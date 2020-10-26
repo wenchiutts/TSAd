@@ -5,6 +5,7 @@ import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity, View, Dimensions } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import dayjs from 'dayjs';
 
 import { InteractionWithValue, InteractionIcon } from './InteractionWithValue';
 import { isExist } from 'utils/ramdaUtils';
@@ -37,7 +38,7 @@ const StyledInteractionWithValue = styled(InteractionWithValue)`
   left: 8;
 `;
 
-const StoryGridItem = ({ storyId, imgSrc, viewsCount = 592, style, onPress }) => {
+const StoryGridItem = ({ storyId, imgSrc, viewsCount = 592, style, onPress, timestamp }) => {
   const navigation = useNavigation();
   return (
     <StyledView
@@ -45,8 +46,10 @@ const StoryGridItem = ({ storyId, imgSrc, viewsCount = 592, style, onPress }) =>
       onPress={() => {
         navigation.navigate('StoryDetailInsight', {
           storyId,
+          title: dayjs.unix(timestamp).format('MM-DD-YYYY'),
         });
-      }}>
+      }}
+    >
       <Img
         source={{ uri: imgSrc, priority: FastImage.priority.normal }}
         resizeMode={FastImage.resizeMode.cover}
@@ -70,6 +73,7 @@ StoryGridItem.propTypes = {
   viewsCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   style: PropTypes.array,
   onPress: PropTypes.func,
+  timestamp: PropTypes.number,
 };
 
 export default StoryGridItem;

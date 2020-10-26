@@ -2,7 +2,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
 import { View, FlatList } from 'react-native';
@@ -25,6 +24,7 @@ const StoryItem = ({ item }) => (
     storyId={path(['id'], item)}
     imgSrc={path(['image_versions2', 'candidates', 3, 'url'], item)}
     viewsCount={path(['total_viewer_count'], item)}
+    timestamp={path(['taken_at'], item)}
   />
 );
 

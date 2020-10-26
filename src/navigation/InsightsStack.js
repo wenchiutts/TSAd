@@ -43,7 +43,8 @@ const InsightsStack = ({ navigation, route }) => (
         fontSize: 20,
       },
       headerLeft: () => <BackButton />,
-    }}>
+    }}
+  >
     <Stack.Screen name="Insight" component={InsightsScreen} options={{ headerLeft: null }} />
     <Stack.Screen name="StoryHistory" component={StoryHistoryScreen} />
     <Stack.Screen name="TopViewers" component={TopViewerScreen} />
@@ -53,7 +54,20 @@ const InsightsStack = ({ navigation, route }) => (
     <Stack.Screen name="MostPopularPosts" component={MostPopularPostsScreen} />
     <Stack.Screen name="MostLikedPosts" component={MostLikedPostsScreens} />
     <Stack.Screen name="MostCommentedPosts" component={MostCommentedPostsScreen} />
-    <Stack.Screen name="StoryDetailInsight" component={StoryDetailInsightScreen} />
+    <Stack.Screen
+      name="StoryDetailInsight"
+      component={StoryDetailInsightScreen}
+      options={{
+        headerStyle: {
+          backgroundColor: Colors.primary.purple,
+          borderBottomWidth: 0,
+          shadowRadius: 0,
+          shadowOffset: {
+            height: 0,
+          },
+        },
+      }}
+    />
   </Stack.Navigator>
 );
 
@@ -84,7 +98,10 @@ function getHeaderTitle(route) {
       return i18n.t('insight_most_liked_posts');
     case 'MostCommentedPosts':
       return i18n.t('insight_most_commented_posts');
+    case 'StoryDetailInsight':
+      return route.state?.routes[route.state?.index]?.params?.title || INITIAL_ROUTE_NAME;
     default:
+      require('utils/logUtils').default.log('CHUCK', route);
       return i18n.t('insight_title');
   }
 }
