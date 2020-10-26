@@ -11,8 +11,8 @@ const StyledView = styled(View)`
   flex: 1;
 `;
 
-const EmptyStatusView = ({ text }) => (
-  <StyledView>
+const EmptyStatusView = ({ style, text }) => (
+  <StyledView style={style}>
     <Image
       source={require('assets/images/emptydata.png')}
       style={{ height: 120, resizeMode: 'contain' }}
@@ -23,6 +23,7 @@ const EmptyStatusView = ({ text }) => (
 
 EmptyStatusView.propTypes = {
   text: PropTypes.string,
+  style: PropTypes.array,
 };
 
 export default EmptyStatusView;
