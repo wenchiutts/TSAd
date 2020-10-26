@@ -3,11 +3,11 @@ import * as Progress from 'react-native-progress';
 
 import Colors from 'constants/Colors';
 
-const ProgressCircle = ({ style, fetchingProgress }) => {
+const ProgressCircle = ({ style, fetchingProgress, size }) => {
   return (
     <>
       <Progress.Circle
-        size={66}
+        size={size + 8}
         showsText={true}
         borderWidth={0}
         style={style}

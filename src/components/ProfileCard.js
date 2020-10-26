@@ -17,6 +17,8 @@ const selector = createStructuredSelector({
   isPremium: isPremiumUserSelector,
 });
 
+const avatarWidth = 72;
+
 const ProfileCard = ({
   posts,
   followers,
@@ -36,10 +38,11 @@ const ProfileCard = ({
             position: 'absolute',
             zIndex: 99,
             left: '50%',
-            transform: [{ translateX: -34 }],
-            top: 30,
+            transform: [{ translateX: -(avatarWidth / 2 + 4) }],
+            top: 29,
           }}
           fetchingProgress={fetchingProgress}
+          size={avatarWidth}
         />
       )}
 
@@ -81,7 +84,7 @@ const StyledView = styled(View)`
 
 const StyledAvatar = ({ profilePicture, isPremium }) => (
   <View>
-    <Avatar source={{ uri: profilePicture }} />
+    <Avatar source={{ uri: profilePicture }} roundedWidth={avatarWidth} />
     {isPremium && (
       <Tag>
         <TagText>{i18n.t('profile_PRO')}</TagText>
@@ -99,8 +102,8 @@ const Tag = styled(View)`
   width: 44;
   height: 16;
   position: absolute;
-  top: 53;
-  left: 11;
+  top: ${avatarWidth - 6};
+  left: 18;
   border-radius: 8;
   background-color: ${path(['theme', 'primary', 'purple'])};
 `;
