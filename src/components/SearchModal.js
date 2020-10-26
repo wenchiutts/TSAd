@@ -9,6 +9,7 @@ import { isExist } from 'utils/ramdaUtils';
 import Colors from 'constants/Colors';
 import CancelButton from 'components/header/CancelButton';
 import EmptyFoundView from 'components/EmptyFoundView';
+import SearchingGuideView from 'components/SearchingGuideView';
 import UserListItem from 'components/UserListItem';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SearchUserInput, { useSearchUserInput } from 'components/SearchUserInput';
@@ -103,10 +104,10 @@ const SearchModal = ({ navigation }) => {
           ))(values(searchResult))}
         </View>
       ) : !searchUserInputOpt.value ? (
-        <View></View>
+        <SearchingGuideView />
       ) : (
-            <EmptyFoundView />
-          )}
+        <EmptyFoundView />
+      )}
     </StyledView>
   );
 };

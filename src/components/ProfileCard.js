@@ -11,16 +11,38 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Avatar } from 'components/AvatarImage';
 import { isPremiumUserSelector } from 'modules/user/userSelector';
 import i18n from 'i18n';
+import ProgressCircle from 'components/ProgressCircle';
 
 const selector = createStructuredSelector({
   isPremium: isPremiumUserSelector,
 });
 
-const ProfileCard = ({ posts, followers, following, profilePicture }) => {
+const ProfileCard = ({
+  posts,
+  followers,
+  following,
+  profilePicture,
+  fetchingProgress,
+  showProgress,
+}) => {
   const { isPremium } = useSelector(selector);
+
   return (
     <StyledView>
       <BackgroundWrapper />
+      {showProgress && (
+        <ProgressCircle
+          style={{
+            position: 'absolute',
+            zIndex: 99,
+            left: '50%',
+            transform: [{ translateX: -34 }],
+            top: 30,
+          }}
+          fetchingProgress={fetchingProgress}
+        />
+      )}
+
       <StyledAvatar profilePicture={profilePicture} isPremium={isPremium} />
       <ContentWrapper>
         <View>
@@ -50,10 +72,11 @@ ProfileCard.propTypes = {
 export default ProfileCard;
 
 const StyledView = styled(View)`
-  height: 148;
-  justify-content: space-around;
+  height: 200;
+  padding-vertical: 30;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  flex-direction: row;
 `;
 
 const StyledAvatar = ({ profilePicture, isPremium }) => (
@@ -79,15 +102,15 @@ const Tag = styled(View)`
   top: 53;
   left: 11;
   border-radius: 8;
-  background-color: ${path(['theme', 'primary', 'lightBlue'])};
+  background-color: ${path(['theme', 'primary', 'purple'])};
 `;
 
 const TagText = styled(Text)`
   line-height: 16;
   font-size: 12;
   text-align: center;
-  font-weight: 500;
-  color: ${path(['theme', 'primary', 'flatBlue'])};
+  font-weight: bold;
+  color: ${path(['theme', 'primary', 'lightBlue'])};
 `;
 
 const BackgroundWrapper = () => (
@@ -134,7 +157,7 @@ const BackgroundWrapper = () => (
 
 const GradientWrapper = styled(View)`
   width: 100%;
-  height: 148;
+  height: 200;
   position: absolute;
   left: 0;
 `;
@@ -159,15 +182,16 @@ const StyledImageBackground = styled(ImageBackground)`
 `;
 
 const ContentWrapper = styled(View)`
-  width: 200;
+  width: 90%;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
 `;
 
 const StyledText = styled(Text)`
   color: ${path(['theme', 'primary', 'lightBlue'])};
   text-align: center;
   font-size: 14;
+  width: 100;
 `;
 
 const Value = styled(StyledText)`

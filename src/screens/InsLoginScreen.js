@@ -91,6 +91,7 @@ const InsLoginScreen = ({ navigation }) => {
       // thirdPartyCookiesEnabled={true}
       cacheMode="LOAD_NO_CACHE"
       cacheEnabled={false}
+      androidHardwareAccelerationDisabled={true}
     // sharedCookiesEnabled
     // onLoadEnd={async (syntheticEvent) => {
     //   fetchCookies();

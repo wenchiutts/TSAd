@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",
+    "@react-native-community/art": "^1.2.0",
     "@react-native-community/cookies": "^5.0.1",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-firebase/app": "^8.4.5",
@@ -65,8 +66,7 @@
     "redux-persist-expo-filesystem": "^2.0.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "styled-components": "4.4.1",
-    "user-agents": "^1.0.559"
+    "styled-components": "4.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

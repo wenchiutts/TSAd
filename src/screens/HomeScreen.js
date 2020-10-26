@@ -97,12 +97,24 @@ const HomeScreen = ({ navigation }) => {
     storyFeed,
   } = useSelector(userDataSelector);
 
+  const [fetchingProgress, setFetchingProgress] = React.useState(0);
+  const [showProgress, setShowProgress] = React.useState(false);
+
   const dispatch = useDispatch();
   const effectAction = async () => {
+    setFetchingProgress(0);
+    setShowProgress(true);
     await dispatch(fetchInsUserProfileAction());
+    setFetchingProgress(0.25);
     await dispatch(fetchUserStoriesFeed());
+    setFetchingProgress(0.5);
     await dispatch(fetchInsUserAllFollower());
+    setFetchingProgress(0.75);
     await dispatch(fetchInsUserAllFollowing());
+    setFetchingProgress(1);
+    setTimeout(() => {
+      setShowProgress(false);
+    }, 1000);
   };
   React.useEffect(() => {
     effectAction();
@@ -115,23 +127,28 @@ const HomeScreen = ({ navigation }) => {
   const { checkPremium } = useCheckPremium();
 
   const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
+    setRefreshing(false);
     effectAction();
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 500);
+    // setTimeout(() => {
+    //   setRefreshing(false);
+    // }, 500);
   }, []);
 
   return (
-    <StyledView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+    <StyledView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!showProgress} />
+      }
+    >
       <ProfileCard
         posts={posts}
         followers={followers}
         following={following}
         profilePicture={profilePicture}
+        fetchingProgress={fetchingProgress}
+        showProgress={showProgress}
       />
-      {
-        Platform.OS === 'android' &&
+      {Platform.OS === 'android' && (
         <StoriesWrapper>
           <Title>{i18n.t('home_story_anonymously')}</Title>
           <AvatarsWrapper
@@ -145,7 +162,7 @@ const HomeScreen = ({ navigation }) => {
             renderItem={item => renderAvatarListItem(item, navigation, checkPremium)}
           />
         </StoriesWrapper>
-      }
+      )}
       <ListWrapper>
         <Title>{i18n.t('home_follower_status')}</Title>
         {/*

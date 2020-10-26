@@ -61,7 +61,8 @@ const ContentWrapper = styled(View)`
 `;
 
 const TryButton = styled(TouchableOpacity)`
-  width: 64;
+  align-self: flex-start;
+  padding-horizontal: 8;
   height: 18;
   border-radius: 9;
   background-color: ${path(['theme', 'primary', 'flatBlue'])};
@@ -73,7 +74,6 @@ const ButtonText = styled(Text)`
   color: ${path(['theme', 'primary', 'lightBlue'])};
   font-size: 11;
   line-height: 11;
-  margin: auto;
 `;
 
 const StyledText = styled(Text)`
