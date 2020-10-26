@@ -73,22 +73,13 @@ const StoryModal = ({ route, navigation, data, deckPosition, dispatch }) => {
     paused: false,
     backOpacity: 0,
     panResponder: null,
-    currentStoryIdx: null,
     audioOn: false,
   };
 
   const [storyState, setStoryState] = useState(initialState);
   const isMount = useIsMount();
 
-  const {
-    carouselOpen,
-    paused,
-    backOpacity,
-    deckIdx,
-    isPanRelease,
-    currentStoryIdx,
-    audioOn,
-  } = storyState;
+  const { carouselOpen, paused, backOpacity, deckIdx, isPanRelease, audioOn } = storyState;
 
   const { setStoryIdx, stories, getDeckInfo, isFetchingStories, getPartialList } = useStoryData(
     data,
@@ -288,7 +279,6 @@ const StoryModal = ({ route, navigation, data, deckPosition, dispatch }) => {
     const isDeckInRange = deckIdx >= 0 && deckIdx < deckPosition.length;
     if (isMount && isDeckInRange) {
       animateIndicator();
-      setStoryState(prev => ({ ...prev, currentStoryIdx: getDeckInfo(deckIdx)?.idx }));
     }
   }, [getDeckInfo(deckIdx)?.idx]);
 
