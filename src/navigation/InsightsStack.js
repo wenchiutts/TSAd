@@ -101,7 +101,6 @@ function getHeaderTitle(route) {
     case 'StoryDetailInsight':
       return route.state?.routes[route.state?.index]?.params?.title || INITIAL_ROUTE_NAME;
     default:
-      require('utils/logUtils').default.log('CHUCK', route);
       return i18n.t('insight_title');
   }
 }
