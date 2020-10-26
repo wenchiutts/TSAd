@@ -22,6 +22,7 @@ import {
   storyFeedSelector,
   ghostFollowerCountSelector,
   bestFollowerListCountSelector,
+  insUsernameSelector,
 } from 'modules/instagram/selector';
 import {
   fetchInsUserAllFollowing,
@@ -63,6 +64,7 @@ const userDataSelector = createStructuredSelector({
   bestFollowers: bestFollowerListCountSelector,
   ghostFollowers: ghostFollowerCountSelector,
   storyFeed: storyFeedSelector,
+  username: insUsernameSelector,
 });
 
 const renderAvatarListItem = ({ item, index }, navigation, checkPremium) => {
@@ -95,6 +97,7 @@ const HomeScreen = ({ navigation }) => {
     bestFollowers,
     ghostFollowers,
     storyFeed,
+    username,
   } = useSelector(userDataSelector);
 
   const [fetchingProgress, setFetchingProgress] = React.useState(0);
@@ -118,6 +121,9 @@ const HomeScreen = ({ navigation }) => {
   };
   React.useEffect(() => {
     effectAction();
+    navigation.setOptions({
+      title: `@${username}`,
+    });
   }, []);
 
   const user = useSelector(state => state?.user);
