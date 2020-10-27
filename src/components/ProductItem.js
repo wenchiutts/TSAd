@@ -100,11 +100,11 @@ const ProductItemWithIAP = props => {
   const onPress = async () => {
     // console.log('ProductItemWithIAP productId', props?.productId);
     props.setIsLoading(true);
+    apis.firebase.logEvent({ name: `onPress_product_${props?.productId}` });
     // TODO: Victor if the content productId would changed in list item,
     // should put the content as dependency
     const res = await purchaseItemAsync(props?.productId);
     props.setIsLoading(false);
-    apis.firebase.logEvent({ name: `onPress_product_${props?.productId}` });
   };
   // const onPress = useCallback(async () => {
   //   props.setIsLoading(true);
