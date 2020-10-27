@@ -36,15 +36,19 @@ const UserListItem = ({
   const lookupFollowings = lookup(followings);
   const follow = () => dispatch(followUserAction(userId));
   const unfollow = username => {
-    Alert.alert(i18n.t('user_list_item_button_unfollow'), `${i18n.t('general_unfollow_alert')} @${username} ?`, [
-      { text: i18n.t('general_no') },
-      {
-        text:  i18n.t('general_yes'),
-        onPress: () => {
-          dispatch(unfollowUserAction(userId));
+    Alert.alert(
+      i18n.t('user_list_item_button_unfollow'),
+      `${i18n.t('general_unfollow_alert')} @${username} ?`,
+      [
+        { text: i18n.t('general_no') },
+        {
+          text: i18n.t('general_yes'),
+          onPress: () => {
+            dispatch(unfollowUserAction(userId));
+          },
         },
-      },
-    ]);
+      ],
+    );
   };
   const localIsFollowing = isFollowing ?? compose(isExist, lookupFollowings)(userId);
   const localIsFollower = isFollower ?? compose(isExist, lookupFollowers)(userId);
@@ -111,7 +115,11 @@ const Username = styled(Text)`
 
 const FollowButton = ({ isFollowing, onPress }) => (
   <ButtonWrapper isFollowing={isFollowing} onPress={onPress}>
-    <ButtonText>{isFollowing ? i18n.t('user_list_item_button_unfollow') : i18n.t('user_list_item_button_follow')}</ButtonText>
+    <ButtonText>
+      {isFollowing
+        ? i18n.t('user_list_item_button_unfollow')
+        : i18n.t('user_list_item_button_follow')}
+    </ButtonText>
   </ButtonWrapper>
 );
 

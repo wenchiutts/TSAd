@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components/native';
 import { path, pathOr, always } from 'ramda';
+import dayjs from 'dayjs';
 
 import IconListItem from 'components/IconListItem';
 import ProfileCard from 'components/ProfileCard.js';
@@ -34,6 +35,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
 import i18n from 'i18n';
 import { isExistUnSeenStory } from 'utils/instagram';
+import { setJoinTimestamp } from 'actions/userActions';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -115,12 +117,14 @@ const HomeScreen = ({ navigation }) => {
     setTimeout(() => {
       setShowProgress(false);
     }, 1000);
+    dispatch(setJoinTimestamp(dayjs().valueOf()));
   };
   React.useEffect(() => {
     effectAction();
   }, []);
 
-  const user = useSelector(state => state?.user);
+  // const user = useSelector(state => state?.user);
+  // require('utils/logUtils').default.log('CHUCK user', user);
 
   const [refreshing, setRefreshing] = React.useState(false);
 

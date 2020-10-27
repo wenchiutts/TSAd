@@ -36,11 +36,13 @@ import {
   partition,
   head,
   last,
+  allPass,
 } from 'ramda';
 // import DEBUG from 'utils/logUtils';
 import { createSelector } from 'reselect';
 import { isExist, lookup } from 'utils/ramdaUtils';
 import { isExistUnSeenStory } from 'utils/instagram';
+import { joinTimestampSelector } from 'modules/user/userSelector';
 
 const instagramSelector = path(['instagram']);
 
@@ -175,7 +177,14 @@ const unFollowersDataSelector = createSelector(
 
 export const newFollowersSelector = createSelector(
   followersDataSelector,
-  filter(compose(gt(__, new Date().setHours(0, 0, 0, 0)), path(['createdAt']))),
+  joinTimestampSelector,
+  (followers, joinTimestamp) =>
+    filter(
+      compose(
+        allPass([gt(__, joinTimestamp), gt(__, new Date().setHours(0, 0, 0, 0))]),
+        path(['createdAt']),
+      ),
+    )(followers),
 );
 
 export const newFollowersCountSelector = createSelector(
