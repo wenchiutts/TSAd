@@ -48,6 +48,7 @@ const StoryGridItem = ({ storyId, imgSrc, viewsCount = 592, style, onPress, time
           storyId,
           title: dayjs.unix(timestamp).format('MM-DD-YYYY'),
         });
+        apis.firebase.logEvent({ name: 'onPress_StoryDetailInsight' });
       }}
     >
       <Img

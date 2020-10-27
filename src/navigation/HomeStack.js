@@ -45,7 +45,8 @@ const HomeStack = ({ navigation, route }) => (
         fontSize: 20,
       },
       headerLeft: () => <BackButton />,
-    }}>
+    }}
+  >
     <Stack.Screen name="Home" component={HomeScreen} options={{ headerLeft: null }} />
     <Stack.Screen name="SearchBlocker" component={SearchBlockerScreen} />
     <Stack.Screen name="NewFollowers" component={NewFollowersScreen} />
@@ -68,8 +69,6 @@ function getHeaderTitle(route) {
     INITIAL_ROUTE_NAME;
 
   switch (routeName) {
-    case 'Home':
-      return i18n.t('general_app_title');
     case 'ViewMyProfile':
       return i18n.t('home_view_my_profile');
     case 'NewFollowers':
@@ -88,7 +87,5 @@ function getHeaderTitle(route) {
       return i18n.t('home_best_followers');
     case 'GhostFollowers':
       return i18n.t('home_ghost_followers');
-    default:
-      return i18n.t('general_app_title');
   }
 }

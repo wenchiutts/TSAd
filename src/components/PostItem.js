@@ -8,6 +8,7 @@ import {
   InteractionWithValue,
   InteractionIcon,
 } from '../modules/insights/components/InteractionWithValue';
+import apis from 'apis';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -50,20 +51,26 @@ const InteractionWrapper = React.memo(({ iconType, value }) => (
   </View>
 ));
 
-const onPress = async (shortcode)=> {
+const onPress = async shortcode => {
   const url = `https://www.instagram.com/p/${shortcode}/`;
   const canOpenUrl = await Linking.canOpenURL(url);
-  if(canOpenUrl){
+  if (canOpenUrl) {
     try {
       Linking.openURL(url);
-    } catch(e){
+      apis.firebase.logEvent({ name: 'onPress_LinkingToOriginPost' });
+    } catch (e) {
       console.log('linking error: ', e);
     }
   }
 };
 
 const PostItem = ({ likes, comments, src, shortcode }) => (
-  <TouchableOpacity onPress={()=>{onPress(shortcode)}} style={{ position: 'relative' }}>
+  <TouchableOpacity
+    onPress={() => {
+      onPress(shortcode);
+    }}
+    style={{ position: 'relative' }}
+  >
     <Img
       source={{
         ...src,
