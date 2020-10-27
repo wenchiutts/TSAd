@@ -46,7 +46,9 @@ const StoryGridItem = ({ storyId, imgSrc, viewsCount = 592, style, onPress }) =>
         navigation.navigate('StoryDetailInsight', {
           storyId,
         });
-      }}>
+        apis.firebase.logEvent({ name: 'onPress_StoryDetailInsight' });
+      }}
+    >
       <Img
         source={{ uri: imgSrc, priority: FastImage.priority.normal }}
         resizeMode={FastImage.resizeMode.cover}

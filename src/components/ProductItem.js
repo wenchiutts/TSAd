@@ -9,6 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { IAP_PRODUCTS } from 'constants/Products';
 
 import i18n from 'i18n';
+import apis from 'apis';
 
 const Container = styled(TouchableOpacity)`
   overflow: hidden;
@@ -97,12 +98,13 @@ ProductItem.propTypes = {
 
 const ProductItemWithIAP = props => {
   const onPress = async () => {
-    console.log('ProductItemWithIAP productId', props?.productId);
+    // console.log('ProductItemWithIAP productId', props?.productId);
     props.setIsLoading(true);
     // TODO: Victor if the content productId would changed in list item,
     // should put the content as dependency
     const res = await purchaseItemAsync(props?.productId);
     props.setIsLoading(false);
+    apis.firebase.logEvent({ name: `onPress_product_${props?.productId}` });
   };
   // const onPress = useCallback(async () => {
   //   props.setIsLoading(true);

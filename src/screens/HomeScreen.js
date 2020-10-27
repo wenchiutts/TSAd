@@ -35,6 +35,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
 import i18n from 'i18n';
 import { isExistUnSeenStory } from 'utils/instagram';
+import apis from 'apis';
+import { mapIndexed } from 'utils/ramdaUtils';
 
 const StyledView = styled(ScrollView).attrs(props => ({
   contentContainerStyle: {
@@ -76,9 +78,17 @@ const renderAvatarListItem = ({ item, index }, navigation, checkPremium) => {
       username={item?.user?.username}
       userPicture={{ uri: item?.user?.profile_pic_url }}
       isExistStory={isExistUnSeenStory(path(['seen']), path(['latest_reel_media']))(item)}
-      onPress={checkPremium(() => navigation.navigate('story', { deckIndex: index - 1 }))}
+      onPress={() => avatarOnpress(index, checkPremium, navigation)}
     />
   );
+};
+
+const logEvent = route => apis.firebase.logEvent({ name: `onPress_home_${route}` });
+
+const avatarOnpress = (index, checkPremium, navigation) => {
+  const premium = checkPremium(() => navigation.navigate('story', { deckIndex: index - 1 }));
+  premium();
+  logEvent('avatar');
 };
 
 const HomeScreen = ({ navigation }) => {
@@ -99,6 +109,57 @@ const HomeScreen = ({ navigation }) => {
     storyFeed,
     username,
   } = useSelector(userDataSelector);
+
+  const iconList = [
+    {
+      iconSource: require('assets/icons/followstatus_newfollow.png'),
+      description: i18n.t('home_new_followers'),
+      route: 'NewFollowers',
+      value: newFollowers,
+    },
+    {
+      iconSource: require('assets/icons/followstatus_unfollow.png'),
+      description: i18n.t('home_unfollowers'),
+      route: 'Unfollowers',
+      value: unfollowers,
+    },
+    {
+      iconSource: require('assets/icons/followstatus_block.png'),
+      description: i18n.t('home_blocking_me'),
+      route: 'SearchBlocker',
+      value: blockers,
+    },
+    {
+      iconSource: require('assets/icons/followstatus_notfollowingme.png'),
+      description: i18n.t('home_not_following_back'),
+      route: 'NotFollowingMeBack',
+      value: notFollowingMeBack,
+    },
+    {
+      iconSource: require('assets/icons/followstatus_idontfollowback.png'),
+      description: i18n.t('home_im_not_following_back'),
+      route: 'ImNotFollowingBack',
+      value: imNotFollowingBack,
+    },
+    {
+      iconSource: require('assets/icons/followstatus_mutual.png'),
+      description: i18n.t('home_mutual_following'),
+      route: 'MutualFollowing',
+      value: mutualFollowing,
+    },
+    {
+      iconSource: require('assets/icons/followstatus_best.png'),
+      description: i18n.t('home_best_followers'),
+      route: 'BestFollowers',
+      value: bestFollowers,
+    },
+    {
+      iconSource: require('assets/icons/followstatus_ghost.png'),
+      description: i18n.t('home_ghost_followers'),
+      route: 'GhostFollowers',
+      value: ghostFollowers,
+    },
+  ];
 
   const [fetchingProgress, setFetchingProgress] = React.useState(0);
   const [showProgress, setShowProgress] = React.useState(false);
@@ -140,6 +201,12 @@ const HomeScreen = ({ navigation }) => {
     // }, 500);
   }, []);
 
+  const onPress = item => {
+    const premium = checkPremium(() => item.route && navigation.navigate(item.route));
+    premium();
+    logEvent(item.route);
+  };
+
   return (
     <StyledView
       refreshControl={
@@ -180,54 +247,10 @@ const HomeScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('ViewMyProfile')}
         />
         */}
-        <IconListWithMargin
-          iconSource={require('assets/icons/followstatus_newfollow.png')}
-          description={i18n.t('home_new_followers')}
-          value={newFollowers}
-          onPress={() => navigation.navigate('NewFollowers')}
-        />
-        <IconListWithMargin
-          iconSource={require('assets/icons/followstatus_unfollow.png')}
-          description={i18n.t('home_unfollowers')}
-          value={unfollowers}
-          onPress={() => navigation.navigate('Unfollowers')}
-        />
-        <IconListWithMargin
-          iconSource={require('assets/icons/followstatus_block.png')}
-          description={i18n.t('home_blocking_me')}
-          value={blockers}
-          onPress={checkPremium(() => navigation.navigate('SearchBlocker'))}
-        />
-        <IconListWithMargin
-          iconSource={require('assets/icons/followstatus_notfollowingme.png')}
-          description={i18n.t('home_not_following_back')}
-          value={notFollowingMeBack}
-          onPress={() => navigation.navigate('NotFollowingMeBack')}
-        />
-        <IconListWithMargin
-          iconSource={require('assets/icons/followstatus_idontfollowback.png')}
-          description={i18n.t('home_im_not_following_back')}
-          value={imNotFollowingBack}
-          onPress={() => navigation.navigate('ImNotFollowingBack')}
-        />
-        <IconListWithMargin
-          iconSource={require('assets/icons/followstatus_mutual.png')}
-          description={i18n.t('home_mutual_following')}
-          value={mutualFollowing}
-          onPress={() => navigation.navigate('MutualFollowing')}
-        />
-        <IconListWithMargin
-          iconSource={require('assets/icons/followstatus_best.png')}
-          description={i18n.t('home_best_followers')}
-          value={bestFollowers}
-          onPress={checkPremium(() => navigation.navigate('BestFollowers'))}
-        />
-        <IconListWithMargin
-          iconSource={require('assets/icons/followstatus_ghost.png')}
-          description={i18n.t('home_ghost_followers')}
-          value={ghostFollowers}
-          onPress={checkPremium(() => navigation.navigate('GhostFollowers'))}
-        />
+
+        {mapIndexed((item, idx) => (
+          <IconListWithMargin key={idx} {...item} onPress={() => onPress(item)} />
+        ))(iconList)}
       </ListWrapper>
     </StyledView>
   );
@@ -297,14 +320,21 @@ const AvatarUsername = styled(Text)`
   text-align: center;
 `;
 
-const SearchAvatar = ({ navigation, following, checkPremium }) => (
-  <SearchAvatarWrapper>
-    <Background onPress={checkPremium(() => navigation.navigate('search'))}>
-      <AvatarImage source={require('assets/icons/search.png')} roundedWidth={30} />
-    </Background>
-    <AvatarUsername />
-  </SearchAvatarWrapper>
-);
+const SearchAvatar = ({ navigation, following, checkPremium }) => {
+  const localOnpress = () => {
+    const premium = checkPremium(() => navigation.navigate('search'));
+    premium();
+    logEvent('SearchUser');
+  };
+  return (
+    <SearchAvatarWrapper>
+      <Background onPress={() => localOnpress()}>
+        <AvatarImage source={require('assets/icons/search.png')} roundedWidth={30} />
+      </Background>
+      <AvatarUsername />
+    </SearchAvatarWrapper>
+  );
+};
 
 const Background = styled(TouchableOpacity)`
   width: 60;
