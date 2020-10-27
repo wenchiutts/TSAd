@@ -33,6 +33,7 @@ const PromotionCard = () => {
     // premium.status === 'active' && navigation.navigate('purchase');
     navigation.navigate('purchase');
     await apis.slack.newTapPurchase({ ...user, ...insData });
+    apis.firebase.logEvent({ name: 'onPress_PromotionCard' });
   };
 
   return (
@@ -40,7 +41,8 @@ const PromotionCard = () => {
       <ImageBackground
         source={require('assets/images/upgrade.png')}
         style={{ width: '100%', height: 160 }}
-        imageStyle={{ borderRadius: 12 }}>
+        imageStyle={{ borderRadius: 12 }}
+      >
         <ContentWrapper>
           <StyledText>{i18n.t('settings_promo_text_1')}</StyledText>
           <StyledStrongText>{i18n.t('settings_promo_text_2')}</StyledStrongText>

@@ -15,6 +15,7 @@ import { mapIndexed } from 'utils/ramdaUtils';
 import { recentStoriesListCountSelector, postsPageInfoSelector } from 'modules/instagram/selector';
 import { useCheckPremium } from 'modules/purchase/hook/useCheckPremium';
 import i18n from 'i18n';
+import apis from 'apis';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -119,7 +120,17 @@ const InsightScreen = ({ navigation }) => {
     };
     callbackAction();
   }, []);
+
   const { checkPremium } = useCheckPremium();
+
+  const logEvent = route => apis.firebase.logEvent({ name: `onPress_insight_${route}` });
+
+  const onPress = item => {
+    const premium = checkPremium(() => item.route && navigation.navigate(item.route));
+    premium();
+    logEvent(item.route);
+  };
+
   return (
     <StyledView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       {recentStoriesCount !== 0 && (
@@ -132,11 +143,7 @@ const InsightScreen = ({ navigation }) => {
         <Title>{i18n.t('insight_story_insight')}</Title>
         <TwoColumnViewWrapper>
           {mapIndexed((item, idx) => (
-            <StyledIconList
-              key={idx}
-              {...item}
-              onPress={checkPremium(() => item.route && navigation.navigate(item.route))}
-            />
+            <StyledIconList key={idx} {...item} onPress={() => onPress(item)} />
           ))(storyInsightList)}
         </TwoColumnViewWrapper>
       </ListWrapper>
@@ -144,11 +151,7 @@ const InsightScreen = ({ navigation }) => {
         <Title>{i18n.t('insight_post_insight')}</Title>
         <TwoColumnViewWrapper>
           {mapIndexed((item, idx) => (
-            <StyledIconList
-              key={idx}
-              {...item}
-              onPress={checkPremium(() => item.route && navigation.navigate(item.route))}
-            />
+            <StyledIconList key={idx} {...item} onPress={() => onPress(item)} />
           ))(postInsightList)}
         </TwoColumnViewWrapper>
       </ListWrapper>

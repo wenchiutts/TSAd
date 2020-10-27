@@ -12,6 +12,7 @@ import { followUserAction, unfollowUserAction } from 'modules/instagram/insAuthA
 import { isExist, lookup } from 'utils/ramdaUtils';
 import { followersDataSelector, followingsDataSelector } from 'modules/instagram/selector';
 import i18n from 'i18n';
+import apis from 'apis';
 
 const selector = createStructuredSelector({
   followers: followersDataSelector,
@@ -34,17 +35,26 @@ const UserListItem = ({
   const { followers, followings } = useSelector(selector);
   const lookupFollowers = lookup(followers);
   const lookupFollowings = lookup(followings);
-  const follow = () => dispatch(followUserAction(userId));
+  const follow = () => {
+    dispatch(followUserAction(userId));
+    apis.firebase.logEvent({ name: 'onPress_follow' });
+  };
   const unfollow = username => {
-    Alert.alert(i18n.t('user_list_item_button_unfollow'), `${i18n.t('general_unfollow_alert')} @${username} ?`, [
-      { text: i18n.t('general_no') },
-      {
-        text:  i18n.t('general_yes'),
-        onPress: () => {
-          dispatch(unfollowUserAction(userId));
+    apis.firebase.logEvent({ name: 'onPress_unfollow' });
+    Alert.alert(
+      i18n.t('user_list_item_button_unfollow'),
+      `${i18n.t('general_unfollow_alert')} @${username} ?`,
+      [
+        { text: i18n.t('general_no') },
+        {
+          text: i18n.t('general_yes'),
+          onPress: () => {
+            apis.firebase.logEvent({ name: 'onPress_unfollow_confirm' });
+            dispatch(unfollowUserAction(userId));
+          },
         },
-      },
-    ]);
+      ],
+    );
   };
   const localIsFollowing = isFollowing ?? compose(isExist, lookupFollowings)(userId);
   const localIsFollower = isFollower ?? compose(isExist, lookupFollowers)(userId);
@@ -111,7 +121,11 @@ const Username = styled(Text)`
 
 const FollowButton = ({ isFollowing, onPress }) => (
   <ButtonWrapper isFollowing={isFollowing} onPress={onPress}>
-    <ButtonText>{isFollowing ? i18n.t('user_list_item_button_unfollow') : i18n.t('user_list_item_button_follow')}</ButtonText>
+    <ButtonText>
+      {isFollowing
+        ? i18n.t('user_list_item_button_unfollow')
+        : i18n.t('user_list_item_button_follow')}
+    </ButtonText>
   </ButtonWrapper>
 );
 

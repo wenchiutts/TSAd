@@ -9,10 +9,11 @@ import { isExist } from 'utils/ramdaUtils';
 import Colors from 'constants/Colors';
 import CancelButton from 'components/header/CancelButton';
 import EmptyFoundView from 'components/EmptyFoundView';
-import SearchingGuideView from 'components/SearchingGuideView';
 import UserListItem from 'components/UserListItem';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SearchUserInput, { useSearchUserInput } from 'components/SearchUserInput';
+import SearchingGuideView from 'components/SearchingGuideView';
+import apis from 'apis';
 
 const StyledView = styled(View)`
   flex: 1;
@@ -83,6 +84,7 @@ const SearchModal = ({ navigation }) => {
       },
     };
     navigation.navigate('story', { story, deckIndex: 0, userId });
+    apis.firebase.logEvent({ name: 'onPress_SearchUser_search' });
   };
 
   return (

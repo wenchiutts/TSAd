@@ -18,7 +18,7 @@ const Stories = ({
   swipedHorizontally,
   stories,
 }) => {
-  const { backOpacity, deckIdx, currentStoryIdx,audioOn } = storyState;
+  const { backOpacity, deckIdx, audioOn } = storyState;
 
   useEffect(() => {
     StatusBar.setHidden(true);
@@ -59,14 +59,14 @@ const Stories = ({
                   { scale },
                 ],
               },
-            ]}>
+            ]}
+          >
             <Story
               story={story}
               isVisible={deckIdx === idx}
               backOpacity={backOpacity}
               functions={functions}
               indicatorAnim={indicatorAnim}
-              currentStoryIdx={currentStoryIdx}
               audioOn={audioOn}
             />
           </Animated.View>

@@ -29,9 +29,7 @@ const StyledAvatar = styled(StoryAvatar)`
   left: 16;
 `;
 
-
-
-const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim, currentStoryIdx, audioOn }) => {
+const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim, audioOn }) => {
   const navigation = useNavigation();
 
   const { onNextItem, onPrevItem, dismissCarousel, setBackOpacity, onViewStories } = functions;
@@ -66,7 +64,7 @@ const Story = ({ story, isVisible, backOpacity, functions, indicatorAnim, curren
                 volume={1.0}
                 resizeMode="cover"
                 isMuted={!audioOn}
-                shouldPlay={isVisible && currentStoryIdx === story.idx}
+                shouldPlay={isVisible}
                 isLooping
                 style={{ width: width, height: height - 47 }}
               />
@@ -157,7 +155,8 @@ const BackButton = ({ onPrevItem, backOpacity, setBackOpacity }) => (
   <TouchableWithoutFeedback
     onPress={onPrevItem}
     onPressIn={() => setBackOpacity(1)}
-    onLongPress={() => setBackOpacity(0)}>
+    onLongPress={() => setBackOpacity(0)}
+  >
     <BackButtonGradient
       colors={['rgba(0,0,0,0.33)', 'transparent']}
       locations={[0, 0.85]}
