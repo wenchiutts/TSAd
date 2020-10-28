@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "222094529171",
+    "firebase_url": "https://ins-reports-dev.firebaseio.com",
+    "project_id": "ins-reports-dev",
+    "storage_bucket": "ins-reports-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222094529171:android:f1994c3b98b98a55f3b366",
+        "android_client_info": {
+          "package_name": "com.ins.reports.analyzer.insta.followers.tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "222094529171-dscdoa9qrdihjur2r5g7pj007q9psq3b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtF7SveeVgXd5hVAvoF7jCOqIl1hd_wh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "222094529171-dscdoa9qrdihjur2r5g7pj007q9psq3b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "222094529171-9oe9tmh4s2jhia9ap1e05dcukm7bj18j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ins.reports.analyzer.instagram.tracker"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222094529171:android:50d9da1fad405463f3b366",
+        "android_client_info": {
+          "package_name": "com.tikfans2.www"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "222094529171-dscdoa9qrdihjur2r5g7pj007q9psq3b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtF7SveeVgXd5hVAvoF7jCOqIl1hd_wh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "222094529171-dscdoa9qrdihjur2r5g7pj007q9psq3b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "222094529171-9oe9tmh4s2jhia9ap1e05dcukm7bj18j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ins.reports.analyzer.instagram.tracker"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
