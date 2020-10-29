@@ -80,8 +80,9 @@ const ButtonWrapper = styled(View)`
   position: relative;
 `;
 
-const TSAdFullScreen = ({ navigation }) => {
+const TSAdFullScreen = ({ route, navigation }) => {
   const [countNum, setCountNum] = React.useState(5);
+  const { mediaSource, iconSource, linkUrl } = route?.params;
 
   return (
     <View style={{ backgroundColor: '#030303', position: 'relative' }}>
@@ -94,7 +95,7 @@ const TSAdFullScreen = ({ navigation }) => {
       </ButtonWrapper>
       <ContentContainer>
         <Video
-          source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+          source={{ uri: mediaSource }}
           rate={1.0}
           volume={1.0}
           resizeMode="contain"
@@ -104,10 +105,8 @@ const TSAdFullScreen = ({ navigation }) => {
         />
         <StyledTSAdBanner
           style={{ transform: [{ translateX: -((screenWidth * 0.8) / 2) }] }}
-          iconSource={require('/assets/icon.png')}
-          linkUrl={
-            'https://play.google.com/store/apps/details?id=com.ins.reports.analyzer.insta.followers.tracker'
-          }
+          iconSource={iconSource}
+          linkUrl={linkUrl}
         />
       </ContentContainer>
     </View>
