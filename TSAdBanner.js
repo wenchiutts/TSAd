@@ -1,14 +1,8 @@
 import * as React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  Linking,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, Image, Linking, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
-import { path } from 'ramda';
-import i18n from 'i18n';
+
+import Colors from 'modules/Ads/constants/Colors';
 
 // TS = TouShih ad banner
 const TSAdBanner = ({
@@ -19,25 +13,26 @@ const TSAdBanner = ({
   linkUrl,
 }) => {
   return (
-    <Container style={style} onPress={async () => {
-      const supported = Linking.canOpenURL(linkUrl);
-      if (supported) {
-        Linking.openURL(linkUrl);
-      }
-    }}>
-      <IconImage
-        source={iconSource}
-      />
+    <Container
+      style={style}
+      onPress={async () => {
+        const supported = Linking.canOpenURL(linkUrl);
+        if (supported) {
+          Linking.openURL(linkUrl);
+        }
+      }}
+    >
+      <IconImage source={iconSource} />
       <TextArea
         style={{
           marginLeft: 12,
-          width: '70%',
-          maxWidth: '70%',
+          width: '60%',
+          maxWidth: '60%',
         }}
         title={title}
         subtitle={subtitle}
       />
-      <ActionButton source={require('assets/images/download.png')} />
+      <ActionButton source={require('modules/Ads/assets/download.png')} />
       <AdText>Ad Sponsored</AdText>
     </Container>
   );
@@ -49,7 +44,7 @@ const Container = styled(TouchableOpacity)`
   width: 100%;
   height: 66;
   border-radius: 12;
-  background-color: ${path(['theme', 'primary', 'lightBlue'])};
+  background-color: ${Colors.lightBlue};
   padding-left: 12;
   padding-right: 12;
   padding-top: 19;
@@ -67,20 +62,28 @@ const IconImage = styled(Image)`
 
 const Title = styled(Text)`
   font-size: 14;
+  color: ${Colors.screenBackground};
 `;
 
 const SubTitle = styled(Text)`
   font-weight: bold;
   font-size: 14;
+  color: ${Colors.screenBackground};
 `;
 
 const TextArea = ({ style = {}, title, subtitle }) => {
   return (
-    <View style={{
-      ...style,
-    }}>
-      <Title numberOfLines={1} ellipsizeMode='tail'>{title}</Title>
-      <SubTitle numberOfLines={1} ellipsizeMode='tail'>{subtitle}</SubTitle>
+    <View
+      style={{
+        ...style,
+      }}
+    >
+      <Title numberOfLines={1} ellipsizeMode="tail">
+        {title}
+      </Title>
+      <SubTitle numberOfLines={1} ellipsizeMode="tail">
+        {subtitle}
+      </SubTitle>
     </View>
   );
 };
@@ -93,10 +96,9 @@ const ActionButton = styled(Image)`
 `;
 
 const AdText = styled(Text)`
-  color: ${path(['theme', 'primary', 'gray'])};
+  color: ${Colors.gray};
   position: absolute;
   top: -1;
   right: 10;
   font-size: 7;
 `;
-
