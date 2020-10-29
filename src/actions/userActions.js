@@ -1,5 +1,9 @@
+// @format
+import { Platform } from 'react-native';
+import dayjs from 'dayjs';
+
 import makeActionCreator from 'actions/makeActionCreator';
-import { PRODUCTS_IDS, PRODUCT_PLAN_TYPE_MAP, IAP_PRODUCTS } from 'constants/Products';
+import { IAP_PRODUCTS } from 'constants/Products';
 import { getCountryCode } from 'utils/location';
 
 import {
@@ -14,6 +18,12 @@ export const updatePremium = makeActionCreator(UPDATE_PREMIUM, 'purchase');
 
 export const RECEIVE_USER_PROFILE = 'RECEIVE_USER_PROFILE';
 export const receiveUserProfile = makeActionCreator(RECEIVE_USER_PROFILE, 'profile');
+
+export const UPDATE_LAUNCH_TIMES = 'UPDATE_LAUNCH_TIMES';
+export const updateLaunchTimesAction = makeActionCreator(UPDATE_LAUNCH_TIMES);
+
+export const SET_JOIN_TIMESTAMP = 'SET_JOIN_TIMESTAMP';
+export const setJoinTimestamp = makeActionCreator(SET_JOIN_TIMESTAMP, 'timestamp');
 
 export const purchaseSubscriptionAction = ({ purchaseTime, productId }) => async (
   dispatch,
@@ -170,4 +180,3 @@ export const purchaseErrorAction = errorMessage => async (dispatch, getState, { 
     }
   }
 };
-

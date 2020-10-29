@@ -17,8 +17,11 @@ import Colors from 'constants/Colors';
 import configureStore from 'store/configureStore';
 import { getAuthStateAction } from 'modules/auth/authActions';
 import { connectAppStore } from 'actions/paymentActions';
-import { checkSubscriptionStatus, updateUserProfile } from 'actions/userActions';
-import LoginScreen from 'screens/LoginScreen';
+import {
+  checkSubscriptionStatus,
+  updateUserProfile,
+  updateLaunchTimesAction,
+} from 'actions/userActions';
 import LoginStack from 'navigation/LoginStack';
 import { IgUserNameContext, useCheckUserLoginIg } from 'modules/instagram/useCheckUserLoginIg';
 import Splash from 'components/Splash';
@@ -41,6 +44,7 @@ const Root = () => {
       store.dispatch(checkSubscriptionStatus());
     };
     init();
+    store.dispatch(updateLaunchTimesAction());
   }, []);
 
   if (igUserNameState.isLoading) {
@@ -61,7 +65,8 @@ const Root = () => {
               Analytics.setCurrentScreen(currentRouteName);
             }
             routeNameRef.current = currentRouteName;
-          }}>
+          }}
+        >
           <Stack.Navigator
             screenOptions={{
               headerStyle: {
@@ -80,7 +85,8 @@ const Root = () => {
               headerTitleAlign: 'center',
               headerHideShadow: true,
             }}
-            mode="modal">
+            mode="modal"
+          >
             {igUserNameState?.isLogin ? (
               <>
                 <Stack.Screen
@@ -111,8 +117,8 @@ const Root = () => {
                 <Stack.Screen name="search" component={SearchModal} />
               </>
             ) : (
-                <Stack.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
-              )}
+              <Stack.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
+            )}
           </Stack.Navigator>
         </NavigationContainer>
       </View>

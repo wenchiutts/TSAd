@@ -249,7 +249,7 @@ export const followUserAction = userId => async (dispatch, getState, { apis }) =
         ...newUserInfo,
         error: String(e),
         errorType: 'follow user',
-        errorResponse: String(e?.response?.message),
+        errorResponse: String(e?.response?.data?.message),
       });
       DEBUG.log('follow user error', e, e.response);
     });
@@ -278,7 +278,7 @@ export const unfollowUserAction = userId => async (dispatch, getState, { apis })
         ...newUserInfo,
         error: String(e),
         errorType: 'unfollow user',
-        errorResponse: String(e?.response?.message),
+        errorResponse: String(e?.response?.data?.message),
       });
       DEBUG.log('unfollower user error', e, e.response);
     });

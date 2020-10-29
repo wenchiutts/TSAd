@@ -1,7 +1,15 @@
 // @format
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator, TouchableHighlight, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  TouchableHighlight,
+  Dimensions,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -29,7 +37,7 @@ const images = [
     uri: require('assets/images/onboarding_04.png'),
     text: i18n.t('login_slogan_4'),
   },
-]
+];
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -73,14 +81,18 @@ const LoginScreen = ({ navigation }) => {
           )}
         />
       </ImageSliderWrapper>
-      <View style={{
-        flex: 1,
-        alignItems: 'center',
-        width: '100%',
-        justifyContent: 'center',
-      }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          width: '100%',
+          justifyContent: 'center',
+        }}
+      >
         <LoginButton onPress={onPressLogin} />
-        <WarningMessage><Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}</WarningMessage>
+        <WarningMessage>
+          <Ionicons name="md-lock" size={24} color="white" /> {i18n.t('general_data_usage')}
+        </WarningMessage>
       </View>
     </Container>
   );
@@ -93,13 +105,13 @@ LoginScreen.propTypes = {
 export default LoginScreen;
 
 const StyledText = styled(Text)`
-color: ${path(['theme', 'primary', 'lightBlue'])};
-font-size: 20;
-font-weight: bold;
-text-align: center;
-padding-top: 25;
-background-color: ${path(['theme', 'screenBackground'])};
-`
+  color: ${path(['theme', 'primary', 'lightBlue'])};
+  font-size: 20;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 25;
+  background-color: ${path(['theme', 'screenBackground'])};
+`;
 
 const ImageSliderWrapper = styled(View)`
   flex: 1;
@@ -241,7 +253,7 @@ const StyledLinearGradient = styled(LinearGradient)`
 `;
 
 const WarningMessage = styled(Text)`
-  color: #FFFFFF;
+  color: #ffffff;
   max-width: 80%;
   margin-top: 20;
 `;

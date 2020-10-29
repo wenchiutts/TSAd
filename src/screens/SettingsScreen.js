@@ -56,7 +56,6 @@ const SettingsScreen = () => {
         iconSource={require('assets/icons/settings_contactus.png')}
         description={i18n.t('settings_contact')}
         onPress={() => {
-          // TODO: CHUCK change the recipients and subject
           const options = {
             recipients: ['service.fypapp@gmail.com'],
             subject: 'Ins Master issue',

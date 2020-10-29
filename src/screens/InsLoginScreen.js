@@ -31,9 +31,9 @@ const InsLoginScreen = ({ navigation }) => {
 
   const fetchCookies = async (retry = 0) => {
     // console.log('sessionId', sessionid);
-    if (retry > 15 || !!sessionid) {
-      return;
-    }
+    // if (retry > 15 || !!sessionid) {
+    //   return;
+    // }
     const cookies = await CookieManager.get('https://www.instagram.com', true);
     // const cookies = await CookieManager.get('https://www.instagram.com');
     // console.log('fuck cookies', cookies);
@@ -62,10 +62,10 @@ const InsLoginScreen = ({ navigation }) => {
         console.log('_onMessage error', e);
       }
     }
-    else {
-      await delay(800);
-      fetchCookies(retry + 1);
-    }
+    // else {
+    //   await delay(800);
+    //   fetchCookies(retry + 1);
+    // }
   };
 
   const onNavigationStateChange = async webViewState => {

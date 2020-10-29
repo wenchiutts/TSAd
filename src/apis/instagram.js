@@ -10,6 +10,9 @@ import { normalizeInsProfileData } from 'utils/instagram';
 
 // const userAgentFactory = new UserAgent({ deviceCategory: 'mobile' });
 // const userAgent = userAgentFactory.toString();
+// const userAgent = 'Mozilla/5.0 (Linux; Android 10; Pixel 3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Mobile Safari/537.36';
+// const userAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Mobile/15E148 Safari/604.1'
+const userAgent = '(iPhone)';
 
 const baseURL = 'https://www.instagram.com';
 
